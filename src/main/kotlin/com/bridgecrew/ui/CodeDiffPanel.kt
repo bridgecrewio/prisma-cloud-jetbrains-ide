@@ -66,7 +66,6 @@ class CodeDiffPanel(val result: BaseCheckovResult, private val isErrorBubble: Bo
         val textArea = JTextPane()
         textArea.text = innerText
         textArea.isEditable = false
-        textArea.selectAll()
         val attributes = SimpleAttributeSet()
         StyleConstants.setLineSpacing(attributes, 0f)
         textArea.setParagraphAttributes(attributes, true)
