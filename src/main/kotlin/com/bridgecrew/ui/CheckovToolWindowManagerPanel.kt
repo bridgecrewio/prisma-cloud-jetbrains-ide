@@ -8,6 +8,7 @@ import com.bridgecrew.services.CheckovResultsListUtils
 import com.bridgecrew.services.ResultsCacheService
 import com.bridgecrew.services.scan.CheckovScanService
 import com.bridgecrew.services.scan.FullScanStateService
+import com.bridgecrew.settings.CheckovGlobalState
 import com.bridgecrew.settings.CheckovSettingsState
 import com.bridgecrew.ui.actions.CheckovScanAction
 import com.bridgecrew.ui.errorBubble.CheckovGutterErrorIcon
@@ -18,12 +19,15 @@ import com.bridgecrew.utils.FULL_SCAN_EXCLUDED_PATHS
 import com.bridgecrew.utils.PANELTYPE
 import com.bridgecrew.utils.getGitIgnoreValues
 import com.bridgecrew.utils.toVirtualFilePath
+import com.intellij.ide.ui.LafManagerListener
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.editor.Document
+import com.intellij.openapi.editor.colors.EditorColorsListener
+import com.intellij.openapi.editor.colors.EditorColorsScheme
 import com.intellij.openapi.editor.markup.HighlighterLayer
 import com.intellij.openapi.editor.markup.MarkupModel
 import com.intellij.openapi.editor.markup.RangeHighlighter
@@ -43,7 +47,7 @@ import java.awt.BorderLayout
 import javax.swing.SwingUtilities
 
 @Service
-class CheckovToolWindowManagerPanel(val project: Project) : SimpleToolWindowPanel(true, true), Disposable {
+class CheckovToolWindowManagerPanel(val project: Project) : SimpleToolWindowPanel(true, true), Disposable, EditorColorsListener {
 
     private val checkovDescription = CheckovToolWindowDescriptionPanel(project)
     private val mainPanelSplitter = OnePixelSplitter(PANEL_SPLITTER_KEY, 0.5f)
@@ -101,6 +105,7 @@ class CheckovToolWindowManagerPanel(val project: Project) : SimpleToolWindowPane
         if (panelType == PANELTYPE.CHECKOV_FRAMEWORK_SCAN_FINISHED && project.service<FullScanStateService>().wereAllFrameworksFinished()) {
             project.service<AnalyticsService>().fullScanResultsWereFullyDisplayed()
         }
+        CheckovGlobalState.lastLoadedPanel = panelType
     }
 
     private fun loadScanResultsPanel(panelType: Int, selectedPath: String = "") {
@@ -244,6 +249,10 @@ class CheckovToolWindowManagerPanel(val project: Project) : SimpleToolWindowPane
                 }
             }
         })
+
+        project.messageBus.connect().subscribe(LafManagerListener.TOPIC, LafManagerListener {
+            project.service<CheckovToolWindowManagerPanel>().loadMainPanel(CheckovGlobalState.lastLoadedPanel)
+        })
     }
 
     fun shouldScanFile(virtualFile: VirtualFile): Boolean {
@@ -344,5 +353,9 @@ class CheckovToolWindowManagerPanel(val project: Project) : SimpleToolWindowPane
 
     override fun dispose() {
         SeverityFilterActions.restartState()
+    }
+
+    override fun globalSchemeChange(scheme: EditorColorsScheme?) {
+        project.service<CheckovToolWindowManagerPanel>().loadMainPanel(CheckovGlobalState.lastLoadedPanel)
     }
 }

@@ -2,6 +2,9 @@ package com.bridgecrew.ui.errorBubble
 
 import com.bridgecrew.listeners.ErrorBubbleFixListener
 import com.bridgecrew.results.BaseCheckovResult
+import com.bridgecrew.utils.FIX_COLOR_DARK
+import com.bridgecrew.utils.FIX_COLOR_LIGHT
+import com.bridgecrew.utils.isDarkMode
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
@@ -52,7 +55,7 @@ class CheckovGutterErrorIcon(val results: List<BaseCheckovResult>, val offset: I
                     if (start != null) {
 
                         val textAttributes = TextAttributes()
-                        textAttributes.backgroundColor = Color.decode("#F5E6E7")
+                        textAttributes.backgroundColor = if(isDarkMode()) FIX_COLOR_DARK else FIX_COLOR_LIGHT
                         val rangeHighlighter: RangeHighlighter = markup.addLineHighlighter(firstRow, HighlighterLayer.ERROR, textAttributes)
 
                         val screen = editor.contentComponent.locationOnScreen.let { Point(it.x + start.x, it.y + start.y) }
