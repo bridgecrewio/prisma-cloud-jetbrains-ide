@@ -10,7 +10,7 @@ object CheckovIcons {
     val pythonIcon = IconLoader.getIcon("/icons/python.svg", javaClass)
     val dockerIcon = IconLoader.getIcon("/icons/Docker.svg", javaClass)
     val kotlinIcon = IconLoader.getIcon("/icons/kotlin.svg", javaClass)
-    val SeverityUnknown = IconLoader.getIcon("/icons/severity_unknown.svg", javaClass)
+    val SeverityInfo = IconLoader.getIcon("/icons/severity_unknown.svg", javaClass)
     val SeverityLow = IconLoader.getIcon("/icons/severity_low.svg", javaClass)
     val SeverityMedium = IconLoader.getIcon("/icons/severity_medium.svg", javaClass)
     val SeverityHigh = IconLoader.getIcon("/icons/severity_high.svg", javaClass)

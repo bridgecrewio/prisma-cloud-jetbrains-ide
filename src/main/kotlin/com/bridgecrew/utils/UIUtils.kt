@@ -1,49 +1,17 @@
 package com.bridgecrew.utils
 
 import com.bridgecrew.results.Severity
-import com.intellij.ui.components.labels.LinkLabel
+import com.intellij.openapi.editor.colors.EditorColorsManager
 import com.intellij.uiDesigner.core.GridConstraints
 import icons.CheckovIcons
-import java.awt.Desktop
-import java.net.URI
-import java.net.URISyntaxException
+import java.awt.Color
 import javax.swing.Icon
-import javax.swing.JLabel
-import javax.swing.JPanel
 
-fun urlLink(guideline: String?, checkID: String): JPanel{
-    val guidelineLabel = JPanel()
-    if (guideline.isNullOrEmpty()){
-        if (!checkID.startsWith("CKV")){
-            // custom policy that does not include guidelines
-            val noGuidelinesTitle = JLabel("No guidelines were provided for this policy. You can add your guidelines")
-            val noGuidelines = LinkLabel.create("here") {
-                try {
-                    Desktop.getDesktop().browse(URI("https://www.bridgecrew.cloud/policies/edit/${checkID}"))
-                } catch (ex: URISyntaxException) {
-                }
-            }
-            guidelineLabel.add(noGuidelinesTitle)
-            guidelineLabel.add(noGuidelines)
-        }
-        return guidelineLabel
-    }
-    if (isUrl(guideline)) {
-        val url = LinkLabel.create(GUIDELINES_TITLE) {
-            try {
-                Desktop.getDesktop().browse(URI(guideline))
-            } catch (ex: URISyntaxException) {
-            }
-        }
-        guidelineLabel.add(url)
-    } else {
-        val titleName = JLabel(CUSTOM_GUIDELINES_TITLE)
-        val customGuideline = JLabel(guideline)
-        guidelineLabel.add(titleName)
-        guidelineLabel.add(customGuideline)
-    }
-    return guidelineLabel
-}
+
+val FIX_COLOR_DARK: Color = Color.decode("#49544A")
+val FIX_COLOR_LIGHT: Color = Color.decode("#49544A")
+val VULNERABLE_COLOR_DARK: Color = Color.decode("#704745")
+val VULNERABLE_COLOR_LIGHT: Color = Color.decode("#704745")
 
 fun createGridRowCol(row: Int, col: Int = 0, align: Int = 0, fill: Int = 0): GridConstraints {
     return GridConstraints(
@@ -57,9 +25,31 @@ private val severityIconMap: Map<Severity, Icon> = mapOf(
         Severity.HIGH to CheckovIcons.SeverityHigh,
         Severity.MEDIUM to CheckovIcons.SeverityMedium,
         Severity.LOW to CheckovIcons.SeverityLow,
-        Severity.UNKNOWN to CheckovIcons.SeverityUnknown
+        Severity.INFO to CheckovIcons.SeverityInfo,
+        Severity.UNKNOWN to CheckovIcons.SeverityInfo
 )
 
+enum class IDEColorMode {
+    DARK,
+    LIGHT
+}
+
 fun getSeverityIconBySeverity(severity: Severity): Icon {
-    return severityIconMap[severity] ?: CheckovIcons.ErrorIcon
+    return severityIconMap[severity] ?: CheckovIcons.SeverityInfo
+}
+
+fun getIDEColorMode(): IDEColorMode {
+    val editorColorsManager = EditorColorsManager.getInstance()
+    val currentScheme = editorColorsManager.globalScheme
+    return when(currentScheme.name) {
+        "_@user_High contrast" -> IDEColorMode.DARK
+        "_@user_Darcula" -> IDEColorMode.DARK
+        "@user_IntelliJ Light" -> IDEColorMode.LIGHT
+        "_@user_Default" -> IDEColorMode.LIGHT
+        else -> IDEColorMode.DARK
+    }
+}
+
+fun isDarkMode(): Boolean {
+    return getIDEColorMode() == IDEColorMode.DARK
 }

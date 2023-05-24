@@ -1,11 +1,12 @@
 package com.bridgecrew.ui
 
 import com.bridgecrew.results.BaseCheckovResult
+import com.bridgecrew.utils.*
+import com.bridgecrew.utils.FIX_COLOR_LIGHT
 import com.github.difflib.text.DiffRow
 import com.github.difflib.text.DiffRowGenerator
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.util.ui.JBUI
-import java.awt.Color
 import java.awt.Dimension
 import javax.swing.*
 import javax.swing.text.SimpleAttributeSet
@@ -37,12 +38,12 @@ class CodeDiffPanel(val result: BaseCheckovResult, private val isErrorBubble: Bo
         rows.filter { it.tag != DiffRow.Tag.EQUAL }.forEach { row ->
             if(row.oldLine.trim().isNotEmpty()){
                 val vulBlock = createCodeBlock(row.oldLine.trim())
-                vulBlock.background = Color.decode("#F5E6E7")
+                vulBlock.background = if(isDarkMode()) FIX_COLOR_DARK else FIX_COLOR_LIGHT
                 fixHolder.add(vulBlock)
             }
             if(row.newLine.trim().isNotEmpty() && row.newLine.trim().toDoubleOrNull() == null){
                 val fixBlock = createCodeBlock(row.newLine.trim())
-                fixBlock.background = Color.decode("#E9F5E6")
+                fixBlock.background = if(isDarkMode()) VULNERABLE_COLOR_DARK else VULNERABLE_COLOR_LIGHT
                 fixHolder.add(fixBlock)
             }
         }
