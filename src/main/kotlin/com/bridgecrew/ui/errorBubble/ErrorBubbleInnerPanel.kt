@@ -74,13 +74,17 @@ class ErrorBubbleInnerPanel(val result: BaseCheckovResult, private val vulnerabi
             Category.IAC -> {
                 if(result.fixDefinition != null){
                     val codeDiffPanel = CodeDiffPanel(result, false)
-                    val scroll = JBScrollPane(codeDiffPanel)
-                    scroll.border = BorderFactory.createEmptyBorder(0, 30, 0, 0)
-                    scroll.alignmentX = Component.LEFT_ALIGNMENT
-                    SwingUtilities.invokeLater(Runnable {
-                        scroll.viewport.viewPosition = Point(0, 0)
-                    })
-                    add(scroll)
+                    if(codeDiffPanel.hasDiff){
+                        val scroll = JBScrollPane(codeDiffPanel)
+                        scroll.border = BorderFactory.createEmptyBorder(0, 30, 0, 0)
+                        scroll.alignmentX = Component.LEFT_ALIGNMENT
+                        SwingUtilities.invokeLater(Runnable {
+                            scroll.viewport.viewPosition = Point(0, 0)
+                        })
+                        add(scroll)
+                    }else{
+                        buildCenterPanel("No automated fix is available")
+                    }
                 } else {
                     buildCenterPanel("No automated fix is available")
                 }

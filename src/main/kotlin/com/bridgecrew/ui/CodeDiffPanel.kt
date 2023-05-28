@@ -15,6 +15,8 @@ import javax.swing.text.StyleConstants
 class CodeDiffPanel(val result: BaseCheckovResult, private val isErrorBubble: Boolean): JPanel() {
 
     private val LOG = logger<CodeDiffPanel>()
+    var hasDiff = false
+
     init {
         layout = BoxLayout(this, BoxLayout.Y_AXIS)
         border = BorderFactory.createEmptyBorder(0, 10, 0, 10)
@@ -25,11 +27,10 @@ class CodeDiffPanel(val result: BaseCheckovResult, private val isErrorBubble: Bo
                 .inlineDiffByWord(true)
                 .build()
 
-        var oldCode = buildVulnerableLines()
+        var oldCode = buildCodeBlock()
         var newCode = buildFixLines()
         if(!isErrorBubble){
             newCode=buildFix()
-            oldCode=buildCodeBlock()
         }
         val rows = generator.generateDiffRows(oldCode, newCode)
         val firstDiffRow = rows.find { it.tag != DiffRow.Tag.EQUAL &&
@@ -38,13 +39,15 @@ class CodeDiffPanel(val result: BaseCheckovResult, private val isErrorBubble: Bo
         rows.filter { it.tag != DiffRow.Tag.EQUAL }.forEach { row ->
             if(row.oldLine.trim().isNotEmpty()){
                 val vulBlock = createCodeBlock(row.oldLine.trim())
-                vulBlock.background = if(isDarkMode()) FIX_COLOR_DARK else FIX_COLOR_LIGHT
+                vulBlock.background = if(isDarkMode()) VULNERABLE_COLOR_DARK else VULNERABLE_COLOR_LIGHT
                 fixHolder.add(vulBlock)
+                hasDiff=true
             }
             if(row.newLine.trim().isNotEmpty() && row.newLine.trim().toDoubleOrNull() == null){
                 val fixBlock = createCodeBlock(row.newLine.trim())
-                fixBlock.background = if(isDarkMode()) VULNERABLE_COLOR_DARK else VULNERABLE_COLOR_LIGHT
+                fixBlock.background = if(isDarkMode()) FIX_COLOR_DARK else FIX_COLOR_LIGHT
                 fixHolder.add(fixBlock)
+                hasDiff=true
             }
         }
         fixHolder.add(Box.createVerticalGlue())
@@ -75,23 +78,13 @@ class CodeDiffPanel(val result: BaseCheckovResult, private val isErrorBubble: Bo
         return textArea
     }
 
-    private fun buildVulnerableLines(): ArrayList<String> {
-        var vulnerableLines = arrayListOf<String>()
-        if (isErrorBubble) {
-            result.codeBlock.forEach { block ->
-                val rowNumber = (block[0] as Double).toInt().toString()
-                val code = block[1]
-                vulnerableLines += "$rowNumber\t$code".replace("\n", "")
-            }
-        }
-        return vulnerableLines
-    }
-
     private fun buildCodeBlock(): ArrayList<String> {
         var codeBlock = arrayListOf<String>()
             result.codeBlock.forEach { block ->
+                var currentLine = (block[0] as Double).toInt()
                 val code = block[1]
-                codeBlock += "$code".replace("\n", "")
+                codeBlock += "$currentLine\t$code".replace("\n", "")
+                currentLine++
             }
 
         return codeBlock
@@ -102,7 +95,7 @@ class CodeDiffPanel(val result: BaseCheckovResult, private val isErrorBubble: Bo
         if (result.codeBlock.isNotEmpty()) {
             var currentLine = (result.codeBlock[0][0] as Double).toInt()
             result.fixDefinition?.split("\n")?.forEach { codeRow ->
-                fixWithRowNumber += "$codeRow"
+                fixWithRowNumber += "$currentLine\t$codeRow"
                 currentLine++
             }
         }

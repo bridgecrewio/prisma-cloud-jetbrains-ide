@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>com.github.bridgecrewio.checkov</id>
     <name>Prisma Cloud</name>
-    <vendor email="info@bridgecrew.io">bridgecrewio</vendor>
+    <vendor email="info@bridgecrew.io">PrismaCloud</vendor>
     <description><![CDATA[
     Prevent cloud misconfigurations during build-time for Terraform,
     Cloudformation, Kubernetes, Serverless framework and other
@@ -15,7 +15,7 @@
 
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow id="Prisma Code Security"
+        <toolWindow id="Prisma Cloud"
                     anchor="bottom"
                     factoryClass="com.bridgecrew.ui.CheckovToolWindowFactory"
                     icon="/icons/plugin_small_icon.svg"/>
