@@ -1,1 +1,1 @@
-rootProject.name = "checkov-jetbrains-idea"
+rootProject.name = "prisma-cloud-jetbrains-idea"
