@@ -15,7 +15,7 @@ data class VulnerabilityDetails(
         val lowest_fixed_version: String?,
         val published_date: String?,
         val vector: String?,
-//        val risk_factors: List<String>?, // TODO - fix after Saar's team fixes their side
+        val risk_factors: Map<String, Any>,
         val root_package_name: String?,
         val root_package_version: String?,
         val root_package_fix_version: String?

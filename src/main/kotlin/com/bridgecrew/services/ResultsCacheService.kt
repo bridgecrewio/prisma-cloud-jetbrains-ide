@@ -79,7 +79,7 @@ class ResultsCacheService(val project: Project) {
                                 result.vulnerability_details.vector,
                                 result.vulnerability_details.id,
                                 result.file_path,
-                                null, // TODO - fix after Saar's team fixes their side
+                                result.vulnerability_details.risk_factors,
                                 result.vulnerability_details.root_package_name,
                                 result.vulnerability_details.root_package_version,
                                 result.vulnerability_details.root_package_fix_version,

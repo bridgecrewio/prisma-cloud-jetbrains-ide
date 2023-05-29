@@ -26,7 +26,7 @@ class VulnerabilitiesDictionaryPanel(result: VulnerabilityCheckovResult): Dictio
                        "CVSS" to result.cvss,
                        "Published" to result.publishedDate,
                        "Vector" to result.vector,
-                       "Risk Factors" to result.riskFactors,
+                       "Risk Factors" to result.riskFactors?.keys?.joinToString(", "),
                        "Description" to result.description)
         )
 
