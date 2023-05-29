@@ -142,12 +142,9 @@ class FullScanStateService(val project: Project) {
 
     fun displayNotificationForFullScanSummary() {
         val totalErrors = project.service<ResultsCacheService>().checkovResults.size
-        var message = "Prisma Cloud has detected $totalErrors configuration errors in your project.\n" +
-                "Check out the tool window to analyze your code.\n" +
-                "${DESIRED_NUMBER_OF_FRAMEWORK_FOR_FULL_SCAN} frameworks were scanned.\n" +
+        var message = "Prisma Cloud has detected $totalErrors code security issues in your project for $DESIRED_NUMBER_OF_FRAMEWORK_FOR_FULL_SCAN frameworks scanned.\n" +
                 generateErrorMessageForFullScanSummary() +
-                generateInvalidFileSizeMessageForFullScanSummary() +
-                generateNoErrorsMessageForFullScanSummary()
+                generateInvalidFileSizeMessageForFullScanSummary()
 
         if (unscannedFrameworks.isNotEmpty()) {
             message += "Frameworks $unscannedFrameworks were not scanned because they are probably not installed.\n"
@@ -176,15 +173,7 @@ class FullScanStateService(val project: Project) {
             return ""
         }
 
-        return "${invalidFilesSize}} files were detected as invalid\n"
-    }
-
-    private fun generateNoErrorsMessageForFullScanSummary(): String {
-        if (frameworkScansFinishedWithNoVulnerabilities.isEmpty()) {
-            return ""
-        }
-
-        return "No errors have been detected for frameworks $frameworkScansFinishedWithNoVulnerabilities :)\n"
+        return "${invalidFilesSize}} files were detected as invalid.\n"
     }
 
     fun wereAllFrameworksFinished(): Boolean {
