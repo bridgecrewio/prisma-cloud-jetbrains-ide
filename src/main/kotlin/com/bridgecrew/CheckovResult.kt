@@ -1,8 +1,6 @@
 package com.bridgecrew
 
 import com.google.gson.Gson
-import com.google.gson.annotations.SerializedName
-import com.google.gson.reflect.TypeToken
 
 val gson = Gson()
 
