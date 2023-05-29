@@ -6,23 +6,6 @@ import com.google.gson.reflect.TypeToken
 
 val gson = Gson()
 
-//data class RiskFactors(
-//        @SerializedName("Has fix")
-//        val has_fix: String?,
-//
-//        @SerializedName("Critical severity")
-//        val critical_severity: String?,
-//
-//        @SerializedName("DoS - High")
-//        val dos_: String?,
-//
-//        @SerializedName("Attack vector: network")
-//        val has_fix: String?,
-//
-//        @SerializedName("Attack complexity: low")
-//        val has_fix: String?,
-//)
-
 data class VulnerabilityDetails(
         val id: String?,
         val package_name: String?,
