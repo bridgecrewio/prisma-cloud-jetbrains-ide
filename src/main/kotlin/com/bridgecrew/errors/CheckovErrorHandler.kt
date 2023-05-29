@@ -32,7 +32,7 @@ class CheckovErrorHandlerService(val project: Project) {
 
             val errorMessage = "${errorMessagePrefix}.\n " +
                     "Please check the log file in ${errorDebugOutputFile.path}.\n" +
-                    "Checkov result can be found in ${errorCheckovResultFile.path}.\n" +
+                    "Prisma Cloud result can be found in ${errorCheckovResultFile.path}.\n" +
                     "To report: open a issue at https://github.com/bridgecrewio/checkov-jetbrains-ide/issues\n"
 
             LOG.error(errorMessage, error)

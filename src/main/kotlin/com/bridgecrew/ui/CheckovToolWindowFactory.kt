@@ -17,7 +17,7 @@ import com.intellij.openapi.wm.ToolWindowManager
 import com.intellij.openapi.wm.ex.ToolWindowManagerListener
 import com.intellij.util.messages.MessageBusConnection
 
-const val PRISMA_CODE_SECUTIRY_TOOL_WINDOW_ID = "Prisma Code Security"
+const val PRISMA_CLOUD_TOOL_WINDOW_ID = "Prisma Cloud"
 const val OVERVIEW_TAB_NAME = "Overview"
 const val IAC_TAB_NAME = "IaC"
 const val VULNERABILITIES_TAB_NAME = "Vulnerabilities"
@@ -64,10 +64,10 @@ class CheckovToolWindowFactory : ToolWindowFactory {
         connection.subscribe(ToolWindowManagerListener.TOPIC, object : ToolWindowManagerListener {
             override fun stateChanged(toolWindowManager: ToolWindowManager) {
                 try {
-                    if (isInitializationCompleted && !currentlyRunning && (internalExecution || toolWindowManager.activeToolWindowId == PRISMA_CODE_SECUTIRY_TOOL_WINDOW_ID)) {
+                    if (isInitializationCompleted && !currentlyRunning && (internalExecution || toolWindowManager.activeToolWindowId == PRISMA_CLOUD_TOOL_WINDOW_ID)) {
                         internalExecution = false
                         currentlyRunning = true
-                        val selectedContent = toolWindowManager.getToolWindow(PRISMA_CODE_SECUTIRY_TOOL_WINDOW_ID)?.contentManager?.selectedContent
+                        val selectedContent = toolWindowManager.getToolWindow(PRISMA_CLOUD_TOOL_WINDOW_ID)?.contentManager?.selectedContent
                                 ?: return
 
                         refreshCounts(toolWindowManager, project)
@@ -113,7 +113,7 @@ class CheckovToolWindowFactory : ToolWindowFactory {
     }
 
     private fun refreshCounts(toolWindowManager: ToolWindowManager, project: Project) {
-        toolWindowManager.getToolWindow(PRISMA_CODE_SECUTIRY_TOOL_WINDOW_ID)?.contentManager?.contents?.forEach { content ->
+        toolWindowManager.getToolWindow(PRISMA_CLOUD_TOOL_WINDOW_ID)?.contentManager?.contents?.forEach { content ->
             val checkovTabContent = content as CheckovTabContent
             checkovTabContent.displayName = getTabName(project, checkovTabContent.id, checkovTabContent.category)
         }

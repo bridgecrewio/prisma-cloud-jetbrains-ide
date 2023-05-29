@@ -3,6 +3,10 @@ package com.bridgecrew.ui
 import com.bridgecrew.results.BaseCheckovResult
 import com.bridgecrew.ui.rightPanel.CheckovErrorRightPanel
 import com.bridgecrew.utils.createGridRowCol
+import com.intellij.icons.AllIcons
+import com.intellij.ide.DataManager
+import com.intellij.openapi.actionSystem.ActionPlaces
+import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
@@ -13,6 +17,7 @@ import com.intellij.uiDesigner.core.GridLayoutManager
 import com.intellij.util.ui.UIUtil
 import com.intellij.util.ui.JBUI
 import icons.CheckovIcons
+import com.intellij.openapi.actionSystem.ActionManager
 import java.awt.*
 import javax.swing.*
 
@@ -36,28 +41,7 @@ class CheckovToolWindowDescriptionPanel(val project: Project) : SimpleToolWindow
     }
 
     fun noErrorsPanel(): JPanel {
-        val mainPanel = JPanel()
-        mainPanel.background = UIUtil.getEditorPaneBackground()
-        val imagePanel = JPanel()
-        imagePanel.layout = BoxLayout(imagePanel, BoxLayout.Y_AXIS)
-        imagePanel.background = UIUtil.getEditorPaneBackground()
-        val status = JLabel("Great Job - Your Code Is Valid!")
-        status.alignmentX = CENTER_ALIGNMENT
-        status.font = Font(status.font.name, Font.BOLD, 14)
-        val iconLabel = JLabel(CheckovIcons.prismaIcon)
-        iconLabel.alignmentX = CENTER_ALIGNMENT
-        val prismaText = JLabel("Prisma Cloud")
-        prismaText.alignmentX = CENTER_ALIGNMENT
-        imagePanel.add(Box.createRigidArea(Dimension(0, 50)))
-        imagePanel.add(Box.createVerticalGlue())
-        imagePanel.add(status)
-        imagePanel.add(Box.createRigidArea(Dimension(0, 15)))
-        imagePanel.add(iconLabel)
-        imagePanel.add(Box.createRigidArea(Dimension(0, 10)))
-        imagePanel.add(prismaText)
-        imagePanel.add(Box.createVerticalGlue())
-        mainPanel.add(imagePanel, BorderLayout.CENTER)
-        return mainPanel
+        return createStatusScreenWithIcon("Great Job - Your Code Is Valid!")
     }
 
     fun initializationDescription(): JPanel {
@@ -74,18 +58,7 @@ class CheckovToolWindowDescriptionPanel(val project: Project) : SimpleToolWindow
     }
 
     fun preScanDescription(): JPanel {
-        descriptionPanel = JPanel()
-        descriptionPanel.layout = GridLayoutManager(2, 1, Insets(0, 0, 0, 0), -1, -1)
-        descriptionPanel.background = UIUtil.getEditorPaneBackground() ?: descriptionPanel.background
-        val imagePanel = createImagePanel()
-        val scanningPanel = JPanel()
-        scanningPanel.layout = GridLayoutManager(2, 1, Insets(0, 0, 0, 0), -1, -1)
-        scanningPanel.add(JLabel("Prisma Cloud is ready to run."),  createGridRowCol(0,0,GridConstraints.ANCHOR_NORTH))
-        scanningPanel.background = UIUtil.getEditorPaneBackground() ?: scanningPanel.background
-        scanningPanel.add(JLabel("Scanning would start automatically once a file is opened or saved"), createGridRowCol(1,0,GridConstraints.ANCHOR_NORTH))
-        descriptionPanel.add(imagePanel, createGridRowCol(0,0,GridConstraints.ANCHOR_NORTHEAST))
-        descriptionPanel.add(scanningPanel, createGridRowCol(1,0,GridConstraints.ANCHOR_NORTH))
-        return descriptionPanel
+        return createStatusScreenWithIcon("Let's Scan Your Project For Code Security Issues", true)
     }
 
     fun configurationDescription(): JPanel {
@@ -153,4 +126,48 @@ class CheckovToolWindowDescriptionPanel(val project: Project) : SimpleToolWindow
         return imagePanel
     }
 
+    private fun createStatusScreenWithIcon(text: String, isAddScan: Boolean = false): JPanel {
+        val mainPanel = JPanel()
+        mainPanel.background = UIUtil.getEditorPaneBackground()
+        val imagePanel = JPanel()
+        imagePanel.layout = BoxLayout(imagePanel, BoxLayout.Y_AXIS)
+        imagePanel.background = UIUtil.getEditorPaneBackground()
+        val status = JLabel(text)
+        status.alignmentX = CENTER_ALIGNMENT
+        status.font = Font(status.font.name, Font.BOLD, 14)
+        val iconLabel = JLabel(CheckovIcons.prismaIcon)
+        iconLabel.alignmentX = CENTER_ALIGNMENT
+        val prismaText = JLabel("Prisma Cloud")
+        prismaText.alignmentX = CENTER_ALIGNMENT
+        imagePanel.add(Box.createRigidArea(Dimension(0, 50)))
+        imagePanel.add(Box.createVerticalGlue())
+        imagePanel.add(status)
+        imagePanel.add(Box.createRigidArea(Dimension(0, 15)))
+
+        if (isAddScan) {
+            val scanButton = createScanButton()
+            imagePanel.add(scanButton)
+            imagePanel.add(Box.createRigidArea(Dimension(0, 15)))
+        }
+
+        imagePanel.add(iconLabel)
+        imagePanel.add(Box.createRigidArea(Dimension(0, 10)))
+        imagePanel.add(prismaText)
+        imagePanel.add(Box.createVerticalGlue())
+        mainPanel.add(imagePanel, BorderLayout.CENTER)
+        return mainPanel
+    }
+
+    private fun createScanButton(): JButton {
+        val scanButton = JButton("Scan")
+        scanButton.alignmentX = CENTER_ALIGNMENT
+        scanButton.addActionListener { e ->
+            val scanAction = ActionManager.getInstance().getAction("com.bridgecrew.ui.actions.CheckovScanAction")
+            val dataContext = DataManager.getInstance().getDataContext(scanButton)
+            val action = AnActionEvent.createFromDataContext(ActionPlaces.UNKNOWN, null, dataContext)
+            action.presentation.icon = AllIcons.Actions.Execute
+            scanAction.actionPerformed(action)
+        }
+        return scanButton
+    }
 }
