@@ -149,7 +149,7 @@ class CheckovScanService: Disposable {
     }
 
     private fun generateCheckovCommand(execCommand: List<String>): GeneralCommandLine {
-        val pluginVersion = PluginManagerCore.getPlugin(PluginId.getId("com.github.bridgecrewio.checkov"))?.version
+        val pluginVersion = PluginManagerCore.getPlugin(PluginId.getId("com.github.bridgecrewio.prismacloud"))?.version
                 ?: "UNKNOWN"
         val prismaUrl = settings?.prismaURL
 

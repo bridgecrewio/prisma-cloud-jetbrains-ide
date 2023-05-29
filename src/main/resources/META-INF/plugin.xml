@@ -1,5 +1,5 @@
 <idea-plugin>
-    <id>com.github.bridgecrewio.checkov</id>
+    <id>com.github.bridgecrewio.prismacloud</id>
     <name>Prisma Cloud</name>
     <vendor email="info@bridgecrew.io">PrismaCloud</vendor>
     <description><![CDATA[
