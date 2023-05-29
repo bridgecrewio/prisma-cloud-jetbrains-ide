@@ -12,7 +12,7 @@ class DockerCheckovScanCommandsService(project: Project) : CheckovScanCommandsSe
     private val volumeCertPath = "/usr/lib/ssl/cert.pem"
     override fun getCheckovRunningCommandByServiceType(outputFilePath: String): ArrayList<String> {
         val pluginVersion =
-                PluginManagerCore.getPlugin(PluginId.getId("com.github.bridgecrewio.checkov"))?.version ?: "UNKNOWN"
+                PluginManagerCore.getPlugin(PluginId.getId("com.github.bridgecrewio.prismacloud"))?.version ?: "UNKNOWN"
 
         val dockerCommand = arrayListOf("docker", "run", "--rm", "-a", "stdout", "-a", "stderr", "--env", "BC_SOURCE=jetbrains", "--env", "BC_SOURCE_VERSION=$pluginVersion", "--env", "LOG_LEVEL=DEBUG")
         val prismaUrl = settings?.prismaURL
