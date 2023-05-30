@@ -7,6 +7,8 @@ import icons.CheckovIcons
 import java.awt.Color
 import javax.swing.Icon
 
+val separatorColorDark: Color = Color.decode("#323232")
+val separatorColorLight: Color = Color.decode("#D1D1D1")
 
 val FIX_COLOR_DARK: Color = Color.decode("#49544A")
 val FIX_COLOR_LIGHT: Color = Color.decode("#49544A")

@@ -35,8 +35,9 @@ abstract class DictionaryExtraInfoPanel : JPanel() {
     }
 
     fun createDictionaryLayout(){
+        val dictionaryFont = Font("SF Pro Text", Font.BOLD, 12)
         val maxKeyWidth = fieldsMap.keys.maxByOrNull { it.length }?.let {
-            getFontMetrics(font).stringWidth(it)
+            getFontMetrics(dictionaryFont).stringWidth(it)
         } ?: 0
 
         val keyConstraints = GridBagConstraints().apply {
@@ -52,7 +53,7 @@ abstract class DictionaryExtraInfoPanel : JPanel() {
             insets = JBUI.insetsBottom(10)
         }
 
-        val boldFont = Font(font.name, Font.BOLD, font.size)
+        val boldFont = Font(dictionaryFont.name, Font.BOLD, dictionaryFont.size)
 
         for ((key, value) in fieldsMap) {
             val isEmptyVal = (value == null || value.toString().isEmpty())
@@ -64,6 +65,7 @@ abstract class DictionaryExtraInfoPanel : JPanel() {
             keyLabel.preferredSize = Dimension(maxKeyWidth + 50, keyLabel.preferredSize.height)
             add(keyLabel, keyConstraints)
             val valueLabel = JLabel(valueAsString)
+            valueLabel.font = dictionaryFont.deriveFont(Font.PLAIN)
             valueLabel.toolTipText = valueAsString
             add(valueLabel, valueConstraints)
         }
