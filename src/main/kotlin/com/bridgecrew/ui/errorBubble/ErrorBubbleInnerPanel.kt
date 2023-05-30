@@ -17,8 +17,8 @@ class ErrorBubbleInnerPanel(val result: BaseCheckovResult, private val vulnerabi
     companion object {
         const val MIN_INNER_PANEL_HEIGHT = 75
         const val PANEL_HEIGHT = 200
-        const val PANEL_WIDTH = 500
-        const val MAX_TITLE_TEXT_WIDTH = 380
+        const val PANEL_WIDTH = 550
+        const val MAX_TITLE_TEXT_WIDTH = 420
     }
 
     init {
