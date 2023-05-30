@@ -5,6 +5,7 @@ import com.bridgecrew.ui.buttons.SuppressionButton
 import com.bridgecrew.utils.*
 import com.intellij.util.ui.UIUtil
 import java.awt.Dimension
+import java.awt.Font
 import java.awt.GridBagLayout
 import javax.swing.*
 
@@ -18,9 +19,12 @@ open class CheckovDescriptionPanelTop(val result: BaseCheckovResult) : JPanel() 
     }
 
     fun createTitleAndIcon(title: String, severity: Severity): JLabel {
+        val font = Font("SF Pro Text", Font.BOLD, 13)
         val titleLabel = JLabel(title, getSeverityIconBySeverity(severity), SwingConstants.LEFT)
         titleLabel.toolTipText = title
         titleLabel.preferredSize = Dimension(600, 30)
+        titleLabel.font = font.deriveFont(Font.BOLD)
+        titleLabel.text = "<html><div style='line-height: 16px;'>" + titleLabel.text + "</div></html>"
         return titleLabel
     }
 
