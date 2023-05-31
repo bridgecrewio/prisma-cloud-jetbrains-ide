@@ -5,7 +5,11 @@ import com.bridgecrew.ui.actions.FixAction
 import com.bridgecrew.ui.actions.FocusOnFileInTree
 import com.bridgecrew.ui.buttons.CheckovLinkButton
 import com.bridgecrew.ui.buttons.DocumentationButton
+import com.bridgecrew.ui.buttons.SuppressionButton
 import com.bridgecrew.utils.CheckovUtils
+import com.bridgecrew.utils.FileType
+import com.bridgecrew.utils.SUPPRESSION_BUTTON_ALLOWED_FILE_TYPES
+import com.bridgecrew.utils.getFileType
 import icons.CheckovIcons
 import java.awt.Dimension
 import javax.swing.*
@@ -15,6 +19,7 @@ class ErrorBubbleActionsPanel(val result: BaseCheckovResult) : JPanel() {
     init {
         layout = BoxLayout(this, BoxLayout.X_AXIS)
         addFixIfNeeded()
+        addSuppressIfNeeded()
         addConsoleButton()
         addDocumentationIfNeeded()
         addLogo()
@@ -26,6 +31,13 @@ class ErrorBubbleActionsPanel(val result: BaseCheckovResult) : JPanel() {
             val fixButton = CheckovLinkButton("Fix")
             fixButton.addActionListener(FixAction(fixButton, result))
             add(fixButton)
+        }
+    }
+
+    private fun addSuppressIfNeeded() {
+        val fileType: FileType = getFileType(result.filePath)
+        if (SUPPRESSION_BUTTON_ALLOWED_FILE_TYPES.contains(fileType)) {
+            add(SuppressionButton(result))
         }
     }
 
