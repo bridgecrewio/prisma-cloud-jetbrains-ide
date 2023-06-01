@@ -12,7 +12,7 @@ class IacCheckovResult(
         absoluteFilePath: String,
         fileLineRange: List<Int>,
         fixDefinition: String?,
-        codeBlock: List<List<Object>>,
+        codeBlock: List<List<Any>>,
         val checkName: String
         ) :
         BaseCheckovResult(
@@ -28,4 +28,4 @@ class IacCheckovResult(
                 absoluteFilePath,
                 fileLineRange,
                 fixDefinition,
-                codeBlock) {}
+                codeBlock)

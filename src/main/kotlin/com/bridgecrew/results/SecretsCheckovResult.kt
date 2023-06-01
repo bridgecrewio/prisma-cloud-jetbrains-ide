@@ -12,7 +12,7 @@ class SecretsCheckovResult(
         absoluteFilePath: String,
         fileLineRange: List<Int>,
         fixDefinition: String?,
-        codeBlock: List<List<Object>>,
+        codeBlock: List<List<Any>>,
         val checkName: String) :
         BaseCheckovResult(
                 category = Category.SECRETS,
@@ -27,4 +27,4 @@ class SecretsCheckovResult(
                 absoluteFilePath,
                 fileLineRange,
                 fixDefinition,
-                codeBlock) {}
+                codeBlock)

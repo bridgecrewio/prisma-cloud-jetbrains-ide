@@ -8,7 +8,7 @@ import org.apache.commons.lang.StringUtils
 
 abstract class CheckovScanCommandsService(val project: Project) {
     protected val settings = CheckovSettingsState().getInstance()
-    var gitRepo = getRepoName()
+    private var gitRepo = getRepoName()
 
     fun getExecCommandForSingleFile(filePath: String, outputFilePath: String): ArrayList<String> {
         val cmds = ArrayList<String>()

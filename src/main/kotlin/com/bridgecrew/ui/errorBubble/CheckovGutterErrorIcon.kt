@@ -13,7 +13,6 @@ import com.intellij.openapi.editor.markup.*
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.util.ui.EmptyIcon
 import icons.CheckovIcons
-import java.awt.Color
 import java.awt.Point
 import javax.swing.Icon
 
@@ -59,9 +58,9 @@ class CheckovGutterErrorIcon(val results: List<BaseCheckovResult>, val offset: I
                         val rangeHighlighter: RangeHighlighter = markup.addLineHighlighter(firstRow, HighlighterLayer.ERROR, textAttributes)
 
                         val screen = editor.contentComponent.locationOnScreen.let { Point(it.x + start.x, it.y + start.y) }
-                        ApplicationManager.getApplication().invokeLater(Runnable {
+                        ApplicationManager.getApplication().invokeLater {
                             CheckovErrorBubble(results, screen, markup, rangeHighlighter)
-                        })
+                        }
                     }
                 }
             }

@@ -1,8 +1,5 @@
 package com.bridgecrew.utils
 
-const val GUIDELINES_TITLE = "View Guidelines"
-const val CUSTOM_GUIDELINES_TITLE = "Guidelines:"
-
 object PANELTYPE {
     const val AUTO_CHOOSE_PANEL = 0
     const val CHECKOV_FILE_SCAN_FINISHED = 1
@@ -24,7 +21,7 @@ val FULL_SCAN_EXCLUDED_PATHS = arrayListOf("node_modules")
 const val FULL_SCAN_STATE_FILE = "full_scan_state"
 
 val DESIRED_NUMBER_OF_FRAMEWORK_FOR_FULL_SCAN = FULL_SCAN_FRAMEWORKS.size
-val DESIRED_NUMBER_OF_SINGLE_FILE_SCANS = 10
+const val DESIRED_NUMBER_OF_SINGLE_FILE_SCANS = 10
 
 enum class FileType {
     JSON,

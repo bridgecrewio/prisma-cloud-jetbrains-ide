@@ -28,8 +28,8 @@ repositories {
 }
 dependencies {
     implementation("com.beust:klaxon:5.6")
-    implementation("com.google.code.gson:gson:2.8.9")
-    implementation("org.json:json:20220320")
+    implementation("com.google.code.gson:gson:2.10.1")
+    implementation("org.json:json:20230227")
     implementation("commons-io:commons-io:2.11.0")
     implementation("io.github.java-diff-utils:java-diff-utils:4.12")
 }

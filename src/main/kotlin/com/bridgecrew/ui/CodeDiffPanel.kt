@@ -12,7 +12,7 @@ import javax.swing.*
 import javax.swing.text.SimpleAttributeSet
 import javax.swing.text.StyleConstants
 
-class CodeDiffPanel(val result: BaseCheckovResult, private val isErrorBubble: Boolean): JPanel() {
+class CodeDiffPanel(val result: BaseCheckovResult, isErrorBubble: Boolean): JPanel() {
 
     private val LOG = logger<CodeDiffPanel>()
     var hasDiff = false
@@ -27,7 +27,7 @@ class CodeDiffPanel(val result: BaseCheckovResult, private val isErrorBubble: Bo
                 .inlineDiffByWord(true)
                 .build()
 
-        var oldCode = buildCodeBlock()
+        val oldCode = buildCodeBlock()
         var newCode = buildFixLines()
         if(!isErrorBubble){
             newCode=buildFix()
@@ -79,7 +79,7 @@ class CodeDiffPanel(val result: BaseCheckovResult, private val isErrorBubble: Bo
     }
 
     private fun buildCodeBlock(): ArrayList<String> {
-        var codeBlock = arrayListOf<String>()
+        val codeBlock = arrayListOf<String>()
             result.codeBlock.forEach { block ->
                 var currentLine = (block[0] as Double).toInt()
                 val code = block[1]
@@ -90,7 +90,7 @@ class CodeDiffPanel(val result: BaseCheckovResult, private val isErrorBubble: Bo
     }
 
     private fun buildFix(): ArrayList<String> {
-        var fixWithRowNumber = arrayListOf<String>()
+        val fixWithRowNumber = arrayListOf<String>()
         if (result.codeBlock.isNotEmpty()) {
             var currentLine = (result.codeBlock[0][0] as Double).toInt()
             result.fixDefinition?.split("\n")?.forEach { codeRow ->
@@ -102,7 +102,7 @@ class CodeDiffPanel(val result: BaseCheckovResult, private val isErrorBubble: Bo
     }
 
     private fun buildFixLines(): ArrayList<String> {
-        var fixWithRowNumber = arrayListOf<String>()
+        val fixWithRowNumber = arrayListOf<String>()
         if (result.codeBlock.isNotEmpty()) {
             var currentLine = (result.codeBlock[0][0] as Double).toInt()
             result.fixDefinition?.split("\n")?.forEach { codeRow ->

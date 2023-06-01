@@ -144,7 +144,7 @@ class InitializationService(private val project: Project) {
         for (line in outputLine) {
             if (line.trim().contains("Location: ")) {
                 LOG.info("Python location is  $line")
-                val sitePackagePath = line.split(' ')[1];
+                val sitePackagePath = line.split(' ')[1]
                 project.service<CliService>().checkovPath = Paths.get(Paths.get(sitePackagePath).parent.toString(), "Scripts", "checkov.cmd").toString()
             }
         }

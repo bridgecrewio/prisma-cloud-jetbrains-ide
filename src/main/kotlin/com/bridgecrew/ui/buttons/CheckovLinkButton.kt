@@ -3,7 +3,7 @@ package com.bridgecrew.ui.buttons
 import java.awt.Cursor
 import javax.swing.JButton
 
-open class CheckovLinkButton(private var userText: String): JButton() {
+open class CheckovLinkButton(userText: String): JButton() {
 
     init {
         this.text = userText

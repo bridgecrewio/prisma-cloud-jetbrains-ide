@@ -52,7 +52,7 @@ class CheckovUtils {
 
             val vulnerabilityResource = generateVulnerabilityResourceByPackage(vulnerabilityDetails.root_package_name, vulnerabilityDetails.root_package_version, "")
 
-            if (!vulnerabilityResource.isEmpty())
+            if (vulnerabilityResource.isNotEmpty())
                 return vulnerabilityResource
 
             return generateVulnerabilityResourceByPackage(vulnerabilityDetails.package_name, vulnerabilityDetails.package_version, result.resource)
@@ -164,18 +164,6 @@ class CheckovUtils {
             }
 
             return result.name
-        }
-
-        fun createLicenseDescription(result: BaseCheckovResult): String {
-            if(result.id == "BC_LIC_1") {
-                return VIOLATED_LICENSES_DESCRIPTION
-            }
-
-            if (result.id == "BC_LIC_2"){
-                return UNKNOWN_LICENSES_DESCRIPTION
-            }
-
-            return ""
         }
     }
 }

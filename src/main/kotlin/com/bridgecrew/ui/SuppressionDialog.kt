@@ -15,7 +15,7 @@ class SuppressionDialog: DialogWrapper(true) {
         init()
     }
 
-    override fun createCenterPanel(): JComponent? {
+    override fun createCenterPanel(): JComponent {
         val panel = JPanel(BorderLayout())
         panel.preferredSize = Dimension(400, super.getPreferredSize().height)
         panel.border = BorderFactory.createEmptyBorder(20, 10, 20, 10)

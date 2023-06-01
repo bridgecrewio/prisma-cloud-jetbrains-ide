@@ -245,7 +245,7 @@ class CheckovToolWindowManagerPanel(val project: Project) : SimpleToolWindowPane
                 }
 
                 if (shouldScanFile(events[0].file!!)) {
-                    project.service<CheckovScanService>().scanFile(events[0].file!!.path, project);
+                    project.service<CheckovScanService>().scanFile(events[0].file!!.path, project)
                 }
             }
         })

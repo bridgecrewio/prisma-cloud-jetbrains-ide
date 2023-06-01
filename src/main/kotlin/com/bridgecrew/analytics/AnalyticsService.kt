@@ -15,7 +15,7 @@ class AnalyticsService(val project: Project) {
 
     private val LOG = logger<AnalyticsService>()
 
-    var fullScanData: FullScanAnalyticsData? = null
+    private var fullScanData: FullScanAnalyticsData? = null
     private var fullScanNumber = 0
 
     var wereFullScanResultsDisplayed = false
@@ -130,7 +130,7 @@ class AnalyticsService(val project: Project) {
         val seconds = TimeUnit.MILLISECONDS.toSeconds(endTime.time - startTime.time) - (minutes * 60)
         val secondsString = if (seconds < 10) {
             "0${seconds}"
-        } else "${seconds}"
+        } else "$seconds"
         return "${minutes}:${secondsString}"
     }
 

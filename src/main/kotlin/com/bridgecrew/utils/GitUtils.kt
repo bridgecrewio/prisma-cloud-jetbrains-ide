@@ -25,7 +25,7 @@ fun extractRepoNameFromOutput(output: String, exitCode: Int, project: Project) {
         var result: String? = null
         for (line in lines) {
             if (firstLine == null) {
-                firstLine = line;
+                firstLine = line
             }
 
             if (line.startsWith("origin")) {
@@ -40,10 +40,10 @@ fun extractRepoNameFromOutput(output: String, exitCode: Int, project: Project) {
         }
         // if we're here, then there is no 'origin', so just take the first line as a default (regardless of how many upstreams there happen to be)
         if (firstLine != null && !firstLine.contains("fatal: not a git repository")) {
-            val repoUrl = firstLine.split('\t')[1];
-            val repoName = parseRepoName(repoUrl);
+            val repoUrl = firstLine.split('\t')[1]
+            val repoName = parseRepoName(repoUrl)
             if (repoName != null) {
-                result = repoName;
+                result = repoName
             }
         }
 
@@ -73,7 +73,7 @@ fun parseRepoName(repoUrl: String): String? {
     val priorColon = repoUrl.lastIndexOf("!", lastSlash - 1)
 
     if (priorSlash == -1 && priorColon == -1) {
-        return null;
+        return null
     }
 
     return repoUrl.substring(maxOf(priorSlash, priorColon) + 1, repoUrl.lastIndexOf(".git"))

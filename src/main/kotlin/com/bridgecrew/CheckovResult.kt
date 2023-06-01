@@ -35,7 +35,7 @@ data class CheckovResult(
         val short_description: String,
         val vulnerability_details: VulnerabilityDetails?,
         val guideline: String = "\"No Guide\")",
-        val code_block: List<List<Object>>,
+        val code_block: List<List<Any>>,
         var check_type: String,
         val fixed_definition: String = ""
 )

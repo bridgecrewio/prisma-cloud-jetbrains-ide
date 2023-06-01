@@ -16,7 +16,7 @@ import java.io.File
 class CheckovErrorHandlerService(val project: Project) {
     private val LOG = logger<CheckovErrorHandlerService>()
 
-    fun notifyAboutScanError(scanTaskResult: ScanTaskResult, dataSourceValue: String, error: Exception, scanSourceType: CheckovScanService.ScanSourceType) {
+    private fun notifyAboutScanError(scanTaskResult: ScanTaskResult, dataSourceValue: String, error: Exception, scanSourceType: CheckovScanService.ScanSourceType) {
         try {
             val dataSourceValueCleaned = if (scanSourceType == CheckovScanService.ScanSourceType.FILE) extractFileNameFromPath(dataSourceValue) else dataSourceValue
             val errorMessagePrefix = if (error.message != null) {

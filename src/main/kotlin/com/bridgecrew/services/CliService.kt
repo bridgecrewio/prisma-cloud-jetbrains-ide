@@ -13,6 +13,7 @@ import com.intellij.openapi.progress.Task
 import com.intellij.openapi.project.Project
 import java.nio.charset.Charset
 import javax.swing.SwingUtilities
+import kotlin.reflect.KFunction3
 
 private val LOG = logger<CliService>()
 
@@ -22,10 +23,10 @@ class CliService {
     var checkovVersion: String = ""
 
     fun run(
-        commands: ArrayList<String>,
-        project: Project,
-        onSuccessFunction: (output: String, exitCode: Int, project: Project) -> Unit,
-        onFailureFunction: ((output: String, exitCode: Int, project: Project) -> Unit)? =  null
+            commands: ArrayList<String>,
+            project: Project,
+            onSuccessFunction: KFunction3<String, Int, Project, Unit>,
+            onFailureFunction: ((output: String, exitCode: Int, project: Project) -> Unit)? =  null
         ) {
         val commandToPrint = commands.joinToString(" ")
         LOG.info("Running command: $commandToPrint")
@@ -33,7 +34,7 @@ class CliService {
 
             val generalCommandLine = GeneralCommandLine(commands)
             generalCommandLine.charset = Charset.forName("UTF-8")
-            generalCommandLine.setWorkDirectory(project.getBasePath())
+            generalCommandLine.setWorkDirectory(project.basePath)
 
             val processHandler: ProcessHandler = OSProcessHandler(generalCommandLine)
             val myBackgroundable =
