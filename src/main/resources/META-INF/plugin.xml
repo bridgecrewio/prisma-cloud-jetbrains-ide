@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>com.github.bridgecrewio.prismacloud</id>
     <name>Prisma Cloud</name>
-    <vendor email="info@bridgecrew.io">PrismaCloud</vendor>
+    <vendor email="info@bridgecrew.io">prismacloud</vendor>
     <description><![CDATA[
     Prevent cloud misconfigurations during build-time for Terraform,
     Cloudformation, Kubernetes, Serverless framework and other
