@@ -18,6 +18,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 import javax.swing.JButton
+import com.bridgecrew.settings.CheckovGlobalState
 
 class FixAction(private val buttonInstance: JButton, val result: BaseCheckovResult) : ActionListener {
 
@@ -26,22 +27,27 @@ class FixAction(private val buttonInstance: JButton, val result: BaseCheckovResu
         val project = dataContext.getData("project") as Project
         val connection = project.messageBus.connect()
         val inScanMsg = "Scan in progress. Please wait for completion before retrying."
+        buttonInstance.isEnabled = !CheckovGlobalState.scanInProgress
         connection.subscribe(CheckovScanListener.SCAN_TOPIC, object : CheckovScanListener {
             override fun fileScanningStarted(){
                 buttonInstance.isEnabled = false
                 buttonInstance.toolTipText = inScanMsg
+                CheckovGlobalState.scanInProgress = true
             }
             override fun projectScanningStarted(){
                 buttonInstance.isEnabled = false
                 buttonInstance.toolTipText = inScanMsg
+                CheckovGlobalState.scanInProgress = true
             }
             override fun scanningFinished(scanSourceType: CheckovScanService.ScanSourceType){
                 buttonInstance.isEnabled = true
                 buttonInstance.toolTipText = ""
+                CheckovGlobalState.scanInProgress = false
             }
             override fun fullScanFailed(){
                 buttonInstance.isEnabled = true
                 buttonInstance.toolTipText = ""
+                CheckovGlobalState.scanInProgress = false
             }
         })
 

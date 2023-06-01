@@ -84,7 +84,6 @@ class CodeDiffPanel(val result: BaseCheckovResult, isErrorBubble: Boolean): JPan
                 var currentLine = (block[0] as Double).toInt()
                 val code = block[1]
                 codeBlock += "$currentLine\t$code".replace("\n", "")
-                currentLine++
             }
 
         return codeBlock
