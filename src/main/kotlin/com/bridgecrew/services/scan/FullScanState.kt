@@ -31,9 +31,9 @@ class FullScanStateService(val project: Project) {
         }
 
     var frameworkScansFinishedWithErrors = mutableMapOf<String, ScanTaskResult>()
-    var invalidFilesSize: Int = 0
-    var frameworkScansFinishedWithNoVulnerabilities = mutableSetOf<String>()
-    var unscannedFrameworks = mutableSetOf<String>()
+    private var invalidFilesSize: Int = 0
+    private var frameworkScansFinishedWithNoVulnerabilities = mutableSetOf<String>()
+    private var unscannedFrameworks = mutableSetOf<String>()
     var totalPassedCheckovChecks: Int = 0
     var totalFailedCheckovChecks: Int = 0
 
@@ -88,7 +88,7 @@ class FullScanStateService(val project: Project) {
         stateFile!!.writeText(resultsAsJson.toString())
     }
 
-    fun returnToPreviousState() {
+    private fun returnToPreviousState() {
         try {
             val stateContent = stateFile!!.readText()
             val resultsListType = object : TypeToken<List<BaseCheckovResult>>() {}.type
@@ -140,7 +140,7 @@ class FullScanStateService(val project: Project) {
         fullScanFinishedFrameworksNumber++
     }
 
-    fun displayNotificationForFullScanSummary() {
+    private fun displayNotificationForFullScanSummary() {
         val totalErrors = project.service<ResultsCacheService>().checkovResults.size
         var message = "Prisma Cloud has detected $totalErrors code security issues in your project for $DESIRED_NUMBER_OF_FRAMEWORK_FOR_FULL_SCAN frameworks scanned.\n" +
                 generateErrorMessageForFullScanSummary() +
@@ -180,11 +180,11 @@ class FullScanStateService(val project: Project) {
         return fullScanFinishedFrameworksNumber == DESIRED_NUMBER_OF_FRAMEWORK_FOR_FULL_SCAN
     }
 
-    fun wereAllFrameworksFinishedWithErrors(): Boolean {
+    private fun wereAllFrameworksFinishedWithErrors(): Boolean {
         return frameworkScansFinishedWithErrors.size == DESIRED_NUMBER_OF_FRAMEWORK_FOR_FULL_SCAN
     }
 
-    enum class State() {
+    enum class State {
         FIRST_TIME_SCAN,
         SUCCESSFUL_SCAN,
         FAILED_SCAN

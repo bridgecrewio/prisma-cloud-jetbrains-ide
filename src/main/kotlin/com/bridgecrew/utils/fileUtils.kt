@@ -55,11 +55,11 @@ fun isUrl(url: String?): Boolean {
     if (url.isNullOrEmpty()) {
         return false
     }
-    try {
+    return try {
         URL(url)
-        return true
+        true
     } catch (e: Throwable) {
-        return false
+        false
     }
 }
 

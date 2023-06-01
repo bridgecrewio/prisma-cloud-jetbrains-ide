@@ -114,7 +114,7 @@ abstract class ScanTask(project: Project, title: String, private val sourceName:
             debugOutputFile.delete()
     }
 
-    class FrameworkScanTask(project: Project, title: String, val framework: String, private val processHandler: ProcessHandler, checkovResultOutputFile: File) :
+    class FrameworkScanTask(project: Project, title: String, private val framework: String, private val processHandler: ProcessHandler, checkovResultOutputFile: File) :
             ScanTask(project, title, framework, processHandler, checkovResultOutputFile), ProjectManagerListener {
 
         override fun run(indicator: ProgressIndicator) {
@@ -147,7 +147,7 @@ abstract class ScanTask(project: Project, title: String, private val sourceName:
             }
         }
 
-        fun checkOnCancel() {
+        private fun checkOnCancel() {
             if (project.service<FullScanStateService>().onCancel) {
                 throw ProcessCanceledException(Exception("Could not start process on cancel state"))
             }

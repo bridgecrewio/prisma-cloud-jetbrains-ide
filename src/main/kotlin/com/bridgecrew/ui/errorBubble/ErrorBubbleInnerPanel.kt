@@ -12,7 +12,7 @@ import java.awt.*
 import javax.swing.*
 
 
-class ErrorBubbleInnerPanel(val result: BaseCheckovResult, private val vulnerabilityCount: Int, private val index: Int, private val total: Int, private val callback: navigationCallback) : JPanel() {
+class ErrorBubbleInnerPanel(val result: BaseCheckovResult, private val vulnerabilityCount: Int, index: Int, total: Int, callback: navigationCallback) : JPanel() {
 
     companion object {
         const val MIN_INNER_PANEL_HEIGHT = 75
@@ -62,7 +62,7 @@ class ErrorBubbleInnerPanel(val result: BaseCheckovResult, private val vulnerabi
                 if((result as VulnerabilityCheckovResult).rootPackageVersion == null || result.rootPackageFixVersion == null) {
                     buildCenterPanel("No automated fix is available")
                 } else {
-                    val text = "Bump from version ${(result as VulnerabilityCheckovResult).rootPackageVersion} to ${result.rootPackageFixVersion} to fix"
+                    val text = "Bump from version ${result.rootPackageVersion} to ${result.rootPackageFixVersion} to fix"
                     if (vulnerabilityCount > 1) {
                         buildCenterPanel("$text all vulnerabilities")
                     } else {
@@ -78,9 +78,9 @@ class ErrorBubbleInnerPanel(val result: BaseCheckovResult, private val vulnerabi
                         val scroll = JBScrollPane(codeDiffPanel)
                         scroll.border = BorderFactory.createEmptyBorder(0, 30, 0, 0)
                         scroll.alignmentX = Component.LEFT_ALIGNMENT
-                        SwingUtilities.invokeLater(Runnable {
+                        SwingUtilities.invokeLater {
                             scroll.viewport.viewPosition = Point(0, 0)
-                        })
+                        }
                         add(scroll)
                     }else{
                         buildCenterPanel("No automated fix is available")
@@ -95,12 +95,16 @@ class ErrorBubbleInnerPanel(val result: BaseCheckovResult, private val vulnerabi
             }
 
             Category.LICENSES -> {
-                val text = if(result.id == "BC_LIC_1") {
-                    VIOLATED_LICENSES_DESCRIPTION
-                } else if(result.id == "BC_LIC_2") {
-                    UNKNOWN_LICENSES_DESCRIPTION
-                } else {
-                    "No description available for policy ${result.id}"
+                val text = when (result.id) {
+                    "BC_LIC_1" -> {
+                        VIOLATED_LICENSES_DESCRIPTION
+                    }
+                    "BC_LIC_2" -> {
+                        UNKNOWN_LICENSES_DESCRIPTION
+                    }
+                    else -> {
+                        "No description available for policy ${result.id}"
+                    }
                 }
                 buildCenterPanel(text)
             }
@@ -108,7 +112,7 @@ class ErrorBubbleInnerPanel(val result: BaseCheckovResult, private val vulnerabi
     }
 
     private fun buildCenterPanel(text: String) {
-        val centerPanel = ErrorBubbleCenterPanel(result, text, total)
+        val centerPanel = ErrorBubbleCenterPanel(text)
         centerPanel.alignmentX = Component.LEFT_ALIGNMENT
         centerPanel.border = BorderFactory.createEmptyBorder(0, 30, 0, 0)
         add(centerPanel)

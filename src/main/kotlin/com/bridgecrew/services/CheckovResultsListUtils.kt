@@ -11,7 +11,7 @@ class CheckovResultsListUtils {
     companion object {
         private val checkovResultsComparator: Comparator<BaseCheckovResult> = CheckovResultsComparatorGenerator.generateCheckovResultComparator()
 
-        fun filterResultsByCategories(sourceList: List<BaseCheckovResult>, categories: List<Category>?): List<BaseCheckovResult> {
+        private fun filterResultsByCategories(sourceList: List<BaseCheckovResult>, categories: List<Category>?): List<BaseCheckovResult> {
             if (!categories.isNullOrEmpty()) {
                 return sourceList.filter { baseCheckovResult ->
                     categories.contains(baseCheckovResult.category)
@@ -27,7 +27,7 @@ class CheckovResultsListUtils {
             return sourceList.filter { baseCheckovResult -> selectedCategory == baseCheckovResult.category }
         }
 
-        fun filterResultBySeverities(sourceList: List<BaseCheckovResult>, severities: List<Severity>?): List<BaseCheckovResult> {
+        private fun filterResultBySeverities(sourceList: List<BaseCheckovResult>, severities: List<Severity>?): List<BaseCheckovResult> {
             if (!severities.isNullOrEmpty()) {
                 return sourceList.filter { baseCheckovResult ->
                     severities.contains(baseCheckovResult.severity)

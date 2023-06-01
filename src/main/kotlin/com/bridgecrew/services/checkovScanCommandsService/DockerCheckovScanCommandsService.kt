@@ -22,7 +22,7 @@ class DockerCheckovScanCommandsService(project: Project) : CheckovScanCommandsSe
         }
 
         if (!certPath.isNullOrEmpty()) {
-            var volumeCaFile = "$certPath:$volumeCertPath"
+            val volumeCaFile = "$certPath:$volumeCertPath"
             dockerCommand.addAll(arrayListOf("--volume", volumeCaFile))
         }
 

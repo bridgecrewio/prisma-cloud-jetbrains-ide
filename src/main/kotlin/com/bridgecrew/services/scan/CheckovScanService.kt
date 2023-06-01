@@ -182,7 +182,7 @@ class CheckovScanService: Disposable {
         return if (apiToknIndex >= 0) {
             val firstPos: Int = apiToknIndex + "--bc-api-key".length
             val lastPos: Int = command.indexOf("--repo-id", firstPos)
-            command.substring(0, firstPos).toString() + " **-**-**-** " + command.substring(lastPos)
+            command.substring(0, firstPos) + " **-**-**-** " + command.substring(lastPos)
         } else {
             command
         }

@@ -18,13 +18,12 @@ import com.intellij.util.ui.UIUtil
 import com.intellij.util.ui.JBUI
 import icons.CheckovIcons
 import com.intellij.openapi.actionSystem.ActionManager
+import icons.CheckovIcons.pluginLargeIcon
 import java.awt.*
 import javax.swing.*
 
-private val LOG = logger<CheckovToolWindowDescriptionPanel>()
-
 class CheckovToolWindowDescriptionPanel(val project: Project) : SimpleToolWindowPanel(true, true) {
-    var descriptionPanel: JPanel = JPanel()
+    private var descriptionPanel: JPanel = JPanel()
 
     init {
         initializationDescription()
@@ -46,7 +45,7 @@ class CheckovToolWindowDescriptionPanel(val project: Project) : SimpleToolWindow
 
     fun initializationDescription(): JPanel {
         descriptionPanel = JPanel()
-        descriptionPanel.layout = GridLayoutManager(2, 1, Insets(0, 0, 0, 0), -1, -1)
+        descriptionPanel.layout = GridLayoutManager(2, 1, JBUI.emptyInsets(), -1, -1)
         descriptionPanel.background = UIUtil.getEditorPaneBackground() ?: descriptionPanel.background
         val imagePanel = createImagePanel()
         val scanningPanel = JPanel()
@@ -63,7 +62,7 @@ class CheckovToolWindowDescriptionPanel(val project: Project) : SimpleToolWindow
 
     fun configurationDescription(): JPanel {
         descriptionPanel = JPanel()
-        descriptionPanel.layout = GridLayoutManager(2, 1, Insets(0, 0, 0, 0), -1, -1)
+        descriptionPanel.layout = GridLayoutManager(2, 1, JBUI.emptyInsets(), -1, -1)
         val imagePanel = createImagePanel()
         descriptionPanel.background = UIUtil.getEditorPaneBackground() ?: descriptionPanel.background
         val configPanel = JPanel()
@@ -76,7 +75,7 @@ class CheckovToolWindowDescriptionPanel(val project: Project) : SimpleToolWindow
 
     fun duringScanDescription(description: String): JPanel {
         descriptionPanel = JPanel()
-        descriptionPanel.layout = GridLayoutManager(2, 1, Insets(0, 0, 0, 0), -1, -1)
+        descriptionPanel.layout = GridLayoutManager(2, 1, JBUI.emptyInsets(), -1, -1)
         descriptionPanel.background = UIUtil.getEditorPaneBackground() ?: descriptionPanel.background
         val imagePanel = createImagePanel()
         val scanningPanel = JPanel()
@@ -89,7 +88,7 @@ class CheckovToolWindowDescriptionPanel(val project: Project) : SimpleToolWindow
 
     fun failedScanDescription(): JPanel {
         descriptionPanel = JPanel()
-        descriptionPanel.layout = GridLayoutManager(2, 1, Insets(0, 0, 0, 0), -1, -1)
+        descriptionPanel.layout = GridLayoutManager(2, 1, JBUI.emptyInsets(), -1, -1)
         descriptionPanel.background = UIUtil.getEditorPaneBackground() ?: descriptionPanel.background
         val imagePanel = createImagePanel()
         val scanningPanel = JPanel()
@@ -120,7 +119,7 @@ class CheckovToolWindowDescriptionPanel(val project: Project) : SimpleToolWindow
         val imagePanel = JPanel()
         imagePanel.layout = GridLayoutManager(2, 2, JBUI.emptyInsets(), -1, -1)
         imagePanel.background = UIUtil.getEditorPaneBackground()
-        imagePanel.add(JLabel(IconLoader.getIcon("/icons/plugin_large_icon.svg")), createGridRowCol(0,0, GridConstraints.ANCHOR_CENTER))
+        imagePanel.add(JLabel(pluginLargeIcon), createGridRowCol(0,0, GridConstraints.ANCHOR_CENTER))
         imagePanel.add(JLabel("Prisma Cloud"), createGridRowCol(1,0, GridConstraints.ANCHOR_NORTHEAST))
         imagePanel.add(JLabel("  "), createGridRowCol(0,1, GridConstraints.ANCHOR_NORTHEAST))
         return imagePanel
@@ -161,7 +160,7 @@ class CheckovToolWindowDescriptionPanel(val project: Project) : SimpleToolWindow
     private fun createScanButton(): JButton {
         val scanButton = JButton("Scan")
         scanButton.alignmentX = CENTER_ALIGNMENT
-        scanButton.addActionListener { e ->
+        scanButton.addActionListener {
             val scanAction = ActionManager.getInstance().getAction("com.bridgecrew.ui.actions.CheckovScanAction")
             val dataContext = DataManager.getInstance().getDataContext(scanButton)
             val action = AnActionEvent.createFromDataContext(ActionPlaces.UNKNOWN, null, dataContext)

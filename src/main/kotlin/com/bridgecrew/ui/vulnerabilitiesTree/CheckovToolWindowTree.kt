@@ -30,10 +30,10 @@ import javax.swing.tree.TreePath
 
 
 class CheckovToolWindowTree(
-    val project: Project, val split: JBSplitter, private val descriptionPanel: CheckovToolWindowDescriptionPanel, private val selectedPath: String
+        val project: Project, private val split: JBSplitter, private val descriptionPanel: CheckovToolWindowDescriptionPanel, private val selectedPath: String
 ) : SimpleToolWindowPanel(true, true), Disposable {
     private val resultsPanel = JPanel(BorderLayout())
-    var isTreeEmpty = true
+    private var isTreeEmpty = true
 
     init {
         resultsPanel.background = UIUtil.getEditorPaneBackground() ?: resultsPanel.background
@@ -54,7 +54,7 @@ class CheckovToolWindowTree(
      * Create a tree element from checkovResult list
      * @return Panel which contains a tree element
      */
-    fun createTree(): JPanel {
+    private fun createTree(): JPanel {
         var checkovResults: List<BaseCheckovResult> = project.service<ResultsCacheService>().checkovResults
         checkovResults = CheckovResultsListUtils.filterResultsByCategoriesAndSeverities(checkovResults).toMutableList()
         CheckovResultsListUtils.sortResults(checkovResults)
@@ -88,7 +88,7 @@ class CheckovToolWindowTree(
             }
         }
 
-        expandsFromPathState(tree, CheckovGlobalState!!.expandedDescendants)
+        expandsFromPathState(tree, CheckovGlobalState.expandedDescendants)
 
         tree.addTreeExpansionListener(object : TreeExpansionListener {
             override fun treeExpanded(event: TreeExpansionEvent?) {
@@ -190,7 +190,7 @@ class CheckovToolWindowTree(
         val resultsGroupedByResource: Map<String, List<BaseCheckovResult>> = resultsPerFile.groupBy { it.resource }
         val parentIcon = (fileWithErrorsNode.userObject as CheckovFileTreeNode).getNodeIcon()
         val secretsNodes = mutableListOf<DefaultMutableTreeNode>()
-        var relativeFilePath = (fileWithErrorsNode.userObject as CheckovTreeNode).relativePathNode
+        val relativeFilePath = (fileWithErrorsNode.userObject as CheckovTreeNode).relativePathNode
 
         resultsGroupedByResource.forEach { (resource, results) ->
             val resourceNode = DefaultMutableTreeNode(CheckovResourceTreeNode(resource, parentIcon, "${relativeFilePath}/${resource}"))

@@ -2,7 +2,6 @@ package com.bridgecrew.services
 
 import com.bridgecrew.CheckovResult
 import com.bridgecrew.results.*
-import com.bridgecrew.services.scan.CheckovScanService
 import com.bridgecrew.utils.CheckovUtils
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
@@ -18,10 +17,6 @@ class ResultsCacheService(val project: Project) {
 
     fun getAllCheckovResults(): List<BaseCheckovResult> {
         return this.checkovResults
-    }
-
-    fun addCheckovResult(checkovResult: BaseCheckovResult) {
-        checkovResults.add(checkovResult)
     }
 
     fun addCheckovResultFromFileScan(newCheckovResults: List<CheckovResult>, filePath: String) {
@@ -43,11 +38,6 @@ class ResultsCacheService(val project: Project) {
         checkovResults.clear()
     }
 
-    fun setMockCheckovResultsFromExampleFile() {
-        val inputString: String = javaClass.classLoader.getResource("examples/example-output.json").readText()
-        val checkovResults: List<CheckovResult> = CheckovUtils.extractFailedChecksAndParsingErrorsFromCheckovResult(inputString, "mock - examples/example-output.json").failedChecks
-        setCheckovResultsFromResultsList(checkovResults)
-    }
     fun setCheckovResultsFromResultsList(results: List<CheckovResult>) {
         for (result in results) {
             try {
@@ -55,7 +45,7 @@ class ResultsCacheService(val project: Project) {
                 val checkType = CheckType.valueOf(result.check_type.uppercase())
                 val resource: String = CheckovUtils.extractResource(result, category, checkType)
                 val name: String = getResourceName(result, category)
-                val severity = if (result.severity != null) Severity.valueOf(result.severity.uppercase()) else Severity.UNKNOWN
+                val severity = Severity.valueOf(result.severity.uppercase())
                 val description = if(!result.description.isNullOrEmpty()) result.description else result.short_description
                 val filePath = result.file_abs_path.replace(baseDir, "")
                 val fileAbsPath = if (!result.file_abs_path.contains(baseDir)) Paths.get(baseDir, File.separator, result.file_abs_path).toString() else result.file_abs_path

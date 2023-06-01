@@ -9,8 +9,6 @@ import java.io.InputStream
 
 
 class CheckovRunnerTesting : SimpleToolWindowPanel(false, true) {
-    val gson: Gson = Gson()
-    private val resultsList: ArrayList<CheckovResult> = arrayListOf<CheckovResult>()
     val results: List<String> = mutableListOf("""{
         "check_id": "CKV2_AWS_12",
         "bc_check_id": "BC_AWS_LOGGING_10",
@@ -72,11 +70,8 @@ class CheckovRunnerTesting : SimpleToolWindowPanel(false, true) {
         "guideline": "https://docs.bridgecrew.io/docs/logging_9-enable-vpc-flow-logging"
     }""")
 
-    fun readFileAsLinesUsingUseLines(fileName: String): String{
+    fun readFileAsLinesUsingUseLines(fileName: String): String {
         val inputStream: InputStream = File(fileName).inputStream()
-        val inputString = inputStream.bufferedReader().use { it.readText() }
-        return inputString
+        return inputStream.bufferedReader().use { it.readText() }
     }
-
-
 }

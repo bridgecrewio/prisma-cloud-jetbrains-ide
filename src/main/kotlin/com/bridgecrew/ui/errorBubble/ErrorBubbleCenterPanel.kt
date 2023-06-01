@@ -6,7 +6,7 @@ import java.awt.BorderLayout
 import java.awt.Dimension
 import javax.swing.*
 
-class ErrorBubbleCenterPanel(val result: BaseCheckovResult, private val text: String, private val total: Int) : JPanel() {
+class ErrorBubbleCenterPanel(text: String) : JPanel() {
 
     init {
         layout = BorderLayout()

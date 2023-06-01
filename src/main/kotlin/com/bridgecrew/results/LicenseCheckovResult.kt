@@ -12,7 +12,7 @@ class LicenseCheckovResult(
         absoluteFilePath: String,
         fileLineRange: List<Int>,
         fixDefinition: String?,
-        codeBlock: List<List<Object>>,
+        codeBlock: List<List<Any>>,
         val policy: String?,
         val licenseType: String?,
         val approvedSPDX: Boolean) :
@@ -29,4 +29,4 @@ class LicenseCheckovResult(
                 absoluteFilePath,
                 fileLineRange,
                 fixDefinition,
-                codeBlock) {}
+                codeBlock)

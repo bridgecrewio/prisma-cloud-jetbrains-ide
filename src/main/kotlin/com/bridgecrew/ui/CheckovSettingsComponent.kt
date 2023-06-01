@@ -1,11 +1,12 @@
 package com.bridgecrew.ui
 
+import com.intellij.util.ui.JBUI
 import javax.swing.JPanel
 import java.awt.*
 import javax.swing.JLabel
 import javax.swing.JTextField
 
-class CheckovSettingsComponent() {
+class CheckovSettingsComponent {
     private var rootPanel: JPanel = JPanel()
     val secretKeyField: JTextField = JTextField()
     val accessKeyField: JTextField = JTextField()
@@ -19,7 +20,7 @@ class CheckovSettingsComponent() {
         val constraints = GridBagConstraints()
         constraints.fill = GridBagConstraints.HORIZONTAL
         constraints.anchor = GridBagConstraints.NORTHWEST
-        constraints.insets = Insets(0, 0, 5, 20)
+        constraints.insets = JBUI.insets(0, 0, 5, 20)
 
         createSettingsRow(settingsPanel, constraints, "Access Key (Required):", accessKeyField, 0)
         createSettingsRow(settingsPanel, constraints, "Secret Key (Required):", secretKeyField, 1)

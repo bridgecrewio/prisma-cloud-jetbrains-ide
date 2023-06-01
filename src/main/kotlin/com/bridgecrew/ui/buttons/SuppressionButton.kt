@@ -12,7 +12,6 @@ import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
-import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.vfs.LocalFileSystem
 import java.awt.event.ActionEvent
@@ -38,7 +37,7 @@ class SuppressionButton(private var result: BaseCheckovResult): CheckovLinkButto
             isOpenDialog = false
             setDisabledLook()
             if(dialog.exitCode == DialogWrapper.OK_EXIT_CODE) {
-                this.isEnabled = false;
+                this.isEnabled = false
                 generateComment(fileType, dialog.userJustification)
             } else if (dialog.exitCode == DialogWrapper.CANCEL_EXIT_CODE) {
                 isOpenDialog = true
