@@ -11,7 +11,9 @@ import com.bridgecrew.utils.FileType
 import com.bridgecrew.utils.SUPPRESSION_BUTTON_ALLOWED_FILE_TYPES
 import com.bridgecrew.utils.getFileType
 import icons.CheckovIcons
+import java.awt.Color
 import java.awt.Dimension
+import java.awt.Font
 import javax.swing.*
 
 class ErrorBubbleActionsPanel(val result: BaseCheckovResult) : JPanel() {
@@ -57,7 +59,10 @@ class ErrorBubbleActionsPanel(val result: BaseCheckovResult) : JPanel() {
         add(Box.createHorizontalGlue())
         add(JLabel(CheckovIcons.prismaIcon))
         add(Box.createRigidArea(Dimension(5, 0)))
-        add(JLabel("Prisma Cloud"))
+        val prismaLabel = JLabel("Prisma Cloud")
+        prismaLabel.font = Font("SF Pro Text", Font.BOLD, 10)
+        prismaLabel.foreground = Color.decode("#7F8B91")
+        add(prismaLabel)
         add(Box.createRigidArea(Dimension(10, 0)))
     }
 }
