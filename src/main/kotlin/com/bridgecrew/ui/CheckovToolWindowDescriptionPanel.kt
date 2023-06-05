@@ -7,10 +7,8 @@ import com.intellij.icons.AllIcons
 import com.intellij.ide.DataManager
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
-import com.intellij.openapi.util.IconLoader
 import com.intellij.ui.ScrollPaneFactory
 import com.intellij.uiDesigner.core.GridConstraints
 import com.intellij.uiDesigner.core.GridLayoutManager
@@ -134,10 +132,13 @@ class CheckovToolWindowDescriptionPanel(val project: Project) : SimpleToolWindow
         val status = JLabel(text)
         status.alignmentX = CENTER_ALIGNMENT
         status.font = Font(status.font.name, Font.BOLD, 14)
+        status.foreground = Color.decode("#7F8B91")
         val iconLabel = JLabel(CheckovIcons.prismaIcon)
         iconLabel.alignmentX = CENTER_ALIGNMENT
         val prismaText = JLabel("Prisma Cloud")
         prismaText.alignmentX = CENTER_ALIGNMENT
+        prismaText.font = Font("SF Pro Text", Font.BOLD, 10)
+        prismaText.foreground = Color.decode("#7F8B91")
         imagePanel.add(Box.createRigidArea(Dimension(0, 50)))
         imagePanel.add(Box.createVerticalGlue())
         imagePanel.add(status)
