@@ -8,6 +8,7 @@ import com.github.difflib.text.DiffRowGenerator
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.util.ui.JBUI
 import java.awt.Dimension
+import java.awt.Font
 import javax.swing.*
 import javax.swing.text.SimpleAttributeSet
 import javax.swing.text.StyleConstants
@@ -16,6 +17,7 @@ class CodeDiffPanel(val result: BaseCheckovResult, isErrorBubble: Boolean): JPan
 
     private val LOG = logger<CodeDiffPanel>()
     var hasDiff = false
+    private val codeFont = Font("JetBrains Mono", Font.BOLD, 12)
 
     init {
         layout = BoxLayout(this, BoxLayout.Y_AXIS)
@@ -23,6 +25,7 @@ class CodeDiffPanel(val result: BaseCheckovResult, isErrorBubble: Boolean): JPan
 
         val fixHolder = JPanel()
         fixHolder.layout = BoxLayout(fixHolder, BoxLayout.Y_AXIS)
+        fixHolder.background = if(isDarkMode()) BLOCK_BG_DARK else BLOCK_BG_LIGHT
         val generator = DiffRowGenerator.create()
                 .inlineDiffByWord(true)
                 .build()
@@ -69,11 +72,13 @@ class CodeDiffPanel(val result: BaseCheckovResult, isErrorBubble: Boolean): JPan
     private fun createCodeBlock(innerText: String): JTextPane {
         val textArea = JTextPane()
         textArea.text = innerText
+        textArea.font = codeFont
         textArea.isEditable = false
         val attributes = SimpleAttributeSet()
         StyleConstants.setLineSpacing(attributes, 0f)
+        StyleConstants.setForeground(attributes, if(isDarkMode()) FONT_COLOR_DARK else FONT_COLOR_LIGHT)
         textArea.setParagraphAttributes(attributes, true)
-        textArea.margin = JBUI.insets(10)
+        textArea.margin = JBUI.insets(5, 5, 2, 5)
         textArea.maximumSize = Dimension(Int.MAX_VALUE, 5)
         return textArea
     }

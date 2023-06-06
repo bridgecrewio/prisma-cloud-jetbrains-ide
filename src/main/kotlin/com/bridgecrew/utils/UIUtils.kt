@@ -10,10 +10,14 @@ import javax.swing.Icon
 val separatorColorDark: Color = Color.decode("#323232")
 val separatorColorLight: Color = Color.decode("#D1D1D1")
 
+val BLOCK_BG_DARK: Color = Color.decode("#313335")
+val BLOCK_BG_LIGHT: Color = Color.decode("#FFFFFF")
 val FIX_COLOR_DARK: Color = Color.decode("#49544A")
-val FIX_COLOR_LIGHT: Color = Color.decode("#49544A")
+val FIX_COLOR_LIGHT: Color = Color.decode("#E9F5E6")
 val VULNERABLE_COLOR_DARK: Color = Color.decode("#704745")
-val VULNERABLE_COLOR_LIGHT: Color = Color.decode("#704745")
+val VULNERABLE_COLOR_LIGHT: Color = Color.decode("#F5E6E7")
+val FONT_COLOR_DARK: Color = Color.decode("#BABABA")
+val FONT_COLOR_LIGHT: Color = Color.decode("#080808")
 
 fun createGridRowCol(row: Int, col: Int = 0, align: Int = 0, fill: Int = 0): GridConstraints {
     return GridConstraints(

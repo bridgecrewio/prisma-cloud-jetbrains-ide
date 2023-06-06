@@ -2,10 +2,10 @@ package com.bridgecrew.ui.buttons
 
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
+import javax.swing.JButton
 import javax.swing.JOptionPane
 
-const val fixCVEButtonText = "Fix CVE"
-class FixCVEButton(private var id: String): CheckovLinkButton(fixCVEButtonText), ActionListener {
+class FixCVEButton(private var id: String): JButton("Fix CVE"), ActionListener {
 
     init {
         addActionListener(this)

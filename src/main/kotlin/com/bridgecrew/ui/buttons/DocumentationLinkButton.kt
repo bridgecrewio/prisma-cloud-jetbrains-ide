@@ -4,9 +4,10 @@ import java.awt.Desktop
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 import java.net.URI
-import javax.swing.JButton
 
-class DocumentationButton(private var link: String) : JButton("Documentation"), ActionListener {
+const val documentationButtonText = "Documentation"
+
+class DocumentationLinkButton(private var link: String) : CheckovLinkButton(documentationButtonText), ActionListener {
 
     init {
         addActionListener(this)
