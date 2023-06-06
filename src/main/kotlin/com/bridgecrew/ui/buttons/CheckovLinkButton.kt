@@ -13,11 +13,11 @@ open class CheckovLinkButton(userText: String): JButton() {
         setEnabledLook()
     }
 
-    protected fun setDisabledLook() {
+    fun setDisabledLook() {
         this.cursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
     }
 
-    protected fun setEnabledLook() {
+    fun setEnabledLook() {
         this.cursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)
     }
 }
