@@ -21,6 +21,8 @@ class CheckovTopPanel(val project: Project) : SimpleToolWindowPanel(true, true),
         addFilterActions(actionToolbarPanel)
 
         add(actionToolbarPanel, BorderLayout.NORTH)
+        val separatorColor = if(isDarkMode()) separatorColorDark else separatorColorLight
+        border = BorderFactory.createMatteBorder(0,0,1,0, separatorColor)
         toolbar = actionToolbarPanel
     }
 
