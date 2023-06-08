@@ -6,7 +6,7 @@ import java.awt.*
 import javax.swing.JLabel
 import javax.swing.JTextField
 
-class CheckovSettingsComponent {
+class PrismaSettingsComponent {
     private var rootPanel: JPanel = JPanel()
     val secretKeyField: JTextField = JTextField()
     val accessKeyField: JTextField = JTextField()

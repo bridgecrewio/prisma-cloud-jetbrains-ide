@@ -8,10 +8,10 @@ import com.intellij.util.xmlb.XmlSerializerUtil
 
 
 @State(
-    name = "com.bridgecrew.settings.CheckovSettingsState",
-    storages = [Storage("CheckovSettingsState.xml")]
+    name = "com.bridgecrew.settings.PrismaSettingsState",
+    storages = [Storage("PrismaSettingsState.xml")]
 )
-class CheckovSettingsState : PersistentStateComponent<CheckovSettingsState> {
+class PrismaSettingsState : PersistentStateComponent<PrismaSettingsState> {
 
     var accessKey: String = ""
     var secretKey: String = ""
@@ -26,15 +26,13 @@ class CheckovSettingsState : PersistentStateComponent<CheckovSettingsState> {
         return ""
     }
 
-    fun getInstance(): CheckovSettingsState? {
-        return ApplicationManager.getApplication().getService(CheckovSettingsState::class.java)
+    fun getInstance(): PrismaSettingsState? {
+        return ApplicationManager.getApplication().getService(PrismaSettingsState::class.java)
     }
 
-    override fun getState(): CheckovSettingsState = this
+    override fun getState(): PrismaSettingsState = this
 
-    override fun loadState(state: CheckovSettingsState) {
+    override fun loadState(state: PrismaSettingsState) {
         XmlSerializerUtil.copyBean(state, this)
     }
-
-
 }

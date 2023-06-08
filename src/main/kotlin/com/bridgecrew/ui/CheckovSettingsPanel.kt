@@ -1,6 +1,6 @@
 package com.bridgecrew.ui
 
-import com.bridgecrew.settings.CheckovSettingsConfigurable
+import com.bridgecrew.settings.PrismaSettingsConfigurable
 import com.bridgecrew.utils.createGridRowCol
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.uiDesigner.core.GridLayoutManager
@@ -22,7 +22,7 @@ class CheckovSettingsPanel(project: Project): JPanel() {
 
         settingsButton.addActionListener {
             ApplicationManager.getApplication().invokeLater {
-                ShowSettingsUtil.getInstance().showSettingsDialog(project, CheckovSettingsConfigurable::class.java)
+                ShowSettingsUtil.getInstance().showSettingsDialog(project, PrismaSettingsConfigurable::class.java)
             }
         }
 

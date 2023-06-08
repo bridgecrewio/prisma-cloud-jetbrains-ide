@@ -1,13 +1,13 @@
 package com.bridgecrew.services.checkovScanCommandsService
 
 import com.bridgecrew.listeners.CheckovSettingsListener
-import com.bridgecrew.settings.CheckovSettingsState
+import com.bridgecrew.settings.PrismaSettingsState
 import com.bridgecrew.utils.*
 import com.intellij.openapi.project.Project
 import org.apache.commons.lang.StringUtils
 
 abstract class CheckovScanCommandsService(val project: Project) {
-    protected val settings = CheckovSettingsState().getInstance()
+    protected val settings = PrismaSettingsState().getInstance()
     private var gitRepo = getRepoName()
 
     fun getExecCommandForSingleFile(filePath: String, outputFilePath: String): ArrayList<String> {
