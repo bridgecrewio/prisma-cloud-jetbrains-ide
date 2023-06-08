@@ -1,5 +1,7 @@
 package com.bridgecrew.utils
 
+const val PLUGIN_ID = "com.github.bridgecrewio.prismacloud"
+
 object PANELTYPE {
     const val AUTO_CHOOSE_PANEL = 0
     const val CHECKOV_FILE_SCAN_FINISHED = 1

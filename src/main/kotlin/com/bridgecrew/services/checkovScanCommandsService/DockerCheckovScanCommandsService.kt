@@ -1,5 +1,6 @@
 package com.bridgecrew.services.checkovScanCommandsService
 
+import com.bridgecrew.utils.PLUGIN_ID
 import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.project.Project
@@ -12,7 +13,7 @@ class DockerCheckovScanCommandsService(project: Project) : CheckovScanCommandsSe
     private val volumeCertPath = "/usr/lib/ssl/cert.pem"
     override fun getCheckovRunningCommandByServiceType(outputFilePath: String): ArrayList<String> {
         val pluginVersion =
-                PluginManagerCore.getPlugin(PluginId.getId("com.github.bridgecrewio.prismacloud"))?.version ?: "UNKNOWN"
+                PluginManagerCore.getPlugin(PluginId.getId(PLUGIN_ID))?.version ?: "UNKNOWN"
 
         val dockerCommand = arrayListOf("docker", "run", "--rm", "-a", "stdout", "-a", "stderr", "--env", "BC_SOURCE=jetbrains", "--env", "BC_SOURCE_VERSION=$pluginVersion", "--env", "LOG_LEVEL=DEBUG")
         val prismaUrl = settings?.prismaURL
