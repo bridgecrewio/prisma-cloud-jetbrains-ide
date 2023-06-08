@@ -64,7 +64,7 @@ class ErrorBubbleActionsPanel(val result: BaseCheckovResult) : JPanel() {
     }
 
     private fun addStyledButton(button: JButton) {
-        button.font = Font("SF Pro Text", Font.PLAIN, 13);
+        button.font = ERROR_BUBBLE_ACTIONS_FONT
         button.horizontalAlignment = JButton.LEFT
         button.margin = ERROR_BUBBLE_ACTIONS_MARGIN
         button.foreground = if (isDarkMode()) ERROR_BUBBLE_ACTIONS_COLOR_DARK else ERROR_BUBBLE_ACTIONS_COLOR_LIGHT

@@ -5,6 +5,7 @@ import com.intellij.openapi.editor.colors.EditorColorsManager
 import com.intellij.uiDesigner.core.GridConstraints
 import icons.CheckovIcons
 import java.awt.Color
+import java.awt.Font
 import java.awt.Insets
 import javax.swing.Icon
 
@@ -20,6 +21,7 @@ val VULNERABLE_COLOR_LIGHT: Color = Color.decode("#F5E6E7")
 val FONT_COLOR_DARK: Color = Color.decode("#BABABA")
 val FONT_COLOR_LIGHT: Color = Color.decode("#080808")
 
+val ERROR_BUBBLE_ACTIONS_FONT: Font = Font("SF Pro Text", Font.PLAIN, 13)
 val ERROR_BUBBLE_ACTIONS_COLOR_DARK: Color = Color.decode("#589DF6")
 val ERROR_BUBBLE_ACTIONS_COLOR_LIGHT: Color = Color.decode("#2470B3")
 val ERROR_BUBBLE_ACTIONS_MARGIN: Insets = Insets(8, 0, 8, 10)
