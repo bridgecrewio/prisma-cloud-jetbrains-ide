@@ -36,7 +36,7 @@ class ErrorBubbleInnerPanel(val result: BaseCheckovResult, private val vulnerabi
         add(Box.createRigidArea(Dimension(0, 5)))
         val actionsPanel = ErrorBubbleActionsPanel(result)
         actionsPanel.alignmentX = Component.LEFT_ALIGNMENT
-        actionsPanel.border = BorderFactory.createEmptyBorder(0, 30, 0, 0)
+        actionsPanel.border = BorderFactory.createEmptyBorder(0, 25, 0, 0)
         add(actionsPanel)
 
         preferredSize = Dimension(PANEL_WIDTH, PANEL_HEIGHT)
