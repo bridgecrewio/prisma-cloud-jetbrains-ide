@@ -6,10 +6,7 @@ import com.bridgecrew.ui.actions.FocusOnFileInTree
 import com.bridgecrew.ui.buttons.CheckovLinkButton
 import com.bridgecrew.ui.buttons.DocumentationLinkButton
 import com.bridgecrew.ui.buttons.SuppressionLinkButton
-import com.bridgecrew.utils.CheckovUtils
-import com.bridgecrew.utils.FileType
-import com.bridgecrew.utils.SUPPRESSION_BUTTON_ALLOWED_FILE_TYPES
-import com.bridgecrew.utils.getFileType
+import com.bridgecrew.utils.*
 import icons.CheckovIcons
 import java.awt.Color
 import java.awt.Dimension
@@ -32,26 +29,26 @@ class ErrorBubbleActionsPanel(val result: BaseCheckovResult) : JPanel() {
         if (result.fixDefinition != null) {
             val fixButton = CheckovLinkButton("Fix")
             fixButton.addActionListener(FixAction(fixButton, result))
-            add(fixButton)
+            addStyledButton(fixButton)
         }
     }
 
     private fun addSuppressIfNeeded() {
         val fileType: FileType = getFileType(result.filePath)
         if (SUPPRESSION_BUTTON_ALLOWED_FILE_TYPES.contains(fileType)) {
-            add(SuppressionLinkButton(result))
+            addStyledButton(SuppressionLinkButton(result))
         }
     }
 
     private fun addConsoleButton() {
         val button = CheckovLinkButton("Console")
         button.addActionListener(FocusOnFileInTree("${result.filePath}/${result.resource}/${result.name}"))
-        add(button)
+        addStyledButton(button)
     }
 
     private fun addDocumentationIfNeeded() {
         if (result.guideline != null && !CheckovUtils.isCustomPolicy(result)) {
-            add(DocumentationLinkButton(result.guideline))
+            addStyledButton(DocumentationLinkButton(result.guideline))
         }
     }
 
@@ -64,5 +61,21 @@ class ErrorBubbleActionsPanel(val result: BaseCheckovResult) : JPanel() {
         prismaLabel.foreground = Color.decode("#7F8B91")
         add(prismaLabel)
         add(Box.createRigidArea(Dimension(10, 0)))
+    }
+
+    private fun addStyledButton(button: JButton) {
+        button.font = Font("SF Pro Text", Font.PLAIN, 13);
+        button.horizontalAlignment = JButton.LEFT
+        button.margin = ERROR_BUBBLE_ACTIONS_MARGIN
+        button.foreground = if (isDarkMode()) ERROR_BUBBLE_ACTIONS_COLOR_DARK else ERROR_BUBBLE_ACTIONS_COLOR_LIGHT
+
+        val textMetrics = button.getFontMetrics(button.font)
+        val textWidth = textMetrics.stringWidth(button.text)
+        val textHeight = textMetrics.height
+        button.preferredSize = Dimension(
+            textWidth + button.insets.left  + button.insets.right + button.margin.left + button.margin.right,
+            textHeight + button.margin.top + button.margin.bottom
+        )
+        add(button)
     }
 }
