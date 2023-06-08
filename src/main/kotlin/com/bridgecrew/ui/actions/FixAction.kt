@@ -3,6 +3,7 @@ package com.bridgecrew.ui.actions
 import com.bridgecrew.listeners.CheckovScanListener
 import com.bridgecrew.listeners.ErrorBubbleFixListener
 import com.bridgecrew.results.BaseCheckovResult
+import com.bridgecrew.results.Category
 import com.bridgecrew.services.scan.CheckovScanService
 import com.bridgecrew.utils.navigateToFile
 import com.intellij.ide.DataManager
@@ -19,6 +20,7 @@ import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 import javax.swing.JButton
 import com.bridgecrew.settings.CheckovGlobalState
+import com.intellij.openapi.ui.Messages
 
 class FixAction(private val buttonInstance: JButton, val result: BaseCheckovResult) : ActionListener {
 
@@ -80,6 +82,11 @@ class FixAction(private val buttonInstance: JButton, val result: BaseCheckovResu
             val dataContext = DataManager.getInstance().dataContext
             val project = dataContext.getData("project") as Project
 
+            if (result.category == Category.VULNERABILITIES) {
+                CheckovGlobalState.filesNotToScanAfterFix.add(result.absoluteFilePath)
+                alertManualFixNeeded()
+            }
+
             WriteCommandAction.runWriteCommandAction(project) {
                 document.replaceString(startOffset, endOffset, result.fixDefinition!!)
                 FileDocumentManager.getInstance().saveDocument(document)
@@ -89,5 +96,14 @@ class FixAction(private val buttonInstance: JButton, val result: BaseCheckovResu
             LOG.warn("error while trying to apply fix", e)
             buttonInstance.isEnabled = true
         }
+    }
+
+    private fun alertManualFixNeeded() {
+        val dataContext = DataManager.getInstance().dataContext
+        val project = dataContext.getData("project") as Project
+        Messages.showInfoMessage(project,
+                "In order for the fix to take effect, you need to manualy run `yarn install`. Without it, the fix is not complete",
+                "Additional Action Required"
+        )
     }
 }

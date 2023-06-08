@@ -244,8 +244,16 @@ class CheckovToolWindowManagerPanel(val project: Project) : SimpleToolWindowPane
                     return
                 }
 
-                if (shouldScanFile(events[0].file!!)) {
-                    project.service<CheckovScanService>().scanFile(events[0].file!!.path, project)
+                val file = events[0].file!!
+                val fileToIgnore = CheckovGlobalState.filesNotToScanAfterFix.find {it == file.path}
+                // Don't scan files in this list. In certain cases we don't want to perform an immediate scan (but we do want to scan later)
+                if(fileToIgnore != null) {
+                    CheckovGlobalState.filesNotToScanAfterFix.remove(fileToIgnore)
+                    return
+                }
+
+                if (shouldScanFile(file)) {
+                    project.service<CheckovScanService>().scanFile(file.path, project)
                 }
             }
         })
