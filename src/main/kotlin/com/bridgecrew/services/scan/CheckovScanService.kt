@@ -5,7 +5,7 @@ import com.bridgecrew.errors.CheckovErrorHandlerService
 import com.bridgecrew.listeners.CheckovScanListener
 import com.bridgecrew.services.ResultsCacheService
 import com.bridgecrew.services.checkovScanCommandsService.CheckovScanCommandsService
-import com.bridgecrew.settings.CheckovSettingsState
+import com.bridgecrew.settings.PrismaSettingsState
 import com.bridgecrew.ui.actions.CheckovScanAction
 import com.bridgecrew.utils.*
 import com.intellij.execution.configurations.GeneralCommandLine
@@ -30,7 +30,7 @@ private val LOG = logger<CheckovScanService>()
 @Service
 class CheckovScanService: Disposable {
     var selectedCheckovScanner: CheckovScanCommandsService? = null
-    private val settings = CheckovSettingsState().getInstance()
+    private val settings = PrismaSettingsState().getInstance()
     private val fullScanTasks = mutableSetOf<ScanTask.FrameworkScanTask>()
     private var singleFileCurrentScans = mutableMapOf<String, ScanTask.FileScanTask>()
 

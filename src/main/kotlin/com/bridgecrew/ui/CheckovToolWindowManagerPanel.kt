@@ -9,7 +9,7 @@ import com.bridgecrew.services.ResultsCacheService
 import com.bridgecrew.services.scan.CheckovScanService
 import com.bridgecrew.services.scan.FullScanStateService
 import com.bridgecrew.settings.CheckovGlobalState
-import com.bridgecrew.settings.CheckovSettingsState
+import com.bridgecrew.settings.PrismaSettingsState
 import com.bridgecrew.ui.actions.CheckovScanAction
 import com.bridgecrew.ui.errorBubble.CheckovGutterErrorIcon
 import com.bridgecrew.ui.actions.SeverityFilterActions
@@ -129,7 +129,7 @@ class CheckovToolWindowManagerPanel(val project: Project) : SimpleToolWindowPane
     }
 
     private fun loadAutoChoosePanel() {
-        val setting = CheckovSettingsState().getInstance()
+        val setting = PrismaSettingsState().getInstance()
         when {
             setting?.accessKey.isNullOrEmpty() -> add(checkovDescription.configurationDescription())
             setting?.secretKey.isNullOrEmpty() -> add(checkovDescription.configurationDescription())
