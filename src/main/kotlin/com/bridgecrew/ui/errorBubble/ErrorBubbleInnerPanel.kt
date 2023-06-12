@@ -76,7 +76,7 @@ class ErrorBubbleInnerPanel(val result: BaseCheckovResult, private val vulnerabi
                     val codeDiffPanel = CodeDiffPanel(result, false)
                     if(codeDiffPanel.hasDiff){
                         val scroll = JBScrollPane(codeDiffPanel)
-                        scroll.border = BorderFactory.createEmptyBorder(0, 30, 0, 0)
+                        scroll.border = BorderFactory.createEmptyBorder(1, 30, 0, 0)
                         scroll.alignmentX = Component.LEFT_ALIGNMENT
                         SwingUtilities.invokeLater {
                             scroll.viewport.viewPosition = Point(0, 0)
@@ -114,7 +114,7 @@ class ErrorBubbleInnerPanel(val result: BaseCheckovResult, private val vulnerabi
     private fun buildCenterPanel(text: String) {
         val centerPanel = ErrorBubbleCenterPanel(text)
         centerPanel.alignmentX = Component.LEFT_ALIGNMENT
-        centerPanel.border = BorderFactory.createEmptyBorder(0, 30, 0, 0)
+        centerPanel.border = BorderFactory.createEmptyBorder(5, 30, 0, 0)
         add(centerPanel)
     }
 }
