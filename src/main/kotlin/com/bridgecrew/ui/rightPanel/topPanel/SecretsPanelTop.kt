@@ -2,6 +2,7 @@ package com.bridgecrew.ui.rightPanel.topPanel
 
 import com.bridgecrew.results.BaseCheckovResult
 import com.bridgecrew.results.SecretsCheckovResult
+import com.bridgecrew.ui.buttons.DocumentationButton
 import com.bridgecrew.ui.buttons.FixButton
 import com.bridgecrew.utils.FileType
 import com.bridgecrew.utils.getFileType
@@ -26,6 +27,9 @@ class SecretsPanelTop(result: BaseCheckovResult): CheckovDescriptionPanelTop(res
 
     private fun createDescriptionPanelTitleActions(): JPanel {
         val panel = createActionsPanel()
+        if (isShowDocumentationButton(result)) {
+            panel.add(result.guideline?.let { DocumentationButton(it) })
+        }
         if (shouldEnableSuppressionButton()) {
             createSuppressionButton(panel)
         }
