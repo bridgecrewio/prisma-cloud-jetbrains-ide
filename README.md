@@ -1,100 +1,128 @@
-[![checkov](https://raw.githubusercontent.com/bridgecrewio/checkov/master/docs/web/images/checkov_by_bridgecrew.png)](https://checkov.io)
+![Prisma Cloud Code Security](src/main/resources/images/prismaLogo1.2.png)
 
+<! 
 [![Maintained by Bridgecrew.io](https://img.shields.io/badge/maintained%20by-bridgecrew.io-blueviolet)](https://bridgecrew.io/?utm_source=github&utm_medium=organic_oss&utm_campaign=checkov-vscode)
 ![Build](https://github.com/bridgecrewio/checkov-jetbrains-idea/workflows/Build/badge.svg)
-[![Version](https://img.shields.io/jetbrains/plugin/v/17721-checkov.svg)](https://plugins.jetbrains.com/plugin/17721-checkov)
+[![Version](https://plugins.jetbrains.com/plugin/21907-prisma-cloud)
 [![Downloads](https://img.shields.io/jetbrains/plugin/d/17721-checkov.svg)](https://plugins.jetbrains.com/plugin/17721-checkov)
 [![slack-community](https://img.shields.io/badge/Slack-contact%20us-lightgrey.svg?logo=slack)](https://slack.bridgecrew.io/?utm_source=github&utm_medium=organic_oss&utm_campaign=checkov-intellij)
+>
 
-# Checkov Plugin for Jetbrains IDEA
+# Prisma Cloud Plugin for JetBrains IDEA
 
-[Checkov](https://github.com/bridgecrewio/checkov) is a static code analysis tool for infrastructure-as-code.
+The Prisma Cloud plugin for JetBrains leverages the capabilities of [Prisma Cloud Code Security](https://docs.paloaltonetworks.com/prisma/prisma-cloud/prisma-cloud-admin-code-security), a static code analysis tool designed specifically to scan code for Infrastructure-as-Code (IaC) misconfigurations, Software Composition Analysis (SCA) issues and Secrets vulnerabilities.
 
-The Checkov Plugin for Intellij enables developers to get real-time scan results, as well as inline fix suggestions as they develop cloud infrastructure.
+By integrating the Prisma Cloud plugin into JetBrains, developers receive real-time scan results and inline fix suggestions while developing code.
+You can download the plugin directly from the [JetBrains Plugin Marketplace](https://plugins.jetbrains.com/plugin/21907-prisma-cloud).
 
+## Key Features
+---
+- **Scans**
 
-<!-- TODO PLUGIN GIF DEMO -->
-<!-- Plugin description -->
+  - Scans for IaC misconfigurations, SCA vulnerabilities, and Secrets and License violations
 
-The plugin is currently available for download directly from the [IntelliJ Plugin Marketplace](https://plugins.jetbrains.com/plugin/17721-checkov) and its source code is available in an [Apache 2.0 licensed repository](https://github.com/bridgecrewio/checkov-jetbrains-ide).
+  - Includes [1000+ built-in policies](https://docs.paloaltonetworks.com/prisma/prisma-cloud/prisma-cloud-admin/prisma-cloud-policies) covering security and compliance best practices for AWS, Azure, Google Cloud, Bitbucket and Alibaba cloud providers
 
-Activating the plugin requires submission of one-time Bridgecrew API Token that can be obtained by [creating a new Bridgecrew platform account](https://docs.bridgecrew.io/docs/get-api-token). It uses open [Bridgecrew Developer APIs](https://docs.bridgecrew.io/reference) to evaluate code and offer automated inline fixes. For more information about data shared with Bridgecrew see the [Disclaimer](#disclaimer) section below).
+  - Comprehensive IaC scans for Terraform, Terraform Plan, CloudFormation, Kubernetes, Helm, Serverless and ARM templates  
 
-Plugin features include:
+  - Supports Terraform and CloudFormation checks that accurately evaluate arguments expressed in [variables](https://github.com/bridgecrewio/checkov/blob/master/docs/2.Basics/Handling%20Variables.md) and remote modules
 
-* [1000+ built-in policies](https://github.com/bridgecrewio/checkov/blob/master/docs/5.Policy%20Index/all.md) covering security and compliance best practices for AWS, Azure and Google Cloud.
-* Terraform, Terraform Plan, CloudFormation, Kubernetes, Helm, Serverless and ARM template scanning.
-* Detects [AWS credentials](https://github.com/bridgecrewio/checkov/blob/master/docs/2.Basics/Scanning%20Credentials%20and%20Secrets.md) in EC2 Userdata, Lambda environment variables and Terraform providers.
-* In Terraform and CloudFormation checks support evaluation of arguments expressed in [variables](https://github.com/bridgecrewio/checkov/blob/master/docs/2.Basics/Handling%20Variables.md) and remote modules to their actual values.
-* Supports inline [suppression](https://github.com/bridgecrewio/checkov/blob/master/docs/2.Basics/Suppressing%20and%20Skipping%20Policies.md) via comments.
-* Links to policy descriptions, rationales as well as step by step instructions for fixing known misconfigurations.
-* Fix suggestions for commonly misconfigured Terraform and CloudFormation attributes.
+  - Detects [AWS credentials](https://github.com/bridgecrewio/checkov/blob/master/docs/2.Basics/Scanning%20Credentials%20and%20Secrets.md) in EC2 User Data, Lambda environment variables, and Terraform providers
+
+- **Fixes**: Provides automated inline fix capabilities for IaC and SCA issues directly within the editor
+
+- **Documented guidelines** for commonly misconfigured attributes, secrets and licenses
+
+- Supports inline [suppression](https://github.com/bridgecrewio/checkov/blob/master/docs/2.Basics/Suppressing%20and%20Skipping%20Policies.md) via comments to skip specific checks 
+
+## Supported Package Managers and Languages
+---
+
+The following package managers and languages, along with their corresponding file formats, are supported:
+
+- **NPM**: Package.json, package-lock.json, yarn.lock, bower.json
+- **Python**: Requirements.txt, Pipfile, pipfile.lock
+- **Go**: Go.mod, go.sum
+- **Maven**: Pom.xml (including parent POMs)
+- **Gradle**: Build.gradle, gradle.properties, gradle-wrapper.properties
+- **Kotlin**: Build.gradle.kts
+- **.NET**: Packages.config, *.csproj, Paket
+- **Ruby**: Gemspec, gemfile, gemfile.lock
+- **PHP Composer**: Coming soon
+
+## Supported IaC Frameworks
+---
+
+The following infrastructure-as-code frameworks are supported:
+
+Terraform   | CloudFormation | Kubernetes    
+------------|----------------|---------------
+Serverless  | Helm           | TerraformPlan 
+ARM         | Dockerfile     | Bicep         
+Kustomize   | OpenAPI 
+
 
 
 ## Getting started
+---
+### Prerequisites
 
-### Install
+* [Python](https://www.python.org/downloads/) >= 3.7, [Pipenv](https://docs.pipenv.org/) or a running [Docker](https://www.docker.com/products/docker-desktop) daemon
+
+The Prisma Cloud plugin automatically invokes the latest version of ```Prisma Cloud Code Security```.
+
+### Installation
 
 - Using IDE built-in plugin system:
   
-  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "checkov"</kbd> >
-  <kbd>Install Plugin</kbd>
+  `Settings/Preferences` > `Plugins` > `Marketplace` > `Search for "Prisma Cloud"` >
+`Install Plugin`
   
 - Manually:
 
-  Download the [latest release](https://github.com/bridgecrewio/checkov-jetbrains-idea/releases/latest) and install it manually using
-  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>⚙️</kbd> > <kbd>Install plugin from disk...</kbd>
-
-
-### Dependencies
-
-* [Python](https://www.python.org/downloads/) >= 3.7 or [Pipenv](https://docs.pipenv.org/) or [Docker](https://www.docker.com/products/docker-desktop) daemon running
-
-The Checkov plugin will invoke the latest version of ```Checkov```.
+In your IDE: Select `Settings/Preferences` (for Windows/Mac) > `Plugins` > `⚙️` > `Install plugin from disk...`
 
 ### Configuration
 
-* Sign up to a Bridgecrew Community account [here](https://bridgecrew.cloud/). If you already have an account, sign in and go to the next step.
+1. Subscribe to the Application Security module in Prisma Cloud. 
 
-* From [Integrations](https://www.bridgecrew.cloud/integrations/api-token), select **API Token** and copy the API key.
-* In Jetbrains, enter your API Token in the Checkov plugin settings page under tools.  
-* Using a custom CA certificate is possible. If needed, set the path to the certificate file in the Checkov plugin settings page.
+2. [Generate and save a Prisma Cloud access key](https://docs.paloaltonetworks.com/prisma/prisma-cloud/prisma-cloud-admin-code-security/get-started/generate-access-keys) which consists of an Access Key ID and Secret.
 
-### Usage
+3. Configure plugin settings: In JetBrains IDE navigate to `Settings` > `Tools` > `Prisma Cloud` and fill in the provided fields: 
+- Access ID and Secret (required) 
+- Custom CA certificate (recommended): Provide a custom CA certificate by specifying the path to the certificate file.  
+**NOTE**: Ensure that the certificate file is in the PEM format.
 
-* Open a file you wish to scan with checkov in IntelliJ.
-* Checkov will run automatically everytime an IaC is opened or saved.
-* Scan results should now appear in the checkov tool window in the bottom of your IDE.
-* Scan results will appear on the left side as a tree of File Names -> Resources -> Violated checks.
-* Click a check to see its details. Details including  violating policy and a link to step-by-step fix guidelines.
-* In most cases, the Details will include a fix option. This will either add, remove or replace an unwanted configuration, based on the Checkov fix dictionaries.
-* You can skip checks by adding an inline skip annotation ```checkov:skip=<check_id>:<suppression_comment>```. For more details see the [docs](https://github.com/bridgecrewio/checkov/blob/master/docs/2.Concepts/Suppressions.md).
-* To get Checkov results updated as you code you can configure the IDE to autosave modified files at regular time intervals.
+## Usage
+---
+### Scan
+ 
+- Scan a project: Click scan or the **Play** button to scan a project
+- Scan a file: Open a file. A scan will run automatically when opening or saving a file 
 
-### Troubleshooting logs
+### Analyze Results and Fix Issues
 
-To access checkov-intellij logs directory, go to `Help` and select `Show Log in Finder` (for macOS) or `Show Log in Explorer` (for Windows).
+- Scan results include details of violating policies and provide a link to step-by-step fixes or guidelines based on the Prisma Cloud Code Security fix dictionaries:
 
-## Contributing
+-- **In-line fixes**: Prisma Cloud Code Security highlights errors in the editor as you code, including details of the violating policy. To fix an error, select the line with the issue to display a popup with the description and suggested fix
 
-Contribution is welcomed!
+-- **Problems tool panel** at the bottom of the screen: Lists vulnerabilities in the left pane. Click on a vulnerability to display its details. If a fix is available, select the **Fix** button that is displayed in the top right of the panel. Otherwise refer to suggested solutions or the documentation to resolve the issue  
 
-Start by reviewing the [contribution guidelines](https://github.com/bridgecrewio/checkov/blob/master/CONTRIBUTING.md). After that, take a look at a [good first issue](https://github.com/bridgecrewio/checkov/issues?q=is%3Aissue+is%3Aopen+label%3A"good+first+issue").
+-- **Suppression**: You can skip checks by clicking the *Suppression* button in the popup or in the *Error view* of the Problems tool panel
 
-Looking to contribute new checks? Learn how to write a new check (AKA policy) [here](https://github.com/bridgecrewio/checkov/blob/master/docs/5.Contribution/New-Check.md).
+### Troubleshooting 
+
+Troubleshoot errors directly in the JetBrains UI using the **Event Log**.
 
 ## Disclaimer
-
-To use this checkov-jetbrains plugin, you will need to create a free account at bridgecrew.cloud using your e-mail, the plugin uses Bridgecrew.cloud's fixes API to analyse and produce code fixes, and enrich the results provided into jetbrains IDE. Please notice bridgecrew [privacy policy](https://bridgecrew.io/privacy-policy/?utm_source=github&utm_medium=organic_oss&utm_campaign=checkov-vscode) for more details on collected data when using bridgecrew application.
-To generate fixes, files found to have triggered checkov violations are made available to the fixes API for the sole purpose of generating inline fixes code recommendations.
+---
+The plugin uses Prism Cloud’s ‘fixes’ API to analyze code and produce fixes, enhancing the results displayed in the JetBrains IDE. When a scan detects violations of Prisma Cloud policies in files, those files are passed to the ‘fixes’ API for the sole purpose of generating inline code fixes. For information about data collected and shared with Prisma Cloud when using Prisma Cloud Code Security, please refer to Prisma Cloud’s [Privacy Policy](https://www.paloaltonetworks.com/legal-notices/trust-center/privacy?utm_source=github&utm_medium=organic_oss&utm_campaign=checkov-vscode). 
 
 ## Support
-
-[Bridgecrew](https://bridgecrew.io/?utm_source=github&utm_medium=organic_oss&utm_campaign=checkov-vscode) builds and maintains Checkov to make policy-as-code simple and accessible.
-
-Start with our [Documentation](https://bridgecrewio.github.io/checkov/) for quick tutorials and examples.
-
-If you need direct support you can contact us at [info@bridgecrew.io](mailto:info@bridgecrew.io).
+---
+Prisma Cloud builds and maintains Prisma Cloud Code Security to secure your engineering environment.
+Start with our [Documentation](https://docs.paloaltonetworks.com/prisma/prisma-cloud/prisma-cloud-admin-code-security).
+If you need direct support you can email us at *noreply@paloaltonetworks.com*.
 
 ---
 The plugin is based on the [Jetbrains Platform Plugin Template][template].
