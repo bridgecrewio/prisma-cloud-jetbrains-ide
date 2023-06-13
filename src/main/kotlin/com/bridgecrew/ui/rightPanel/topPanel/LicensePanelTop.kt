@@ -1,6 +1,7 @@
 package com.bridgecrew.ui.rightPanel.topPanel
 
 import com.bridgecrew.results.BaseCheckovResult
+import com.bridgecrew.ui.buttons.DocumentationButton
 import com.bridgecrew.utils.CheckovUtils
 import java.awt.GridBagConstraints
 import javax.swing.JPanel
@@ -23,6 +24,9 @@ class LicensePanelTop(result: BaseCheckovResult): CheckovDescriptionPanelTop(res
 
     private fun createDescriptionPanelTitleActions(): JPanel {
         val panel = createActionsPanel()
+        if (isShowDocumentationButton(result)) {
+            panel.add(result.guideline?.let { DocumentationButton(it) })
+        }
         createSuppressionButton(panel)
         return panel
     }

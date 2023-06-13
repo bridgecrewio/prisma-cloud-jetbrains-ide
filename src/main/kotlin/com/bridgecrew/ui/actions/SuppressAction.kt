@@ -12,6 +12,7 @@ import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.vfs.LocalFileSystem
@@ -98,8 +99,7 @@ class SuppressAction(private val buttonInstance: JButton, private var result: Ba
             val editor = EditorFactory.getInstance().createEditor(document, null)
             val newLineText = "${suppressionComment}\n"
 
-            val dataContext = DataManager.getInstance().dataContext
-            val project = dataContext.getData("project") as Project
+            val project = ProjectManager.getInstance().defaultProject
 
             document.insertString(insertionOffset, newLineText)
             editor.caretModel.moveToOffset(insertionOffset + newLineText.length)

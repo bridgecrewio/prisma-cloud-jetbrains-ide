@@ -6,34 +6,24 @@ import com.bridgecrew.results.Category
 import com.intellij.openapi.editor.markup.MarkupModel
 import com.intellij.openapi.editor.markup.RangeHighlighter
 import com.intellij.openapi.project.ProjectManager
-import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.openapi.ui.popup.JBPopupFactory
+import com.intellij.openapi.ui.popup.JBPopupListener
+import com.intellij.openapi.ui.popup.LightweightWindowEvent
+import com.intellij.openapi.wm.ex.WindowManagerEx
 import java.awt.Point
-import javax.swing.Action
-import javax.swing.JComponent
-
 
 typealias navigationCallback = (Int, String) -> Unit
-
-class CheckovErrorBubble(val results: List<BaseCheckovResult>, modalLocation: Point, private val markup: MarkupModel, private val rangeHighlighter: RangeHighlighter) : DialogWrapper(true) {
+class CheckovErrorBubble(val results: List<BaseCheckovResult>, private val modalLocation: Point, private val markup: MarkupModel, private val rangeHighlighter: RangeHighlighter) {
 
     private var panelList: ArrayList<ErrorBubbleInnerPanel> = arrayListOf()
     private var currentPanel: ErrorBubbleInnerPanel? = null
 
 
     private val callBack: navigationCallback = { index, action ->
-
-        currentPanel?.let {
-
-            val newIdx = if (action == "right") index + 1 else index - 1
-            val newCurr = panelList[newIdx]
-
-            contentPanel.removeAll()
-            contentPanel.add(newCurr)
-            currentPanel = newCurr
-            init()
-
-            contentPanel.revalidate()
-        }
+        val newIdx = if (action == "right") index + 1 else index - 1
+        val newCurr = panelList[newIdx]
+        currentPanel = newCurr
+        buildAndShowErrorBubble()
     }
 
     init {
@@ -54,34 +44,37 @@ class CheckovErrorBubble(val results: List<BaseCheckovResult>, modalLocation: Po
 
         currentPanel = panelList[0]
 
-        addFixActionListener()
-
-        init()
-        setLocation(modalLocation.x, modalLocation.y)
-        show()
+        buildAndShowErrorBubble()
     }
 
-    private fun addFixActionListener() {
+    private fun buildAndShowErrorBubble() {
         val project = ProjectManager.getInstance().defaultProject
+
+        val popup = JBPopupFactory.getInstance()
+                .createComponentPopupBuilder(currentPanel!!, currentPanel)
+                .setProject(project)
+                .setLocateWithinScreenBounds(true)
+                .setCancelOnClickOutside(true)
+                .setCancelOnWindowDeactivation(false)
+                .setRequestFocus(true)
+                .setMayBeParent(true)
+                .addListener(object : JBPopupListener {
+                    override fun onClosed(event: LightweightWindowEvent) {
+                        markup.removeHighlighter(rangeHighlighter)
+                    }
+                })
+                .createPopup()
+
+        val window = WindowManagerEx.getInstanceEx().mostRecentFocusedWindow
+        popup.showInScreenCoordinates(window!!, modalLocation)
+
         val connection = project.messageBus.connect()
         connection.subscribe(ErrorBubbleFixListener.ERROR_BUBBLE_FIX_TOPIC, object : ErrorBubbleFixListener {
             override fun fixClicked() {
-                close(OK_EXIT_CODE)
+                popup.closeOk(null)
             }
         })
-    }
 
-    //remove default actions
-    override fun createActions(): Array<Action> {
-        return emptyArray()
-    }
-
-    override fun createCenterPanel(): JComponent? {
-        return currentPanel
-    }
-
-    override fun doCancelAction() {
-        super.doCancelAction()
-        markup.removeHighlighter(rangeHighlighter)
+        currentPanel!!.requestFocus()
     }
 }
