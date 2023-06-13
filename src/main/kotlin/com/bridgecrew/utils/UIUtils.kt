@@ -7,6 +7,7 @@ import icons.CheckovIcons
 import java.awt.Color
 import java.awt.Font
 import java.awt.Insets
+import java.text.DecimalFormat
 import javax.swing.Icon
 
 val separatorColorDark: Color = Color.decode("#323232")
@@ -65,4 +66,9 @@ fun getIDEColorMode(): IDEColorMode {
 
 fun isDarkMode(): Boolean {
     return getIDEColorMode() == IDEColorMode.DARK
+}
+
+fun formatNumberWithCommas(number: Int): String {
+    val formatter = DecimalFormat("#,###")
+    return formatter.format(number)
 }

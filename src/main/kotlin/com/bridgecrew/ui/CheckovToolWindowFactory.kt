@@ -7,6 +7,7 @@ import com.bridgecrew.services.ResultsCacheService
 import com.bridgecrew.ui.actions.SeverityFilterActions
 import com.bridgecrew.ui.topPanel.CheckovActionToolbar
 import com.bridgecrew.utils.PANELTYPE
+import com.bridgecrew.utils.formatNumberWithCommas
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.project.Project
@@ -109,7 +110,8 @@ class CheckovToolWindowFactory : ToolWindowFactory {
         val categories = if(category != null) listOf(category) else Category.values().toList()
         val checkovResults = project.service<ResultsCacheService>().checkovResults
         val resultsCount = CheckovResultsListUtils.filterResultsByCategoriesAndSeverities(checkovResults, categories).size
-        return "$name ($resultsCount)"
+        val formattedCount = formatNumberWithCommas(resultsCount)
+        return "$name ($formattedCount)"
     }
 
     private fun refreshCounts(toolWindowManager: ToolWindowManager, project: Project) {
