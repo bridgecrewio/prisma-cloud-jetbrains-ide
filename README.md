@@ -1,21 +1,23 @@
 ![Prisma Cloud Code Security](src/main/resources/images/prismaLogo1.2.png)
 
+<! 
 [![Maintained by Bridgecrew.io](https://img.shields.io/badge/maintained%20by-bridgecrew.io-blueviolet)](https://bridgecrew.io/?utm_source=github&utm_medium=organic_oss&utm_campaign=checkov-vscode)
 ![Build](https://github.com/bridgecrewio/checkov-jetbrains-idea/workflows/Build/badge.svg)
 [![Version](https://plugins.jetbrains.com/plugin/21907-prisma-cloud)
 [![Downloads](https://img.shields.io/jetbrains/plugin/d/17721-checkov.svg)](https://plugins.jetbrains.com/plugin/17721-checkov)
 [![slack-community](https://img.shields.io/badge/Slack-contact%20us-lightgrey.svg?logo=slack)](https://slack.bridgecrew.io/?utm_source=github&utm_medium=organic_oss&utm_campaign=checkov-intellij)
+>
 
 # Prisma Cloud Plugin for JetBrains IDEA
 
-The Prisma Cloud plugin for JetBrains leverages the capabilities of [Prisma Cloud Code Security](https://docs.paloaltonetworks.com/prisma/prisma-cloud/prisma-cloud-admin-code-security), a static code analysis tool designed specifically to scan your code for Infrastructure-as-Code (IaC) misconfigurations, Software Composition Analysis (SCA) issues and Secrets vulnerabilities.
+The Prisma Cloud plugin for JetBrains leverages the capabilities of [Prisma Cloud Code Security](https://docs.paloaltonetworks.com/prisma/prisma-cloud/prisma-cloud-admin-code-security), a static code analysis tool designed specifically to scan code for Infrastructure-as-Code (IaC) misconfigurations, Software Composition Analysis (SCA) issues and Secrets vulnerabilities.
 
 By integrating the Prisma Cloud plugin into JetBrains, developers receive real-time scan results and inline fix suggestions while developing code.
 You can download the plugin directly from the [JetBrains Plugin Marketplace](https://plugins.jetbrains.com/plugin/21907-prisma-cloud).
 
 ## Key Features
 ---
-- Scans
+- **Scans**
 
   - Scans for IaC misconfigurations, SCA vulnerabilities, and Secrets and License violations
 
@@ -27,9 +29,9 @@ You can download the plugin directly from the [JetBrains Plugin Marketplace](htt
 
   - Detects [AWS credentials](https://github.com/bridgecrewio/checkov/blob/master/docs/2.Basics/Scanning%20Credentials%20and%20Secrets.md) in EC2 User Data, Lambda environment variables, and Terraform providers
 
-- Fixes: Provides automated inline fix capabilities for IaC and SCA issues directly within the editor
+- **Fixes**: Provides automated inline fix capabilities for IaC and SCA issues directly within the editor
 
-- Documented guidelines for commonly misconfigured attributes, secrets and licenses
+- **Documented guidelines** for commonly misconfigured attributes, secrets and licenses
 
 - Supports inline [suppression](https://github.com/bridgecrewio/checkov/blob/master/docs/2.Basics/Suppressing%20and%20Skipping%20Policies.md) via comments to skip specific checks 
 
@@ -87,15 +89,15 @@ In your IDE: Select `Settings/Preferences` (for Windows/Mac) > `Plugins` > `âš™ï
 2. [Generate and save a Prisma Cloud access key](https://docs.paloaltonetworks.com/prisma/prisma-cloud/prisma-cloud-admin-code-security/get-started/generate-access-keys) which consists of an Access Key ID and Secret.
 
 3. Configure plugin settings: In JetBrains IDE navigate to `Settings` > `Tools` > `Prisma Cloud` and fill in the provided fields: 
-a. Access ID and Secret (required fields). 
-b. Recommended: Provide a custom CA certificate by specifying the path to the certificate file.  
+- Access ID and Secret (required) 
+- Custom CA certificate (recommended): Provide a custom CA certificate by specifying the path to the certificate file.  
 **NOTE**: Ensure that the certificate file is in the PEM format.
 
 ## Usage
 ---
 ### Scan
  
-- Scan a project: Click scan or the Play button to scan a project
+- Scan a project: Click scan or the **Play** button to scan a project
 - Scan a file: Open a file. A scan will run automatically when opening or saving a file 
 
 ### Analyze Results and Fix Issues
@@ -104,11 +106,11 @@ b. Recommended: Provide a custom CA certificate by specifying the path to the ce
 
 -- **In-line fixes**: Prisma Cloud Code Security highlights errors in the editor as you code, including details of the violating policy. To fix an error, select the line with the issue to display a popup with the description and suggested fix
 
--- **Problems tool panel** at the bottom of the screen: Lists vulnerabilities in the left pane. Click on a vulnerability to display its details. If a fix is available, select the Fix button that is displayed in the top right of the panel. Otherwise refer to suggested solutions or the documentation to resolve the issue  
+-- **Problems tool panel** at the bottom of the screen: Lists vulnerabilities in the left pane. Click on a vulnerability to display its details. If a fix is available, select the **Fix** button that is displayed in the top right of the panel. Otherwise refer to suggested solutions or the documentation to resolve the issue  
 
 -- **Suppression**: You can skip checks by clicking the *Suppression* button in the popup or in the *Error view* of the Problems tool panel
 
-### Troubleshoot 
+### Troubleshooting 
 
 Troubleshoot errors directly in the JetBrains UI using the **Event Log**.
 
