@@ -4,6 +4,7 @@ import com.bridgecrew.results.*
 import com.bridgecrew.ui.rightPanel.extraInfoPanel.*
 import com.bridgecrew.ui.rightPanel.topPanel.*
 import com.bridgecrew.utils.*
+import com.intellij.ui.ScrollPaneFactory
 import com.intellij.util.ui.UIUtil
 import java.awt.Graphics
 import java.awt.Graphics2D
@@ -27,7 +28,7 @@ class CheckovErrorRightPanel(var result: BaseCheckovResult): JPanel() {
             override fun paint(g: Graphics, c: JComponent) {
                 val g2d = g.create() as Graphics2D
                 g2d.paint = if(isDarkMode()) separatorColorDark else separatorColorLight
-                g2d.fillRect(0, 0, c.width, c.height)
+                g2d.fillRect(0, 0, c.width, 1)
                 g2d.dispose()
             }
         })
@@ -44,13 +45,17 @@ class CheckovErrorRightPanel(var result: BaseCheckovResult): JPanel() {
         return titlePanel
     }
 
-    private fun createExtraInfoPanel(): JPanel {
+    private fun createExtraInfoPanel(): JScrollPane {
         val extraInfoPanel = when(result.category) {
             Category.IAC -> IacExtraInfoPanel(result)
             Category.VULNERABILITIES -> VulnerabilitiesExtraInfoPanel(result as VulnerabilityCheckovResult)
             Category.SECRETS -> SecretsExtraInfoPanel(result as SecretsCheckovResult)
             Category.LICENSES -> LicenseExtraInfoPanel(result as LicenseCheckovResult)
         }
-        return extraInfoPanel
+        return ScrollPaneFactory.createScrollPane(
+                extraInfoPanel,
+                ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER
+        )
     }
 }

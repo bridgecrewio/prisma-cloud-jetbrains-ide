@@ -1,12 +1,9 @@
 ![Prisma Cloud Code Security](src/main/resources/images/prismaLogo1.2.png)
 
-<! 
 [![Maintained by Bridgecrew.io](https://img.shields.io/badge/maintained%20by-bridgecrew.io-blueviolet)](https://bridgecrew.io/?utm_source=github&utm_medium=organic_oss&utm_campaign=checkov-vscode)
-![Build](https://github.com/bridgecrewio/checkov-jetbrains-idea/workflows/Build/badge.svg)
-[![Version](https://plugins.jetbrains.com/plugin/21907-prisma-cloud)
 [![Downloads](https://img.shields.io/jetbrains/plugin/d/17721-checkov.svg)](https://plugins.jetbrains.com/plugin/17721-checkov)
-[![slack-community](https://img.shields.io/badge/Slack-contact%20us-lightgrey.svg?logo=slack)](https://slack.bridgecrew.io/?utm_source=github&utm_medium=organic_oss&utm_campaign=checkov-intellij)
->
+
+<!-- Plugin description -->
 
 # Prisma Cloud Plugin for JetBrains IDEA
 
