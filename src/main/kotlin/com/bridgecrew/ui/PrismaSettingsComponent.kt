@@ -48,6 +48,7 @@ class PrismaSettingsComponent {
         settingsPanel.add(accessKeyLabel, constraints)
         constraints.gridx = 1
         constraints.ipady = 0
+        inputField.preferredSize = Dimension(380, inputField.preferredSize.height)
         settingsPanel.add(inputField, constraints)
     }
 

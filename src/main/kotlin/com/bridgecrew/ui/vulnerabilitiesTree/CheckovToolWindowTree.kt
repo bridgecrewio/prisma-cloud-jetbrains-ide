@@ -6,6 +6,7 @@ import com.bridgecrew.results.Category
 import com.bridgecrew.services.ResultsCacheService
 import com.bridgecrew.services.CheckovResultsListUtils
 import com.bridgecrew.ui.CheckovToolWindowDescriptionPanel
+import com.bridgecrew.ui.rightPanel.CheckovErrorRightPanel
 import com.bridgecrew.utils.navigateToFile
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.ApplicationManager
@@ -80,7 +81,7 @@ class CheckovToolWindowTree(
                 if (node.userObject is CheckovVulnerabilityTreeNode) {
                     val vulnerabilityTreeNode = node.userObject as CheckovVulnerabilityTreeNode
                     val checkovResult = vulnerabilityTreeNode.checkovResult
-                    split.secondComponent = descriptionPanel.createScroll(checkovResult)
+                    split.secondComponent = CheckovErrorRightPanel(checkovResult)
                     WriteCommandAction.runWriteCommandAction(project) {
                         navigateToFile(project, checkovResult.absoluteFilePath, checkovResult.fileLineRange[0])
                     }

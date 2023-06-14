@@ -1,7 +1,5 @@
 package com.bridgecrew.ui
 
-import com.bridgecrew.results.BaseCheckovResult
-import com.bridgecrew.ui.rightPanel.CheckovErrorRightPanel
 import com.bridgecrew.utils.createGridRowCol
 import com.intellij.icons.AllIcons
 import com.intellij.ide.DataManager
@@ -9,7 +7,6 @@ import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
-import com.intellij.ui.ScrollPaneFactory
 import com.intellij.uiDesigner.core.GridConstraints
 import com.intellij.uiDesigner.core.GridLayoutManager
 import com.intellij.util.ui.UIUtil
@@ -95,22 +92,6 @@ class CheckovToolWindowDescriptionPanel(val project: Project) : SimpleToolWindow
         descriptionPanel.add(imagePanel, createGridRowCol(0,0,GridConstraints.ANCHOR_NORTHEAST))
         descriptionPanel.add(scanningPanel, createGridRowCol(1,0,GridConstraints.ANCHOR_NORTH))
         return descriptionPanel
-    }
-
-    /**
-     * Create description for specific checkov result.
-     */
-    private fun descriptionOfCheckovScan(checkovResult: BaseCheckovResult): JPanel {
-        return CheckovErrorRightPanel(checkovResult)
-    }
-
-    fun createScroll(checkovResult: BaseCheckovResult): JScrollPane {
-        val descriptionPanelRes = descriptionOfCheckovScan(checkovResult)
-        return ScrollPaneFactory.createScrollPane(
-            descriptionPanelRes,
-            ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-            ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER
-        )
     }
 
     private fun createImagePanel(): JPanel {
