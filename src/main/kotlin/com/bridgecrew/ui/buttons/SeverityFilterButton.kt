@@ -25,7 +25,7 @@ class SeverityFilterButton(val project: Project, text: String, val severity: Sev
             override fun paint(g: Graphics?, c: JComponent?) {
                 val g2d = g?.create() as Graphics2D
                 g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
-                g2d.color = getFilterColor().first
+                g2d.color = getFilterColor()
                 c?.height?.let { g2d.fillRect(0,0,  c.width, it) }
                 val boldFont = Font(font.fontName, Font.BOLD, font.size)
                 font = boldFont
@@ -37,20 +37,13 @@ class SeverityFilterButton(val project: Project, text: String, val severity: Sev
         isEnabled = shouldBeEnabled(severity, project)
     }
 
-    private fun getFilterColor(): Pair<Color, Color> {
+    private fun getFilterColor(): Color {
         var bgColor: Color = UIUtil.getEditorPaneBackground()
-        var textColor: Color = UIUtil.getEditorPaneBackground()
-        if(shouldBeEnabled(severity, project)) {
-            if(isClicked()) {
-                val color = if(isDarkMode()) Color.decode("#5C6164") else Color.decode("#CFCFCF")
-                bgColor = Color(color.red, color.green, color.blue, 102)
-                textColor = if(isDarkMode()) Color.decode("#AFB1B3") else Color.decode("#6E6E6E")
-            } else {
-                bgColor = UIUtil.getEditorPaneBackground()
-                textColor = if(isDarkMode()) Color.decode("#AFB1B3") else Color.decode("#6E6E6E")
-            }
+        if(shouldBeEnabled(severity, project) && isClicked()) {
+            val color = if(isDarkMode()) Color.decode("#5C6164") else Color.decode("#CFCFCF")
+            bgColor = Color(color.red, color.green, color.blue, 102)
         }
-        return Pair(bgColor, textColor)
+        return bgColor
     }
 
     private fun isClicked(): Boolean {
