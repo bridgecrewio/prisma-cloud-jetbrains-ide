@@ -14,7 +14,11 @@ open class CheckovDescriptionPanelTop(val result: BaseCheckovResult) : JPanel() 
     init {
         layout = GridBagLayout()
         maximumSize = Dimension(Int.MAX_VALUE, 30)
-        border = BorderFactory.createEmptyBorder(10, 10, 10, 10)
+        border = BorderFactory.createCompoundBorder(
+            BorderFactory.createMatteBorder(0,0,1,0, getSeparatorColor()),
+            BorderFactory.createEmptyBorder(10, 10, 10, 10)
+        )
+
         background = UIUtil.getEditorPaneBackground()
     }
 

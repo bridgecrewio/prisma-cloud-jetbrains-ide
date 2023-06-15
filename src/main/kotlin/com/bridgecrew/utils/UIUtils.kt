@@ -72,3 +72,6 @@ fun formatNumberWithCommas(number: Int): String {
     val formatter = DecimalFormat("#,###")
     return formatter.format(number)
 }
+fun getSeparatorColor(): Color {
+    return if(isDarkMode()) separatorColorDark else separatorColorLight
+}
