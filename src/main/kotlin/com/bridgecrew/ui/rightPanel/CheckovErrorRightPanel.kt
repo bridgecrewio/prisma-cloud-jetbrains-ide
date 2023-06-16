@@ -46,6 +46,7 @@ class CheckovErrorRightPanel(var result: BaseCheckovResult): JPanel() {
     private fun addVerticalGlue() {
         val p = JPanel()
         p.layout = GridBagLayout()
+        p.background = UIUtil.getEditorPaneBackground()
         add(p)
     }
 }
