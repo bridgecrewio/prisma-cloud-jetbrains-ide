@@ -106,7 +106,7 @@ class CheckovToolWindowDescriptionPanel(val project: Project) : SimpleToolWindow
 
     private fun createStatusScreenWithIcon(text: String, isAddScan: Boolean = false): JPanel {
         val mainPanel = JPanel()
-        mainPanel.background = UIUtil.getEditorPaneBackground()
+        mainPanel.layout = BoxLayout(mainPanel, BoxLayout.Y_AXIS)
         val imagePanel = JPanel()
         imagePanel.layout = BoxLayout(imagePanel, BoxLayout.Y_AXIS)
         imagePanel.background = UIUtil.getEditorPaneBackground()
@@ -120,8 +120,6 @@ class CheckovToolWindowDescriptionPanel(val project: Project) : SimpleToolWindow
         prismaText.alignmentX = CENTER_ALIGNMENT
         prismaText.font = Font("SF Pro Text", Font.BOLD, 10)
         prismaText.foreground = Color.decode("#7F8B91")
-        imagePanel.add(Box.createRigidArea(Dimension(0, 50)))
-        imagePanel.add(Box.createVerticalGlue())
         imagePanel.add(status)
         imagePanel.add(Box.createRigidArea(Dimension(0, 15)))
 
@@ -134,8 +132,9 @@ class CheckovToolWindowDescriptionPanel(val project: Project) : SimpleToolWindow
         imagePanel.add(iconLabel)
         imagePanel.add(Box.createRigidArea(Dimension(0, 10)))
         imagePanel.add(prismaText)
-        imagePanel.add(Box.createVerticalGlue())
-        mainPanel.add(imagePanel, BorderLayout.CENTER)
+        mainPanel.add(Box.createVerticalGlue())
+        mainPanel.add(imagePanel)
+        mainPanel.add(Box.createVerticalGlue())
         return mainPanel
     }
 
