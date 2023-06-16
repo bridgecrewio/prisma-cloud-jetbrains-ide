@@ -21,7 +21,7 @@ class ErrorBubbleTopPanel(val result: BaseCheckovResult, private val title: Stri
             add(buildNavigation())
         }
 
-        border = BorderFactory.createEmptyBorder(JBUIScale.scale(5), JBUIScale.scale(10), JBUIScale.scale(11), JBUIScale.scale(10))
+        border = BorderFactory.createEmptyBorder(JBUIScale.scale(10), JBUIScale.scale(10), JBUIScale.scale(11), JBUIScale.scale(10))
         preferredSize = Dimension(ErrorBubbleInnerPanel.PANEL_WIDTH, this.preferredSize.height)
         minimumSize = preferredSize
         maximumSize = preferredSize
