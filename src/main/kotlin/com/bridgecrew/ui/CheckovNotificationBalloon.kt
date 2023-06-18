@@ -4,16 +4,15 @@ import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.project.Project
 
-class CheckovNotificationBalloon {
-    companion object {
-        private const val groupId = "CheckovError"
-        private val notificationGroupManager = NotificationGroupManager.getInstance().getNotificationGroup(groupId)
-        fun showNotification(project: Project, notificationContent: String, notificationType: NotificationType) {
-            val notification = notificationGroupManager.createNotification(
-                    notificationContent,
-                    notificationType
-            )
-            notification.notify(project)
-        }
+object CheckovNotificationBalloon {
+
+    private const val GROUP_ID = "CheckovError"
+    private val NOTIFICATION_GROUP = NotificationGroupManager.getInstance().getNotificationGroup(GROUP_ID)
+    fun showNotification(project: Project, notificationContent: String, notificationType: NotificationType) {
+        val notification = NOTIFICATION_GROUP.createNotification(
+                notificationContent,
+                notificationType
+        )
+        notification.notify(project)
     }
 }
