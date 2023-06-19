@@ -1,5 +1,6 @@
 package com.bridgecrew.ui.vulnerabilitiesTree
 
+import com.intellij.util.ui.UIUtil
 import java.awt.Component
 import javax.swing.JTree
 import javax.swing.tree.DefaultMutableTreeNode
