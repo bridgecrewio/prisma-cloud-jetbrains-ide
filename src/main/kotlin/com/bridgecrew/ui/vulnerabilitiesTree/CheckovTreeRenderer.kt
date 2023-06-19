@@ -24,6 +24,9 @@ class CheckovTreeRenderer : DefaultTreeCellRenderer() {
             }
         }
 
+        setBorderSelectionColor(backgroundSelectionColor)
+        setBackgroundNonSelectionColor(UIUtil.getEditorPaneBackground() ?: background)
+
         return this
     }
 }
