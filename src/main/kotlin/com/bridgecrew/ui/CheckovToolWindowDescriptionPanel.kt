@@ -107,6 +107,7 @@ class CheckovToolWindowDescriptionPanel(val project: Project) : SimpleToolWindow
     private fun createStatusScreenWithIcon(text: String, isAddScan: Boolean = false): JPanel {
         val mainPanel = JPanel()
         mainPanel.layout = BoxLayout(mainPanel, BoxLayout.Y_AXIS)
+        mainPanel.background = UIUtil.getEditorPaneBackground()
         val imagePanel = JPanel()
         imagePanel.layout = BoxLayout(imagePanel, BoxLayout.Y_AXIS)
         imagePanel.background = UIUtil.getEditorPaneBackground()

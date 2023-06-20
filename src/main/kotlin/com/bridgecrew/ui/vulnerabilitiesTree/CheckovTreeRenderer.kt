@@ -1,5 +1,6 @@
 package com.bridgecrew.ui.vulnerabilitiesTree
 
+import com.intellij.util.ui.UIUtil
 import java.awt.Component
 import javax.swing.JTree
 import javax.swing.tree.DefaultMutableTreeNode
@@ -23,6 +24,10 @@ class CheckovTreeRenderer : DefaultTreeCellRenderer() {
                 icon = userObject.getNodeIcon()
             }
         }
+        setBackgroundSelectionColor(UIUtil.TRANSPARENT_COLOR)
+        setBorderSelectionColor(backgroundSelectionColor)
+        setBackgroundNonSelectionColor(UIUtil.getEditorPaneBackground() ?: background)
+        foreground = if (hasFocus) UIUtil.getListForeground(true, true) else UIUtil.getListForeground(true, false)
 
         return this
     }
