@@ -27,7 +27,7 @@ class CheckovTreeRenderer : DefaultTreeCellRenderer() {
         setBackgroundSelectionColor(UIUtil.TRANSPARENT_COLOR)
         setBorderSelectionColor(backgroundSelectionColor)
         setBackgroundNonSelectionColor(UIUtil.getEditorPaneBackground() ?: background)
-        foreground = if (hasFocus) UIUtil.getListForeground(true, true) else UIUtil.getListForeground(true, false)
+        foreground = UIUtil.getListForeground(true, hasFocus)
 
         return this
     }
