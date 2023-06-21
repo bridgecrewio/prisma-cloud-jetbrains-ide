@@ -58,7 +58,7 @@ fun getIDEColorMode(): IDEColorMode {
     return when(currentScheme.name) {
         "_@user_High contrast" -> IDEColorMode.DARK
         "_@user_Darcula" -> IDEColorMode.DARK
-        "@user_IntelliJ Light" -> IDEColorMode.LIGHT
+        "_@user_IntelliJ Light" -> IDEColorMode.LIGHT
         "_@user_Default" -> IDEColorMode.LIGHT
         else -> IDEColorMode.DARK
     }
