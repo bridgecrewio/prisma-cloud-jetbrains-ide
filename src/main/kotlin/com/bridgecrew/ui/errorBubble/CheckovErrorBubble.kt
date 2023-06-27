@@ -3,6 +3,7 @@ package com.bridgecrew.ui.errorBubble
 import com.bridgecrew.listeners.ErrorBubbleFixListener
 import com.bridgecrew.results.BaseCheckovResult
 import com.bridgecrew.results.Category
+import com.bridgecrew.services.CheckovResultsComparatorGenerator
 import com.intellij.openapi.editor.markup.MarkupModel
 import com.intellij.openapi.editor.markup.RangeHighlighter
 import com.intellij.openapi.project.ProjectManager
@@ -32,7 +33,7 @@ class CheckovErrorBubble(val results: List<BaseCheckovResult>, private val modal
         val vulnerabilityCount = if (vulnerabilityResults.isNotEmpty()) 1 else 0
         val totalPanels = otherResults.size + vulnerabilityCount
         var runningIndex = 0
-        otherResults.forEachIndexed { index, baseCheckovResult ->
+        otherResults.sortedWith(CheckovResultsComparatorGenerator.generateCheckovResultComparator()).forEachIndexed { index, baseCheckovResult ->
             panelList.add(ErrorBubbleInnerPanel(baseCheckovResult, 0, index, totalPanels, callBack))
             runningIndex = index + 1
         }
