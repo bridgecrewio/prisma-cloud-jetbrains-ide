@@ -1,5 +1,6 @@
 package com.bridgecrew.analytics
 
+import com.bridgecrew.api.ApiClient
 import com.bridgecrew.services.scan.FullScanStateService
 import com.bridgecrew.services.scan.ScanTaskResult
 import com.intellij.openapi.components.Service
@@ -10,13 +11,21 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.concurrent.TimeUnit
 
+import com.bridgecrew.settings.PrismaSettingsState
+import kotlinx.serialization.*
+import kotlinx.serialization.json.*
+
 @Service
+@OptIn(ExperimentalSerializationApi::class)
 class AnalyticsService(val project: Project) {
 
     private val LOG = logger<AnalyticsService>()
+    private var apiClient: ApiClient? = null
 
     private var fullScanData: FullScanAnalyticsData? = null
     private var fullScanNumber = 0
+
+    private var analyticsEventData: MutableList<FullScanAnalyticsData> = arrayListOf()
 
     var wereFullScanResultsDisplayed = false
     var wereSingleFileScanResultsDisplayed = false
@@ -43,13 +52,15 @@ class AnalyticsService(val project: Project) {
 
     fun fullScanByFrameworkFinished(framework: String) {
         fullScanData!!.frameworksScanTime[framework]!!.endTime = Date()
-        fullScanData!!.frameworksScanTime[framework]!!.totalTimeMinutes = fullScanData!!.frameworksScanTime[framework]!!.endTime.time - fullScanData!!.frameworksScanTime[framework]!!.startTime.time
-        LOG.info("Prisma Cloud Plugin Analytics - scan #${fullScanNumber} - full scan finished for framework $framework and took ${fullScanData!!.frameworksScanTime[framework]!!.totalTimeMinutes} ms")
+        fullScanData!!.frameworksScanTime[framework]!!.totalTimeSeconds = (fullScanData!!.frameworksScanTime[framework]!!.endTime.time - fullScanData!!.frameworksScanTime[framework]!!.startTime.time) / 1000
+        LOG.info("Prisma Cloud Plugin Analytics - scan #${fullScanNumber} - full scan finished for framework $framework and took ${fullScanData!!.frameworksScanTime[framework]!!.totalTimeSeconds} ms")
     }
 
     fun fullScanFinished() {
         fullScanData!!.scanFinishedTime = Date()
         LOG.info("Prisma Cloud Plugin Analytics - scan #${fullScanNumber} - full scan finished")
+        analyticsEventData.add(fullScanData!!)
+        releaseStatistics()
     }
 
     fun fullScanFrameworkFinishedNoErrors(framework: String) {
@@ -87,17 +98,17 @@ class AnalyticsService(val project: Project) {
         var maximumFramework = ""
         var minimumFramework = ""
         fullScanData!!.frameworksScanTime.forEach { framework ->
-            if (framework.value.totalTimeMinutes >= maximumScanFramework) {
-                maximumScanFramework = framework.value.totalTimeMinutes
+            if (framework.value.totalTimeSeconds >= maximumScanFramework) {
+                maximumScanFramework = framework.value.totalTimeSeconds
                 maximumFramework = framework.key
                 if (minimumFramework.isEmpty()) {
-                    minimumScanFramework = framework.value.totalTimeMinutes
+                    minimumScanFramework = framework.value.totalTimeSeconds
                     minimumFramework = framework.key
                 }
             }
 
-            if (framework.value.totalTimeMinutes <= minimumScanFramework) {
-                minimumScanFramework = framework.value.totalTimeMinutes
+            if (framework.value.totalTimeSeconds <= minimumScanFramework) {
+                minimumScanFramework = framework.value.totalTimeSeconds
                 minimumFramework = framework.key
             }
         }
@@ -134,19 +145,58 @@ class AnalyticsService(val project: Project) {
         return "${minutes}:${secondsString}"
     }
 
+    private fun releaseStatistics() {
+        val apiClient = getApiClient()
+        //todo maybe extends with pluginInstallationId
+        val isReleased = apiClient.putDataAnalytics(Json.encodeToString(analyticsEventData))
+        if(isReleased){
+            analyticsEventData.clear()
+        }
+    }
+
+    private fun getApiClient(): ApiClient {
+        if (this.apiClient != null) {
+            return this.apiClient!!
+        }
+
+        val settings = PrismaSettingsState().getInstance()
+        if (settings?.accessKey!!.isNotEmpty() && settings.secretKey.isNotEmpty() && settings.prismaURL.isNotEmpty()) {
+            this.apiClient = ApiClient(settings.accessKey, settings.secretKey, settings.prismaURL)
+            return this.apiClient!!
+        }
+
+        throw Exception("Prisma could parameters: accessKey, secretKey, prismaURL have not been initialized!")
+    }
+
+    @Serializable
     data class FullScanAnalyticsData(val scanNumber: Int) {
+        @Serializable(with = DateSerializer::class)
         lateinit var buttonPressedTime: Date
+
+        @Serializable(with = DateSerializer::class)
+        @Transient
         lateinit var scanStartedTime: Date
         val frameworksScanTime: MutableMap<String, FullScanFrameworkScanTimeData> = mutableMapOf()
+
+        @Serializable(with = DateSerializer::class)
+        @Transient
         lateinit var scanFinishedTime: Date
+
+        @Serializable(with = DateSerializer::class)
+        @Transient
         lateinit var resultsWereFullyDisplayedTime: Date
 
         fun isFullScanFinished() = ::scanFinishedTime.isInitialized
         fun isFullScanStarted() = ::scanStartedTime.isInitialized
     }
 
-    data class FullScanFrameworkScanTimeData(val startTime: Date) {
+    @Serializable
+    data class FullScanFrameworkScanTimeData(
+            @Serializable(with = DateSerializer::class)
+            val startTime: Date
+    ) {
+        @Serializable(with = DateSerializer::class)
         var endTime: Date = Date()
-        var totalTimeMinutes = 0L
+        var totalTimeSeconds = 0L
     }
 }
