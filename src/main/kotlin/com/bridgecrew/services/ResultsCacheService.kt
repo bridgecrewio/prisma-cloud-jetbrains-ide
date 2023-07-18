@@ -73,7 +73,7 @@ class ResultsCacheService(val project: Project) {
                                 result.vulnerability_details.root_package_name,
                                 result.vulnerability_details.root_package_version,
                                 result.vulnerability_details.root_package_fix_version,
-
+                                result.vulnerability_details.fix_command
                                 )
                         checkovResults.add(vulnerabilityCheckovResult)
 

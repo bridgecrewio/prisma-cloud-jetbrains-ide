@@ -1,9 +1,11 @@
 package com.bridgecrew.ui.actions
 
+import com.bridgecrew.FixCommand
 import com.bridgecrew.listeners.CheckovScanListener
 import com.bridgecrew.listeners.ErrorBubbleFixListener
 import com.bridgecrew.results.BaseCheckovResult
 import com.bridgecrew.results.Category
+import com.bridgecrew.results.VulnerabilityCheckovResult
 import com.bridgecrew.services.scan.CheckovScanService
 import com.bridgecrew.utils.navigateToFile
 import com.intellij.ide.DataManager
@@ -61,19 +63,23 @@ class FixAction(private val buttonInstance: JButton, val result: BaseCheckovResu
     override fun actionPerformed(e: ActionEvent?) {
         buttonInstance.isEnabled = false
         ApplicationManager.getApplication().invokeLater {
-            applyFixDefinition()
+            if (result.category == Category.VULNERABILITIES) {
+                handleSCEFixes()
+            } else {
+                applyFixDefinition()
+            }
         }
         val project = ProjectManager.getInstance().defaultProject
         project.messageBus.syncPublisher(ErrorBubbleFixListener.ERROR_BUBBLE_FIX_TOPIC).fixClicked()
     }
 
-    private fun applyFixDefinition() {
+    private fun applyFixDefinition(): Boolean {
         try {
-            val startLine: Int = result.fileLineRange.getOrElse(0) { 1 } - 1
-            val endLine: Int = result.fileLineRange.getOrElse(1) { 1 } - 1
+            val startLine: Int = getLineByIndex(0)
+            val endLine: Int = getLineByIndex(1)
 
             val virtualFile: VirtualFile = LocalFileSystem.getInstance().findFileByPath(result.absoluteFilePath)
-                    ?: return
+                    ?: return false
             val document: Document? = FileDocumentManager.getInstance().getDocument(virtualFile)
 
             val startOffset = document!!.getLineStartOffset(startLine)
@@ -81,11 +87,6 @@ class FixAction(private val buttonInstance: JButton, val result: BaseCheckovResu
 
             val dataContext = DataManager.getInstance().dataContext
             val project = dataContext.getData("project") as Project
-
-            if (result.category == Category.VULNERABILITIES) {
-                CheckovGlobalState.filesNotToScanAfterFix.add(result.absoluteFilePath)
-                alertManualFixNeeded()
-            }
 
             WriteCommandAction.runWriteCommandAction(project) {
                 document.replaceString(startOffset, endOffset, result.fixDefinition!!)
@@ -95,15 +96,55 @@ class FixAction(private val buttonInstance: JButton, val result: BaseCheckovResu
         } catch (e: Exception) {
             LOG.warn("error while trying to apply fix", e)
             buttonInstance.isEnabled = true
+            return false
+        }
+        return true
+    }
+
+    private fun getLineByIndex(index: Int): Int {
+        val line: Int = result.fileLineRange.getOrElse(index) { 0 }
+        return if(line > 0) line - 1 else line
+    }
+
+    private fun handleSCEFixes() {
+        try {
+            val fixCommand = (result as VulnerabilityCheckovResult).fixCommand
+            if(fixCommand != null) {
+                CheckovGlobalState.filesNotToScanAfterFix.add(result.absoluteFilePath)
+                if(fixCommand.manualCodeFix) {
+                    val isSuccess = applyFixDefinition()
+                    showSCAFixModal(fixCommand, isSuccess)
+                } else {
+                    showSCAFixModal(fixCommand, true)
+                }
+            }
+        } catch (e: Exception) {
+            LOG.warn("error while trying to apply SCA fix", e)
+            buttonInstance.isEnabled = true
         }
     }
 
-    private fun alertManualFixNeeded() {
+    private fun showSCAFixModal(fixCommand: FixCommand, isSuccess: Boolean) {
         val dataContext = DataManager.getInstance().dataContext
         val project = dataContext.getData("project") as Project
         Messages.showInfoMessage(project,
-                "In order for the fix to take effect, you need to manualy run `yarn install`. Without it, the fix is not complete",
-                "Additional Action Required"
+                buildModalMessage(fixCommand, isSuccess),
+                "SCA Fix - Additional Action Required"
         )
+    }
+
+    private fun buildModalMessage(fixCommand: FixCommand, isSuccess: Boolean): String {
+        var message = "${fixCommand.msg}\n${fixCommand.cmds.joinToString("\n")}"
+        if(fixCommand.manualCodeFix) {
+            message = if(isSuccess) {
+                val firstLine = getLineByIndex(0)
+                val lastLine = getLineByIndex(1)
+                val lineMsg = if(firstLine == lastLine) "in line $firstLine" else "between lines $firstLine and $lastLine"
+                "We added a change to ${result.filePath} $lineMsg\n" + message
+            } else {
+                "Couldn't apply a code fix to this SCA vulnerability"
+            }
+        }
+        return message
     }
 }

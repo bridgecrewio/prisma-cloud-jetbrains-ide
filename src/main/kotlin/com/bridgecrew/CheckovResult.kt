@@ -18,7 +18,14 @@ data class VulnerabilityDetails(
         val risk_factors: Map<String, Any>,
         val root_package_name: String?,
         val root_package_version: String?,
-        val root_package_fix_version: String?
+        val root_package_fix_version: String?,
+        val fix_command: FixCommand?
+)
+
+data class FixCommand(
+        val msg: String?,
+        val cmds: ArrayList<String>,
+        val manualCodeFix: Boolean
 )
 
 data class CheckovResult(
