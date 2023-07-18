@@ -40,12 +40,6 @@ enum class FileType {
     UNKNOWN
 }
 
-val SUPPRESSION_BUTTON_ALLOWED_FILE_TYPES: Set<FileType> = setOf(
-        FileType.DOCKERFILE,
-        FileType.YAML,
-        FileType.TERRAFORM
-)
-
 // license
 const val VIOLATED_LICENSES_TITLE = "Non-Complaint license"
 const val UNKNOWN_LICENSES_TITLE = "Unknown license"

@@ -8,4 +8,5 @@ object CheckovGlobalState {
     var lastLoadedPanel = PANELTYPE.AUTO_CHOOSE_PANEL
     var scanInProgress: Boolean = false
     var filesNotToScanAfterFix: MutableList<String> = mutableListOf()
+    var suppressedFileToIgnore: String = ""
 }

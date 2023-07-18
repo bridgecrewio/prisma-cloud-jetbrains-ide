@@ -5,6 +5,7 @@ import com.bridgecrew.errors.CheckovErrorHandlerService
 import com.bridgecrew.listeners.CheckovScanListener
 import com.bridgecrew.services.ResultsCacheService
 import com.bridgecrew.services.checkovScanCommandsService.CheckovScanCommandsService
+import com.bridgecrew.settings.CheckovGlobalState
 import com.bridgecrew.settings.PrismaSettingsState
 import com.bridgecrew.ui.actions.CheckovScanAction
 import com.bridgecrew.utils.*
@@ -125,6 +126,7 @@ class CheckovScanService: Disposable {
                     }
                 }
 
+                CheckovGlobalState.suppressedFileToIgnore = ""
             }
         } catch (e: Exception) {
             CheckovScanAction.resetActionDynamically(true)

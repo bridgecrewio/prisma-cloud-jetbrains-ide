@@ -60,8 +60,7 @@ open class CheckovDescriptionPanelTop(val result: BaseCheckovResult) : JPanel() 
     }
 
     fun createSuppressionButton(panel: JPanel) {
-        val fileType: FileType = getFileType(result.filePath)
-        if (SUPPRESSION_BUTTON_ALLOWED_FILE_TYPES.contains(fileType)) {
+        if (isShowSuppressionButton(result)) {
             panel.add(SuppressionButton(result))
         }
     }

@@ -1,17 +1,16 @@
 package com.bridgecrew.ui.actions
 
 import com.bridgecrew.results.BaseCheckovResult
+import com.bridgecrew.settings.CheckovGlobalState
 import com.bridgecrew.ui.SuppressionDialog
 import com.bridgecrew.ui.buttons.SuppressionLinkButton
 import com.bridgecrew.utils.FileType
 import com.bridgecrew.utils.getFileType
 import com.bridgecrew.utils.navigateToFile
-import com.intellij.ide.DataManager
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.fileEditor.FileDocumentManager
-import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.util.TextRange
@@ -94,7 +93,7 @@ class SuppressAction(private val buttonInstance: JButton, private var result: Ba
 
     private fun addTextToFile(document: Document, lineNumber: Int, suppressionComment: String) {
         val insertionOffset = document.getLineStartOffset(lineNumber)
-
+        CheckovGlobalState.suppressedFileToIgnore = result.filePath
         WriteCommandAction.runWriteCommandAction(null) {
             val editor = EditorFactory.getInstance().createEditor(document, null)
             val newLineText = "${suppressionComment}\n"
