@@ -1,5 +1,7 @@
 package com.bridgecrew.utils
 
+import com.bridgecrew.results.BaseCheckovResult
+import com.bridgecrew.results.Category
 import com.bridgecrew.results.Severity
 import com.intellij.openapi.editor.colors.EditorColorsManager
 import com.intellij.uiDesigner.core.GridConstraints
@@ -74,4 +76,8 @@ fun formatNumberWithCommas(number: Int): String {
 }
 fun getSeparatorColor(): Color {
     return if(isDarkMode()) separatorColorDark else separatorColorLight
+}
+
+fun isShowSuppressionButton(result: BaseCheckovResult): Boolean {
+    return result.category == Category.IAC || result.category == Category.VULNERABILITIES
 }

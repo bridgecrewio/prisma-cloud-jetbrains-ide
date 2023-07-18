@@ -44,6 +44,7 @@ import com.intellij.openapi.wm.ToolWindowManager
 import com.intellij.openapi.wm.ex.ToolWindowManagerListener
 import com.intellij.ui.OnePixelSplitter
 import java.awt.BorderLayout
+import java.io.File
 import javax.swing.SwingUtilities
 
 @Service
@@ -271,9 +272,14 @@ class CheckovToolWindowManagerPanel(val project: Project) : SimpleToolWindowPane
         val virtualFilePath: String = toVirtualFilePath(project, virtualFile)
 
         val excludedPaths = (getGitIgnoreValues(project) + FULL_SCAN_EXCLUDED_PATHS).distinct()
+        val isIgnoreFile = CheckovGlobalState.suppressedFileToIgnore.removePrefix(File.separator) == virtualFilePath || CheckovGlobalState.suppressedFileToIgnore == virtualFilePath
+        if(isIgnoreFile) {
+            CheckovGlobalState.suppressedFileToIgnore = ""
+        }
 
         return ProjectRootManager.getInstance(project).fileIndex.isInContent(virtualFile) &&
-                excludedPaths.find { excludedPath -> virtualFilePath.startsWith(excludedPath) }.isNullOrEmpty()
+                excludedPaths.find { excludedPath -> virtualFilePath.startsWith(excludedPath) }.isNullOrEmpty() &&
+                !isIgnoreFile
     }
 
     fun subscribeToInternalEvents(project: Project) {
