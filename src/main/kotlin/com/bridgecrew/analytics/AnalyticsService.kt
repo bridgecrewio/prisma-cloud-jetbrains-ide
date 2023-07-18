@@ -25,7 +25,7 @@ class AnalyticsService(val project: Project) {
     private var fullScanData: FullScanAnalyticsData? = null
     private var fullScanNumber = 0
 
-    private var analyticsEventData: MutableList<FullScanAnalyticsData> = arrayListOf()
+    private var analyticsEventData: MutableList<AnalyticsData> = arrayListOf()
 
     var wereFullScanResultsDisplayed = false
     var wereSingleFileScanResultsDisplayed = false
@@ -59,8 +59,16 @@ class AnalyticsService(val project: Project) {
     fun fullScanFinished() {
         fullScanData!!.scanFinishedTime = Date()
         LOG.info("Prisma Cloud Plugin Analytics - scan #${fullScanNumber} - full scan finished")
-        analyticsEventData.add(fullScanData!!)
+        buildFullScanAnalyticsData()
         releaseStatistics()
+    }
+
+    private fun buildFullScanAnalyticsData(){
+        val analyticsData = AnalyticsData()
+        analyticsData.eventData = fullScanData!!.frameworksScanTime
+        analyticsData.eventTime = fullScanData!!.buttonPressedTime
+        analyticsData.eventType = EventTypeEnum.ON_FULL_SCAN
+        analyticsEventData.add(analyticsData)
     }
 
     fun fullScanFrameworkFinishedNoErrors(framework: String) {
@@ -166,6 +174,20 @@ class AnalyticsService(val project: Project) {
         }
 
         throw Exception("Prisma could parameters: accessKey, secretKey, prismaURL have not been initialized!")
+    }
+
+    @Serializable
+    data class AnalyticsData(@EncodeDefault val pluginName: String = "jetbrains"){
+        //todo implement - get real installationId after plugin will be installed
+        @EncodeDefault
+        val installationId: String = "installationId"
+
+        lateinit var eventType: String
+
+        @Serializable(with = DateSerializer::class)
+        lateinit var eventTime: Date
+
+        lateinit var eventData: MutableMap<String, FullScanFrameworkScanTimeData>
     }
 
     @Serializable
