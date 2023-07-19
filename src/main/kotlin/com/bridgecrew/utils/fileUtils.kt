@@ -78,11 +78,15 @@ fun getFileType(filePath: String): FileType {
             "xml" -> FileType.XML
             "kt" -> FileType.KOTLIN
             "java", "jar" -> FileType.JAVA
+            "mod" -> FileType.GOLANG
+            "gradle" -> FileType.GRADLE
+            "csproj" -> FileType.CSPROJ
             else -> FileType.UNKNOWN
         }
     } else {
         when(filePath) { //no "dot" in file name
             "Dockerfile" -> FileType.DOCKERFILE
+            "Gemfile" -> FileType.GEMFILE
             else -> FileType.UNKNOWN
         }
     }

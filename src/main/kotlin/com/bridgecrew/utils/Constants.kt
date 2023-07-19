@@ -37,6 +37,10 @@ enum class FileType {
     PYTHON,
     TEXT,
     XML,
+    GOLANG,
+    GRADLE,
+    CSPROJ,
+    GEMFILE,
     UNKNOWN
 }
 
