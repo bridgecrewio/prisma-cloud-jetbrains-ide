@@ -30,7 +30,7 @@ class CheckovErrorBubble(val results: List<BaseCheckovResult>, private val modal
     init {
         val (vulnerabilityResults, otherResults) = results.partition { it.category == Category.VULNERABILITIES }
 
-        val vulnerabilityCount = if (vulnerabilityResults.isNotEmpty()) 1 else 0
+        val vulnerabilityCount = vulnerabilityResults.size
         val totalPanels = otherResults.size + vulnerabilityCount
         var runningIndex = 0
         otherResults.sortedWith(CheckovResultsComparatorGenerator.generateCheckovResultComparator()).forEachIndexed { index, baseCheckovResult ->
@@ -39,8 +39,10 @@ class CheckovErrorBubble(val results: List<BaseCheckovResult>, private val modal
         }
 
         if (vulnerabilityResults.isNotEmpty()) {
-            val vulnerability = vulnerabilityResults.sortedBy { it.severity }[0]
-            panelList.add(ErrorBubbleInnerPanel(vulnerability, vulnerabilityResults.size, runningIndex, totalPanels, callBack))
+            vulnerabilityResults.sortedBy { it.severity }.forEachIndexed { index, vulnerabilityCheckovResult ->
+                panelList.add(ErrorBubbleInnerPanel(vulnerabilityCheckovResult, 0, runningIndex, totalPanels, callBack))
+                runningIndex += 1
+            }
         }
 
         currentPanel = panelList[0]

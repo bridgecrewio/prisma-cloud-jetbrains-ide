@@ -5,6 +5,7 @@ import com.bridgecrew.results.Category
 import com.bridgecrew.results.LicenseCheckovResult
 import com.bridgecrew.results.VulnerabilityCheckovResult
 import com.bridgecrew.ui.CodeDiffPanel
+import com.bridgecrew.ui.rightPanel.dictionaryDetails.VulnerabilitiesDictionaryPanel
 import com.bridgecrew.utils.UNKNOWN_LICENSES_DESCRIPTION
 import com.bridgecrew.utils.VIOLATED_LICENSES_DESCRIPTION
 import com.intellij.ui.components.JBScrollPane
@@ -59,16 +60,16 @@ class ErrorBubbleInnerPanel(val result: BaseCheckovResult, private val vulnerabi
     private fun addCenterPanelByCategory() {
         when (result.category) {
             Category.VULNERABILITIES -> {
-                if((result as VulnerabilityCheckovResult).rootPackageVersion == null || result.rootPackageFixVersion == null) {
-                    buildCenterPanel("No automated fix is available")
-                } else {
-                    val text = "Bump from version ${result.rootPackageVersion} to ${result.rootPackageFixVersion} to fix"
-                    if (vulnerabilityCount > 1) {
-                        buildCenterPanel("$text all vulnerabilities")
-                    } else {
-                        buildCenterPanel("$text the vulnerability")
-                    }
+                val vulnerabilitiesPanel = VulnerabilitiesDictionaryPanel(result as VulnerabilityCheckovResult)
+                vulnerabilitiesPanel.alignmentX = Component.LEFT_ALIGNMENT
+                vulnerabilitiesPanel.border = BorderFactory.createEmptyBorder(5, 30, 0, 10)
+
+                val scroll = JBScrollPane(vulnerabilitiesPanel)
+                scroll.alignmentX = Component.LEFT_ALIGNMENT
+                SwingUtilities.invokeLater {
+                    scroll.viewport.viewPosition = Point(0, 0)
                 }
+                add(scroll)
             }
 
             Category.IAC -> {
