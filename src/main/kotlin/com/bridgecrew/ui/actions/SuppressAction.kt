@@ -1,6 +1,8 @@
 package com.bridgecrew.ui.actions
 
 import com.bridgecrew.results.BaseCheckovResult
+import com.bridgecrew.results.Category
+import com.bridgecrew.results.VulnerabilityCheckovResult
 import com.bridgecrew.settings.CheckovGlobalState
 import com.bridgecrew.ui.SuppressionDialog
 import com.bridgecrew.ui.buttons.SuppressionLinkButton
@@ -88,7 +90,8 @@ class SuppressAction(private val buttonInstance: JButton, private var result: Ba
 
     private fun generateCheckovSuppressionComment(userReason: String?, fileType: FileType): String {
         val reason = if (userReason.isNullOrEmpty()) "ADD REASON" else userReason
-        val comment = "checkov:skip=${result.id}: $reason"
+        val skip = if (result.category == Category.VULNERABILITIES) (result as VulnerabilityCheckovResult).violationId else result.id
+        val comment = "checkov:skip=${skip}: $reason"
         return when(fileType) {
             FileType.TEXT, FileType.GEMFILE -> "#$comment"
             FileType.XML, FileType.CSPROJ -> "<!--$comment-->"
