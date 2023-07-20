@@ -7,7 +7,7 @@ plugins {
     // Java support
     id("java")
     // Kotlin support
-    id("org.jetbrains.kotlin.jvm") version "1.6.0"
+    id("org.jetbrains.kotlin.jvm") version "1.8.0"
     // gradle-intellij-plugin - read more: https://github.com/JetBrains/gradle-intellij-plugin
     id("org.jetbrains.intellij") version "1.3.0"
     // gradle-changelog-plugin - read more: https://github.com/JetBrains/gradle-changelog-plugin
@@ -16,6 +16,7 @@ plugins {
     id("org.jetbrains.qodana") version "0.1.13"
     // ktlint linter - read more: https://github.com/JLLeitschuh/ktlint-gradle
     id("org.jlleitschuh.gradle.ktlint") version "10.2.0"
+    kotlin("plugin.serialization") version "1.8.0"
 }
 
 group = properties("pluginGroup")
@@ -32,6 +33,7 @@ dependencies {
     implementation("org.json:json:20230227")
     implementation("commons-io:commons-io:2.11.0")
     implementation("io.github.java-diff-utils:java-diff-utils:4.12")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
 }
 
 // Configure gradle-intellij-plugin plugin.
