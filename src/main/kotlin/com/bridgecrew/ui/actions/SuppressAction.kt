@@ -1,6 +1,8 @@
 package com.bridgecrew.ui.actions
 
 import com.bridgecrew.results.BaseCheckovResult
+import com.bridgecrew.results.Category
+import com.bridgecrew.results.VulnerabilityCheckovResult
 import com.bridgecrew.settings.CheckovGlobalState
 import com.bridgecrew.ui.SuppressionDialog
 import com.bridgecrew.ui.buttons.SuppressionLinkButton
@@ -57,7 +59,7 @@ class SuppressAction(private val buttonInstance: JButton, private var result: Ba
     }
 
     private fun generateComment(fileType: FileType, userReason: String?) {
-        val suppressionComment = generateCheckovSuppressionComment(userReason)
+        val suppressionComment = generateCheckovSuppressionComment(userReason, fileType)
         val document = getDocument(result.absoluteFilePath)
         val lineNumber = getLineNumber(fileType)
         if (document != null && !isSuppressionExists(document, lineNumber, suppressionComment) && !isSuppressionExists(document, lineNumber + 1, suppressionComment)) {
@@ -86,9 +88,17 @@ class SuppressAction(private val buttonInstance: JButton, private var result: Ba
         return result.fileLineRange[0]
     }
 
-    private fun generateCheckovSuppressionComment(userReason: String?): String {
+    private fun generateCheckovSuppressionComment(userReason: String?, fileType: FileType): String {
         val reason = if (userReason.isNullOrEmpty()) "ADD REASON" else userReason
-        return "#checkov:skip=${result.id}: $reason"
+        val skip = if (result.category == Category.VULNERABILITIES) (result as VulnerabilityCheckovResult).violationId else result.id
+        val comment = "checkov:skip=${skip}: $reason"
+        return when(fileType) {
+            FileType.TEXT, FileType.GEMFILE -> "#$comment"
+            FileType.XML, FileType.CSPROJ -> "<!--$comment-->"
+            FileType.GOLANG, FileType.KOTLIN, FileType.GRADLE  -> "//$comment"
+            FileType.JSON -> comment
+            else -> "#$comment"
+        }
     }
 
     private fun addTextToFile(document: Document, lineNumber: Int, suppressionComment: String) {
