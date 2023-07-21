@@ -17,6 +17,14 @@ class PrismaSettingsState : PersistentStateComponent<PrismaSettingsState> {
     var secretKey: String = ""
     var certificate: String = ""
     var prismaURL: String = ""
+    var installationId: String = ""
+        set(value) {
+            if (field.isNotEmpty()) {
+                throw IllegalStateException("The installationId was already set.")
+            } else {
+                field = value
+            }
+        }
 
     fun getApiKey(): String {
         if(accessKey.isNotEmpty() && secretKey.isNotEmpty()){
