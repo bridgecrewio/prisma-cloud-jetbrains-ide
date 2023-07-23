@@ -56,7 +56,7 @@ class CheckovToolWindowTree(
      * @return Panel which contains a tree element
      */
     private fun createTree(): JPanel {
-        var checkovResults: List<BaseCheckovResult> = project.service<ResultsCacheService>().checkovResults
+        var checkovResults: List<BaseCheckovResult> = project.service<ResultsCacheService>().getAdjustedCheckovResults()
         checkovResults = CheckovResultsListUtils.filterResultsByCategoriesAndSeverities(checkovResults).toMutableList()
         CheckovResultsListUtils.sortResults(checkovResults)
 
