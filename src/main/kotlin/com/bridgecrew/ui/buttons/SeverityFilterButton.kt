@@ -54,7 +54,7 @@ class SeverityFilterButton(val project: Project, text: String, val severity: Sev
         if (project.service<FullScanStateService>().isFullScanRunning)
             return false
 
-        val filteredResults = CheckovResultsListUtils.filterResultsByCategoriesAndSeverities(project.service<ResultsCacheService>().checkovResults, null, listOf(severity))
+        val filteredResults = CheckovResultsListUtils.filterResultsByCategoriesAndSeverities(project.service<ResultsCacheService>().getAdjustedCheckovResults(), null, listOf(severity))
 
         if (filteredResults.isEmpty()) {
             return false

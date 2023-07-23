@@ -46,7 +46,7 @@ class SeverityFilterActions(val project: Project) : ActionListener {
 
         private fun updateEnabledSeverities(category: Category?, project: Project) {
             val categoryAsList = if (category == null) null else listOf(category)
-            val categorySeverities = CheckovResultsListUtils.filterResultsByCategoriesAndSeverities(project.service<ResultsCacheService>().checkovResults, categoryAsList, Severity.values().toList()).map{ result -> result.severity}
+            val categorySeverities = CheckovResultsListUtils.filterResultsByCategoriesAndSeverities(project.service<ResultsCacheService>().getAdjustedCheckovResults(), categoryAsList, Severity.values().toList()).map{ result -> result.severity}
             // no pressed category - display the category's severities
             if (currentSelectedSeverities.size == Severity.values().toList().size) {
                 enabledSeverities = categorySeverities

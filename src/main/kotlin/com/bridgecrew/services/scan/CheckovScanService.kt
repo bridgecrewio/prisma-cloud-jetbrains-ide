@@ -72,7 +72,7 @@ class CheckovScanService: Disposable {
                     }
                 }
             }
-
+            clearGlobalState(project)
         } catch (e: Exception) {
             LOG.error(e)
             return
@@ -126,13 +126,21 @@ class CheckovScanService: Disposable {
                     }
                 }
 
-                CheckovGlobalState.suppressedFileToIgnore = ""
+                clearGlobalState(project)
             }
         } catch (e: Exception) {
             CheckovScanAction.resetActionDynamically(true)
             LOG.error(e)
             return
         }
+    }
+
+    private fun clearGlobalState(project: Project) {
+        CheckovGlobalState.suppressedVulnerabilitiesToIgnore = mutableListOf()
+        CheckovGlobalState.filePathsToIgnore = mutableMapOf()
+        CheckovGlobalState.modifiedCheckovResults = mutableListOf()
+        CheckovGlobalState.shouldRecalculateResult = false
+        project.service<ResultsCacheService>().modifiedResults = mutableListOf()
     }
 
     fun cancelFullScan(project: Project) {
