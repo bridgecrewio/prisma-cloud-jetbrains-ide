@@ -1,0 +1,177 @@
+"golang.org/x/net" -> {ArrayList@49921}  size = 6
+ key = "golang.org/x/net"
+ value = {ArrayList@49921}  size = 6
+  0 = {VulnerabilityCheckovResult@49349} com.bridgecrew.results.VulnerabilityCheckovResult@27cd4fcb
+   cvss = {Double@49392} 7.0
+   packageName = "golang.org/x/net"
+   packageVersion = "v0.0.0-20211216030914-fe4d6282115f"
+   fixVersion = "0.8.0"
+   cveLink = ""
+   publishedDate = "2023-07-24T08:32:46.681256"
+   vector = ""
+   violationId = "CVE-2021-38561"
+   resourceId = "/go.mod"
+   riskFactors = null
+   rootPackageName = "github.com/aws/aws-sdk-go"
+   rootPackageVersion = "v1.42.35"
+   rootPackageFixVersion = null
+   fixCommand = {FixCommand@49403} FixCommand(msg=Run command:, cmds=[go get -d golang.org/x/net@v0.8.0], manualCodeFix=false)
+   category = {Category@49404} VULNERABILITIES
+   checkType = {CheckType@49405} SCA_PACKAGE
+   filePath = "/features/packages/go/go.mod"
+   resource = "github.com/aws/aws-sdk-go:v1.42.35"
+   name = "golang.org/x/net:v0.0.0-20211216030914-fe4d6282115f  (CVE-2021-38561)"
+   id = "BC_VUL_2"
+   severity = {Severity@49409} HIGH
+   description = "CVE-2021-38561 - golang.org/x/net: v0.0.0-20211216030914-fe4d6282115f"
+   guideline = null
+   absoluteFilePath = "/Users/sschweid/Documents/Development/testing-resources/features/packages/go/go.mod"
+   fileLineRange = {ArrayList@49412}  size = 2
+   fixDefinition = "golang.org/x/net v0.8.0"
+   codeBlock = {ArrayList@49414}  size = 1
+   codeDiffFirstLine = 87
+  1 = {VulnerabilityCheckovResult@49350} com.bridgecrew.results.VulnerabilityCheckovResult@81058e86
+   cvss = {Double@49938} 7.0
+   packageName = "golang.org/x/net"
+   packageVersion = "v0.0.0-20211216030914-fe4d6282115f"
+   fixVersion = "N/A"
+   cveLink = "https://nvd.nist.gov/vuln/detail/CVE-2022-27664"
+   publishedDate = "2022-09-06T18:15:00Z"
+   vector = "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+   violationId = "CVE-2022-27664"
+   resourceId = "/go.mod"
+   riskFactors = {LinkedTreeMap@49947}  size = 5
+   rootPackageName = "github.com/aws/aws-sdk-go"
+   rootPackageVersion = "v1.42.35"
+   rootPackageFixVersion = null
+   fixCommand = null
+   category = {Category@49404} VULNERABILITIES
+   checkType = {CheckType@49405} SCA_PACKAGE
+   filePath = "/features/packages/go/go.mod"
+   resource = "github.com/aws/aws-sdk-go:v1.42.35"
+   name = "golang.org/x/net:v0.0.0-20211216030914-fe4d6282115f  (CVE-2022-27664)"
+   id = "BC_VUL_2"
+   severity = {Severity@49409} HIGH
+   description = "In net/http in Go before 1.18.6 and 1.19.x before 1.19.1, attackers can cause a denial of service because an HTTP/2 connection can hang during closing if shutdown were preempted by a fatal error."
+   guideline = null
+   absoluteFilePath = "/Users/sschweid/Documents/Development/testing-resources/features/packages/go/go.mod"
+   fileLineRange = {ArrayList@49954}  size = 2
+   fixDefinition = null
+   codeBlock = {ArrayList@49955}  size = 1
+   codeDiffFirstLine = 87
+  2 = {VulnerabilityCheckovResult@49351} com.bridgecrew.results.VulnerabilityCheckovResult@d7c56ede
+   cvss = {Double@49958} 7.0
+   packageName = "golang.org/x/net"
+   packageVersion = "v0.0.0-20211216030914-fe4d6282115f"
+   fixVersion = "0.8.0"
+   cveLink = ""
+   publishedDate = "2023-07-24T08:32:46.681556"
+   vector = ""
+   violationId = "CVE-2022-32149"
+   resourceId = "/go.mod"
+   riskFactors = null
+   rootPackageName = "github.com/aws/aws-sdk-go"
+   rootPackageVersion = "v1.42.35"
+   rootPackageFixVersion = null
+   fixCommand = {FixCommand@49969} FixCommand(msg=Run command:, cmds=[go get -d golang.org/x/net@v0.8.0], manualCodeFix=false)
+   category = {Category@49404} VULNERABILITIES
+   checkType = {CheckType@49405} SCA_PACKAGE
+   filePath = "/features/packages/go/go.mod"
+   resource = "github.com/aws/aws-sdk-go:v1.42.35"
+   name = "golang.org/x/net:v0.0.0-20211216030914-fe4d6282115f  (CVE-2022-32149)"
+   id = "BC_VUL_2"
+   severity = {Severity@49409} HIGH
+   description = "CVE-2022-32149 - golang.org/x/net: v0.0.0-20211216030914-fe4d6282115f"
+   guideline = null
+   absoluteFilePath = "/Users/sschweid/Documents/Development/testing-resources/features/packages/go/go.mod"
+   fileLineRange = {ArrayList@49974}  size = 2
+   fixDefinition = "golang.org/x/net v0.8.0"
+   codeBlock = {ArrayList@49976}  size = 1
+   codeDiffFirstLine = 87
+  3 = {VulnerabilityCheckovResult@49352} com.bridgecrew.results.VulnerabilityCheckovResult@14de8afa
+   cvss = {Double@49877} 7.0
+   packageName = "golang.org/x/net"
+   packageVersion = "v0.0.0-20211216030914-fe4d6282115f"
+   fixVersion = "0.7.0"
+   cveLink = "https://nvd.nist.gov/vuln/detail/CVE-2022-41723"
+   publishedDate = "2023-02-28T18:15:00Z"
+   vector = "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+   violationId = "CVE-2022-41723"
+   resourceId = "/go.mod"
+   riskFactors = {LinkedTreeMap@49886}  size = 6
+   rootPackageName = "github.com/aws/aws-sdk-go"
+   rootPackageVersion = "v1.42.35"
+   rootPackageFixVersion = null
+   fixCommand = null
+   category = {Category@49404} VULNERABILITIES
+   checkType = {CheckType@49405} SCA_PACKAGE
+   filePath = "/features/packages/go/go.mod"
+   resource = "github.com/aws/aws-sdk-go:v1.42.35"
+   name = "golang.org/x/net:v0.0.0-20211216030914-fe4d6282115f  (CVE-2022-41723)"
+   id = "BC_VUL_2"
+   severity = {Severity@49409} HIGH
+   description = "A maliciously crafted HTTP/2 stream could cause excessive CPU consumption in the HPACK decoder, sufficient to cause a denial of service from a small number of small requests."
+   guideline = null
+   absoluteFilePath = "/Users/sschweid/Documents/Development/testing-resources/features/packages/go/go.mod"
+   fileLineRange = {ArrayList@49893}  size = 2
+   fixDefinition = null
+   codeBlock = {ArrayList@49894}  size = 1
+   codeDiffFirstLine = 87
+  4 = {VulnerabilityCheckovResult@49374} com.bridgecrew.results.VulnerabilityCheckovResult@f80fd490
+   cvss = {Double@49981} 7.0
+   packageName = "golang.org/x/net"
+   packageVersion = "v0.0.0-20211216030914-fe4d6282115f"
+   fixVersion = "N/A"
+   cveLink = "https://nvd.nist.gov/vuln/detail/CVE-2022-27664"
+   publishedDate = "2022-09-06T18:15:00Z"
+   vector = "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+   violationId = "CVE-2022-27664"
+   resourceId = "/go.mod"
+   riskFactors = {LinkedTreeMap@49990}  size = 5
+   rootPackageName = "golang.org/x/net"
+   rootPackageVersion = "v0.0.0-20211216030914-fe4d6282115f"
+   rootPackageFixVersion = null
+   fixCommand = null
+   category = {Category@49404} VULNERABILITIES
+   checkType = {CheckType@49405} SCA_PACKAGE
+   filePath = "/features/packages/go/go.mod"
+   resource = "golang.org/x/net:v0.0.0-20211216030914-fe4d6282115f"
+   name = "golang.org/x/net:v0.0.0-20211216030914-fe4d6282115f  (CVE-2022-27664)"
+   id = "BC_VUL_2"
+   severity = {Severity@49409} HIGH
+   description = "In net/http in Go before 1.18.6 and 1.19.x before 1.19.1, attackers can cause a denial of service because an HTTP/2 connection can hang during closing if shutdown were preempted by a fatal error."
+   guideline = null
+   absoluteFilePath = "/Users/sschweid/Documents/Development/testing-resources/features/packages/go/go.mod"
+   fileLineRange = {ArrayList@49997}  size = 2
+   fixDefinition = null
+   codeBlock = {ArrayList@49998}  size = 1
+   codeDiffFirstLine = 87
+  5 = {VulnerabilityCheckovResult@49375} com.bridgecrew.results.VulnerabilityCheckovResult@8be8d104
+   cvss = {Double@50001} 7.0
+   packageName = "golang.org/x/net"
+   packageVersion = "v0.0.0-20211216030914-fe4d6282115f"
+   fixVersion = "0.7.0"
+   cveLink = "https://nvd.nist.gov/vuln/detail/CVE-2022-41723"
+   publishedDate = "2023-02-28T18:15:00Z"
+   vector = "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+   violationId = "CVE-2022-41723"
+   resourceId = "/go.mod"
+   riskFactors = {LinkedTreeMap@50010}  size = 6
+   rootPackageName = "golang.org/x/net"
+   rootPackageVersion = "v0.0.0-20211216030914-fe4d6282115f"
+   rootPackageFixVersion = null
+   fixCommand = null
+   category = {Category@49404} VULNERABILITIES
+   checkType = {CheckType@49405} SCA_PACKAGE
+   filePath = "/features/packages/go/go.mod"
+   resource = "golang.org/x/net:v0.0.0-20211216030914-fe4d6282115f"
+   name = "golang.org/x/net:v0.0.0-20211216030914-fe4d6282115f  (CVE-2022-41723)"
+   id = "BC_VUL_2"
+   severity = {Severity@49409} HIGH
+   description = "A maliciously crafted HTTP/2 stream could cause excessive CPU consumption in the HPACK decoder, sufficient to cause a denial of service from a small number of small requests."
+   guideline = null
+   absoluteFilePath = "/Users/sschweid/Documents/Development/testing-resources/features/packages/go/go.mod"
+   fileLineRange = {ArrayList@50018}  size = 2
+   fixDefinition = null
+   codeBlock = {ArrayList@50019}  size = 1
+   codeDiffFirstLine = 87
