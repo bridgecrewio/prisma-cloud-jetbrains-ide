@@ -25,6 +25,7 @@ class PrismaSettingsState : PersistentStateComponent<PrismaSettingsState> {
                 field = value
             }
         }
+    var analyticsEventData: MutableList<String> = arrayListOf()
 
     fun getApiKey(): String {
         if(accessKey.isNotEmpty() && secretKey.isNotEmpty()){

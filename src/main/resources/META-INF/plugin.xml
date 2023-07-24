@@ -42,5 +42,10 @@
         </group>
     </actions>
 
+    <projectListeners>
+        <listener
+                class="com.bridgecrew.listeners.ProjectListener"
+                topic="com.intellij.openapi.project.ProjectManagerListener"/>
+    </projectListeners>
 
 </idea-plugin>
