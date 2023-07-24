@@ -124,7 +124,7 @@ class CheckovToolWindowManagerPanel(val project: Project) : SimpleToolWindowPane
     }
 
     private fun shouldDisplayNoErrorPanel(panelType: Int): Boolean {
-        return project.service<ResultsCacheService>().getAllCheckovResults().isEmpty() &&
+        return project.service<ResultsCacheService>().getAdjustedCheckovResults().isEmpty() &&
                 (panelType == PANELTYPE.CHECKOV_FILE_SCAN_FINISHED ||
                         (panelType == PANELTYPE.CHECKOV_FRAMEWORK_SCAN_FINISHED && project.service<FullScanStateService>().wereAllFrameworksFinished()))
     }
@@ -216,7 +216,7 @@ class CheckovToolWindowManagerPanel(val project: Project) : SimpleToolWindowPane
             override fun fileOpened(source: FileEditorManager, file: VirtualFile) {
                 super.fileOpened(source, file)
                 if (shouldScanFile(file)) {
-                    val checkovResults = project.service<ResultsCacheService>().checkovResults
+                    val checkovResults = project.service<ResultsCacheService>().getAdjustedCheckovResults()
                     val hasResources = CheckovResultsListUtils.getCheckovResultsByPath(checkovResults, toVirtualFilePath(project, file)).isNotEmpty()
                     if(!hasResources){
                         project.service<CheckovScanService>().scanFile(file.path, project)
@@ -272,9 +272,10 @@ class CheckovToolWindowManagerPanel(val project: Project) : SimpleToolWindowPane
         val virtualFilePath: String = toVirtualFilePath(project, virtualFile)
 
         val excludedPaths = (getGitIgnoreValues(project) + FULL_SCAN_EXCLUDED_PATHS).distinct()
-        val isIgnoreFile = CheckovGlobalState.suppressedFileToIgnore.removePrefix(File.separator) == virtualFilePath || CheckovGlobalState.suppressedFileToIgnore == virtualFilePath
-        if(isIgnoreFile) {
-            CheckovGlobalState.suppressedFileToIgnore = ""
+        val lastTimeFileScanned = CheckovGlobalState.filePathsToIgnore[virtualFilePath.removePrefix(File.separator)] ?: CheckovGlobalState.filePathsToIgnore[virtualFilePath]
+        var isIgnoreFile = false
+        if(lastTimeFileScanned != null && (System.currentTimeMillis() - lastTimeFileScanned.toLong() < 1000 * 60 * 2)) {
+            isIgnoreFile = true
         }
 
         return ProjectRootManager.getInstance(project).fileIndex.isInContent(virtualFile) &&
@@ -336,7 +337,7 @@ class CheckovToolWindowManagerPanel(val project: Project) : SimpleToolWindowPane
         removeOldHighlighters(markup)
         val document = editor.editor.document
 
-        val checkovResults: MutableList<BaseCheckovResult> = project.service<ResultsCacheService>().checkovResults
+        val checkovResults: List<BaseCheckovResult> = project.service<ResultsCacheService>().getAdjustedCheckovResults()
         val fileToResourceMap = CheckovResultsListUtils.sortAndGroupResultsByPath(checkovResults)
         val relativePath = file.path.replace(project.basePath.toString(), "")
         val fileInResults = fileToResourceMap.filter { it.key == relativePath }[relativePath]

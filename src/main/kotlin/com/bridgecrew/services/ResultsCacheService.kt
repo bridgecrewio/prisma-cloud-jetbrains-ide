@@ -2,6 +2,7 @@ package com.bridgecrew.services
 
 import com.bridgecrew.CheckovResult
 import com.bridgecrew.results.*
+import com.bridgecrew.settings.CheckovGlobalState
 import com.bridgecrew.utils.CheckovUtils
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
@@ -12,11 +13,31 @@ import java.nio.file.Paths
 @Service
 class ResultsCacheService(val project: Project) {
     var checkovResults: MutableList<BaseCheckovResult> = mutableListOf()
+    var modifiedResults: MutableList<BaseCheckovResult> = mutableListOf()
 
     private val baseDir: String = project.basePath!!
 
-    fun getAllCheckovResults(): List<BaseCheckovResult> {
-        return this.checkovResults
+    // This function returns `checkovResults` after accounting for changes that were done between scans
+    // For example, after fixing or suppressing a resource, we want to clean those entries from all client facing usages.
+    // TODO if this causes performance issues we can optimize by using a hashmap with a key for each result (value is the BaseCheckovResult)
+    fun getAdjustedCheckovResults(): List<BaseCheckovResult> {
+        if (modifiedResults.isEmpty()) {
+            modifiedResults = this.checkovResults
+        }
+
+        if (CheckovGlobalState.shouldRecalculateResult) {
+            CheckovGlobalState.modifiedCheckovResults.forEach { modifiedResult ->
+                val originalResult = modifiedResults.find { res -> res == modifiedResult }
+                if (originalResult != null) {
+                    val index = modifiedResults.indexOf(originalResult)
+                    modifiedResults[index] = modifiedResult
+                }
+            }
+            CheckovGlobalState.shouldRecalculateResult = false
+        }
+
+        modifiedResults.removeAll(CheckovGlobalState.suppressedVulnerabilitiesToIgnore)
+        return modifiedResults
     }
 
     fun addCheckovResultFromFileScan(newCheckovResults: List<CheckovResult>, filePath: String) {
@@ -145,7 +166,7 @@ class ResultsCacheService(val project: Project) {
     private fun getResourceName(result: CheckovResult, category: Category): String {
         return when (category) {
             Category.IAC, Category.SECRETS -> {
-                "${result.check_name} (${result.file_line_range[0]} - ${result.file_line_range[1]})"
+                getIACResourceName(result.check_name, result.file_line_range[0], result.file_line_range[1])
             }
 
             Category.LICENSES -> {
@@ -156,5 +177,9 @@ class ResultsCacheService(val project: Project) {
                 "${result.vulnerability_details?.package_name}:${result.vulnerability_details?.package_version}  (${result.vulnerability_details?.id})"
             }
         }
+    }
+
+    fun getIACResourceName(checkName: String, firstLine: Int, lastLine: Int): String {
+        return "$checkName (${firstLine} - ${lastLine})"
     }
 }

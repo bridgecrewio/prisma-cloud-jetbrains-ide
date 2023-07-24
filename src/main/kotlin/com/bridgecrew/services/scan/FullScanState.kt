@@ -81,7 +81,7 @@ class FullScanStateService(val project: Project) {
     }
 
     fun saveCurrentState() {
-        val currentResults: List<BaseCheckovResult> = project.service<ResultsCacheService>().getAllCheckovResults()
+        val currentResults: List<BaseCheckovResult> = project.service<ResultsCacheService>().getAdjustedCheckovResults()
         stateFile = createCheckovTempFile(FULL_SCAN_STATE_FILE, ".json")
 
         val resultsAsJson = JSONArray(currentResults)
@@ -141,7 +141,7 @@ class FullScanStateService(val project: Project) {
     }
 
     private fun displayNotificationForFullScanSummary() {
-        val totalErrors = project.service<ResultsCacheService>().checkovResults.size
+        val totalErrors = project.service<ResultsCacheService>().getAdjustedCheckovResults().size
         var message = "Prisma Cloud has detected $totalErrors code security issues in your project for $DESIRED_NUMBER_OF_FRAMEWORK_FOR_FULL_SCAN frameworks scanned.\n" +
                 generateErrorMessageForFullScanSummary() +
                 generateInvalidFileSizeMessageForFullScanSummary()

@@ -1,24 +1,30 @@
 package com.bridgecrew.ui.actions
 
 import com.bridgecrew.results.BaseCheckovResult
+import com.bridgecrew.services.CheckovResultsListUtils
 import com.bridgecrew.results.Category
 import com.bridgecrew.results.VulnerabilityCheckovResult
 import com.bridgecrew.settings.CheckovGlobalState
+import com.bridgecrew.ui.CheckovToolWindowManagerPanel
 import com.bridgecrew.ui.SuppressionDialog
 import com.bridgecrew.ui.buttons.SuppressionLinkButton
 import com.bridgecrew.utils.FileType
+import com.bridgecrew.utils.PANELTYPE
 import com.bridgecrew.utils.getFileType
 import com.bridgecrew.utils.navigateToFile
+import com.intellij.ide.DataManager
 import com.intellij.openapi.command.WriteCommandAction
+import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.fileEditor.FileDocumentManager
-import com.intellij.openapi.project.ProjectManager
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.vfs.LocalFileSystem
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
+import java.io.File
 import javax.swing.JButton
 
 class SuppressAction(private val buttonInstance: JButton, private var result: BaseCheckovResult) : ActionListener {
@@ -103,19 +109,21 @@ class SuppressAction(private val buttonInstance: JButton, private var result: Ba
 
     private fun addTextToFile(document: Document, lineNumber: Int, suppressionComment: String) {
         val insertionOffset = document.getLineStartOffset(lineNumber)
-        CheckovGlobalState.suppressedFileToIgnore = result.filePath
+        val dataContext = DataManager.getInstance().dataContext
+        val project = dataContext.getData("project") as Project
+
         WriteCommandAction.runWriteCommandAction(null) {
             val editor = EditorFactory.getInstance().createEditor(document, null)
             val newLineText = "${suppressionComment}\n"
-
-            val project = ProjectManager.getInstance().defaultProject
-
             document.insertString(insertionOffset, newLineText)
             editor.caretModel.moveToOffset(insertionOffset + newLineText.length)
             navigateToFile(project, result.absoluteFilePath, lineNumber + 1)
-
         }
 
-        FileDocumentManager.getInstance().saveDocument(document)
+        CheckovGlobalState.suppressedVulnerabilitiesToIgnore.add(CheckovResultsListUtils.cloneCheckovResultWithModifiedFields(project, result, result.fileLineRange, result.codeBlock))
+        CheckovGlobalState.filePathsToIgnore[result.filePath.removePrefix(File.separator)] = System.currentTimeMillis()
+        CheckovResultsListUtils.modifyBaseCheckovResultLineNumbers(project, result, lineNumber, 1)
+        project.service<CheckovToolWindowManagerPanel>().loadMainPanel(PANELTYPE.CHECKOV_FILE_SCAN_FINISHED, result.filePath)
+//        FileDocumentManager.getInstance().saveDocument(document)
     }
 }

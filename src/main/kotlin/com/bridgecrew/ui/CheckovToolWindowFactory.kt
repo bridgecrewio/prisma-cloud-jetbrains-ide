@@ -108,7 +108,7 @@ class CheckovToolWindowFactory : ToolWindowFactory {
 
     private fun getTabName(project: Project, name: String, category: Category?): String {
         val categories = if(category != null) listOf(category) else Category.values().toList()
-        val checkovResults = project.service<ResultsCacheService>().checkovResults
+        val checkovResults = project.service<ResultsCacheService>().getAdjustedCheckovResults()
         val resultsCount = CheckovResultsListUtils.filterResultsByCategoriesAndSeverities(checkovResults, categories).size
         val formattedCount = formatNumberWithCommas(resultsCount)
         return "$name ($formattedCount)"
