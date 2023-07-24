@@ -60,7 +60,7 @@ class AnalyticsService(val project: Project) {
         fullScanData!!.scanFinishedTime = Date()
         LOG.info("Prisma Cloud Plugin Analytics - scan #${fullScanNumber} - full scan finished")
         buildFullScanAnalyticsData()
-        releaseStatistics()
+        releaseAnalytics()
     }
 
     fun fullScanFrameworkFinishedNoErrors(framework: String) {
@@ -94,7 +94,7 @@ class AnalyticsService(val project: Project) {
 
     fun pluginInstalled(){
         buildPluginInstalledAnalyticsData()
-        releaseStatistics()
+        releaseAnalytics()
     }
 
     private fun logFullScanAnalytics() {
@@ -150,12 +150,19 @@ class AnalyticsService(val project: Project) {
         return "${minutes}:${secondsString}"
     }
 
-    private fun releaseStatistics() {
+    fun releaseAnalytics() {
         val apiClient = getApiClient()
+        CacheDataAnalytics().load(analyticsEventData)
+        if (analyticsEventData.isEmpty()) {
+            return
+        }
+
         val data = analyticsEventData.joinToString(prefix = "[", postfix = "]")
         val isReleased = apiClient.putDataAnalytics(data)
-        if(isReleased){
+        if (isReleased) {
             analyticsEventData.clear()
+        } else {
+            CacheDataAnalytics().stash(analyticsEventData)
         }
     }
 
