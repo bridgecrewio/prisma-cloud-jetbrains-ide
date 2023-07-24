@@ -108,7 +108,7 @@ class SuppressAction(private val buttonInstance: JButton, private var result: Ba
     }
 
     private fun addTextToFile(document: Document, lineNumber: Int, suppressionComment: String) {
-        val insertionOffset = document.getLineStartOffset(lineNumber)
+        val insertionOffset = document.getLineStartOffset(lineNumber - 1)
         val dataContext = DataManager.getInstance().dataContext
         val project = dataContext.getData("project") as Project
 
