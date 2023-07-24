@@ -114,7 +114,7 @@ class SuppressAction(private val buttonInstance: JButton, private var result: Ba
 
         val textLine = document.getText(TextRange(insertionOffset, document.getLineStartOffset(lineNumber)))
         val matchSpacesBeforeComment = Regex("^[\\s\\t]+").find(textLine)
-        val addSpacesBeforeComment = if(matchSpacesBeforeComment !== null) matchSpacesBeforeComment.value else ""
+        val addSpacesBeforeComment = if(matchSpacesBeforeComment?.value !== null) matchSpacesBeforeComment.value else ""
 
         WriteCommandAction.runWriteCommandAction(null) {
             val editor = EditorFactory.getInstance().createEditor(document, null)
