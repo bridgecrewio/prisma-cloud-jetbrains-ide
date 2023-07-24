@@ -82,7 +82,7 @@ class SuppressAction(private val buttonInstance: JButton, private var result: Ba
         val checkLineNumber = if (lineNumber == 0) 0 else lineNumber - 1
         val lineStartOffset = document.getLineStartOffset(checkLineNumber)
         val lineEndOffset = document.getLineEndOffset(checkLineNumber)
-        val lineText = document.getText(TextRange(lineStartOffset, lineEndOffset)).trimEnd()
+        val lineText = document.getText(TextRange(lineStartOffset, lineEndOffset)).trim()
         val existingList = lineText.split(" ").filter { existingWord -> suppressionComment.split(" ").contains(existingWord) && existingWord.lowercase().contains("checkov") }
         return existingList.isNotEmpty()
     }
@@ -112,12 +112,16 @@ class SuppressAction(private val buttonInstance: JButton, private var result: Ba
         val dataContext = DataManager.getInstance().dataContext
         val project = dataContext.getData("project") as Project
 
+        val textLine = document.getText(TextRange(insertionOffset, document.getLineStartOffset(lineNumber)))
+        val matchSpacesBeforeComment = Regex("^[\\s\\t]+").find(textLine)
+        val addSpacesBeforeComment = if(matchSpacesBeforeComment !== null) matchSpacesBeforeComment.value else ""
+
         WriteCommandAction.runWriteCommandAction(null) {
             val editor = EditorFactory.getInstance().createEditor(document, null)
-            val newLineText = "${suppressionComment}\n"
+            val newLineText = "${addSpacesBeforeComment}${suppressionComment}\n"
             document.insertString(insertionOffset, newLineText)
             editor.caretModel.moveToOffset(insertionOffset + newLineText.length)
-            navigateToFile(project, result.absoluteFilePath, lineNumber + 1)
+            navigateToFile(project, result.absoluteFilePath, lineNumber)
         }
 
         CheckovGlobalState.suppressedVulnerabilitiesToIgnore.add(CheckovResultsListUtils.cloneCheckovResultWithModifiedFields(project, result, result.fileLineRange, result.codeBlock))
