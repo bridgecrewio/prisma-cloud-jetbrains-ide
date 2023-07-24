@@ -8,6 +8,7 @@ import com.bridgecrew.ui.buttons.DocumentationLinkButton
 import com.bridgecrew.ui.buttons.SuppressionButton
 import com.bridgecrew.ui.buttons.SuppressionLinkButton
 import com.bridgecrew.utils.*
+import com.intellij.openapi.project.ProjectManager
 import icons.CheckovIcons
 import java.awt.Color
 import java.awt.Dimension
@@ -36,7 +37,8 @@ class ErrorBubbleActionsPanel(val result: BaseCheckovResult) : JPanel() {
 
     private fun addSuppressIfNeeded() {
         if (isShowSuppressionButton(result)) {
-            addStyledButton(SuppressionLinkButton(result))
+            val project = ProjectManager.getInstance().defaultProject
+            addStyledButton(SuppressionLinkButton(project, result))
         }
     }
 
