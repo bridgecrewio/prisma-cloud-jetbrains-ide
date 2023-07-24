@@ -22,7 +22,7 @@ private val LOG = logger<ApiClient>()
 
 @OptIn(ExperimentalSerializationApi::class)
 class ApiClient(private val username: String, private val password: String, private val prismaURL: String) {
-    private val client = HttpClient.newBuilder().build();
+    private val client = HttpClient.newBuilder().build()
     private val prismaURI = URI.create(prismaURL)
 
     fun putDataAnalytics(data: String): Boolean {
@@ -43,7 +43,7 @@ class ApiClient(private val username: String, private val password: String, priv
                     .PUT(BodyPublishers.ofString(data))
                     .build()
 
-            val response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            val response = client.send(request, HttpResponse.BodyHandlers.ofString())
 
             LOG.debug("PutDataAnalytics method called response body: ${response.body()}")
             if(response.statusCode() == 403 || response.statusCode() == 401){
@@ -62,7 +62,7 @@ class ApiClient(private val username: String, private val password: String, priv
     }
 
 
-    fun login(): LoginResponse {
+    private fun login(): LoginResponse {
         try {
             LOG.debug("Login to $prismaURL with username: $username")
             val loginRequest = LoginRequest(username, password)
@@ -74,7 +74,7 @@ class ApiClient(private val username: String, private val password: String, priv
                     .POST(BodyPublishers.ofString(jsonBody))
                     .build()
 
-            val response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            val response = client.send(request, HttpResponse.BodyHandlers.ofString())
             if (response.statusCode() == 401) {
                 //todo do we need show IDE popup here?
                 LOG.error("Incorrect username or password")

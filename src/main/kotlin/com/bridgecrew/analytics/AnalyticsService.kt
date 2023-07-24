@@ -3,17 +3,17 @@ package com.bridgecrew.analytics
 import com.bridgecrew.api.ApiClient
 import com.bridgecrew.services.scan.FullScanStateService
 import com.bridgecrew.services.scan.ScanTaskResult
+import com.bridgecrew.settings.PrismaSettingsState
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.project.Project
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.concurrent.TimeUnit
-
-import com.bridgecrew.settings.PrismaSettingsState
 import kotlinx.serialization.*
-import kotlinx.serialization.json.*
+import java.text.SimpleDateFormat
+import java.util.*
+import java.util.concurrent.TimeUnit
+import kotlinx.serialization.json.Json
+
 
 @Service
 @OptIn(ExperimentalSerializationApi::class)
@@ -25,7 +25,7 @@ class AnalyticsService(val project: Project) {
     private var fullScanData: FullScanAnalyticsData? = null
     private var fullScanNumber = 0
 
-    private var analyticsEventData: MutableList<AnalyticsData> = arrayListOf()
+    private var analyticsEventData: MutableList<String> = arrayListOf()
 
     var wereFullScanResultsDisplayed = false
     var wereSingleFileScanResultsDisplayed = false
@@ -63,14 +63,6 @@ class AnalyticsService(val project: Project) {
         releaseStatistics()
     }
 
-    private fun buildFullScanAnalyticsData(){
-        val analyticsData = AnalyticsData()
-        analyticsData.eventData = fullScanData!!.frameworksScanTime
-        analyticsData.eventTime = fullScanData!!.buttonPressedTime
-        analyticsData.eventType = EventTypeEnum.ON_FULL_SCAN
-        analyticsEventData.add(analyticsData)
-    }
-
     fun fullScanFrameworkFinishedNoErrors(framework: String) {
         LOG.info("Prisma Cloud Plugin Analytics - scan #${fullScanNumber} - framework $framework finished with no errors")
     }
@@ -98,6 +90,11 @@ class AnalyticsService(val project: Project) {
 
     fun fullScanParsingError(framework: String, failedFilesSize: Int) {
         LOG.info("Prisma Cloud Plugin Analytics - scan #${fullScanNumber} - parsing error while scanning framework $framework in $failedFilesSize files}")
+    }
+
+    fun pluginInstalled(){
+        buildPluginInstalledAnalyticsData()
+        releaseStatistics()
     }
 
     private fun logFullScanAnalytics() {
@@ -155,8 +152,8 @@ class AnalyticsService(val project: Project) {
 
     private fun releaseStatistics() {
         val apiClient = getApiClient()
-        //todo maybe extends with pluginInstallationId
-        val isReleased = apiClient.putDataAnalytics(Json.encodeToString(analyticsEventData))
+        val data = analyticsEventData.joinToString(prefix = "[", postfix = "]")
+        val isReleased = apiClient.putDataAnalytics(data)
         if(isReleased){
             analyticsEventData.clear()
         }
@@ -176,49 +173,17 @@ class AnalyticsService(val project: Project) {
         throw Exception("Prisma could parameters: accessKey, secretKey, prismaURL have not been initialized!")
     }
 
-    @Serializable
-    data class AnalyticsData(@EncodeDefault val pluginName: String = "jetbrains"){
-        //todo implement - get real installationId after plugin will be installed
-        @EncodeDefault
-        val installationId: String = "installationId"
-
-        lateinit var eventType: String
-
-        @Serializable(with = DateSerializer::class)
-        lateinit var eventTime: Date
-
-        lateinit var eventData: MutableMap<String, FullScanFrameworkScanTimeData>
+    private fun buildFullScanAnalyticsData(){
+        fullScanData!!.eventData = fullScanData!!.frameworksScanTime
+        fullScanData!!.eventTime = fullScanData!!.buttonPressedTime
+        fullScanData!!.eventType = EventTypeEnum.ON_FULL_SCAN
+        analyticsEventData.add(Json.encodeToString(fullScanData))
     }
 
-    @Serializable
-    data class FullScanAnalyticsData(val scanNumber: Int) {
-        @Serializable(with = DateSerializer::class)
-        lateinit var buttonPressedTime: Date
-
-        @Serializable(with = DateSerializer::class)
-        @Transient
-        lateinit var scanStartedTime: Date
-        val frameworksScanTime: MutableMap<String, FullScanFrameworkScanTimeData> = mutableMapOf()
-
-        @Serializable(with = DateSerializer::class)
-        @Transient
-        lateinit var scanFinishedTime: Date
-
-        @Serializable(with = DateSerializer::class)
-        @Transient
-        lateinit var resultsWereFullyDisplayedTime: Date
-
-        fun isFullScanFinished() = ::scanFinishedTime.isInitialized
-        fun isFullScanStarted() = ::scanStartedTime.isInitialized
-    }
-
-    @Serializable
-    data class FullScanFrameworkScanTimeData(
-            @Serializable(with = DateSerializer::class)
-            val startTime: Date
-    ) {
-        @Serializable(with = DateSerializer::class)
-        var endTime: Date = Date()
-        var totalTimeSeconds = 0L
+     private fun buildPluginInstalledAnalyticsData(){
+        val analyticsData = PluginInstallAnalyticsData()
+        analyticsData.eventTime = Date()
+        analyticsData.eventType = EventTypeEnum.ON_PLUGIN_INSTALL
+        analyticsEventData.add(Json.encodeToString(analyticsData))
     }
 }
