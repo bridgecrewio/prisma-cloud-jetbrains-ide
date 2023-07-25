@@ -114,8 +114,8 @@ class SuppressAction(private val project: Project, private val buttonInstance: J
         val matchSpacesBeforeComment = Regex("^[\\s\\t]+").find(textLine)
         val addSpacesBeforeComment = if(matchSpacesBeforeComment?.value !== null) matchSpacesBeforeComment.value else ""
 
-        WriteCommandAction.runWriteCommandAction(null) {
-            val editor = EditorFactory.getInstance().createEditor(document, null)
+        WriteCommandAction.runWriteCommandAction(project) {
+            val editor = EditorFactory.getInstance().createEditor(document, project)
             val newLineText = "${addSpacesBeforeComment}${suppressionComment}\n"
             document.insertString(insertionOffset, newLineText)
             editor.caretModel.moveToOffset(insertionOffset + newLineText.length)
