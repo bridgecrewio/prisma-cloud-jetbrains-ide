@@ -1,6 +1,8 @@
 package com.bridgecrew.api
 
 
+import com.bridgecrew.settings.DEFAULT_REPORTING_INTERVAL
+import com.bridgecrew.settings.PLUGIN_NAME
 import com.intellij.openapi.diagnostic.logger
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
@@ -17,6 +19,9 @@ data class LoginRequest(val username: String, val password: String)
 
 @Serializable
 data class LoginResponse(val token: String)
+
+@Serializable
+data class ConfigResponse(val reportingInterval: Int = DEFAULT_REPORTING_INTERVAL)
 
 private val LOG = logger<ApiClient>()
 
@@ -61,6 +66,44 @@ class ApiClient(private val username: String, private val password: String, priv
 
     }
 
+    fun getConfig(): ConfigResponse {
+        try {
+            LOG.debug("getConfig method call")
+            val authToken = this.login().token
+            if (authToken.isEmpty()) {
+                LOG.error("Could not authorize for username: $username")
+                return ConfigResponse()
+            }
+
+            val request = HttpRequest.newBuilder()
+                .uri(prismaURI.resolve("/bridgecrew/api/v1/get-config/$PLUGIN_NAME"))
+                .header("Content-Type", "application/json")
+                .header("Authorization", authToken)
+                .GET()
+                .build()
+
+            val response = client.send(request, HttpResponse.BodyHandlers.ofString())
+
+            LOG.debug("getConfig method called response body: ${response.body()}")
+            if(response.statusCode() == 403 || response.statusCode() == 401){
+                LOG.error("Could not authorize for token: $authToken")
+                return ConfigResponse()
+            }
+
+            val json = Json { ignoreUnknownKeys = true }
+            return json.decodeFromString<ConfigResponse>(response.body())
+
+        } catch (e: IOException) {
+            //todo do we need show IDE popup here?
+            LOG.error("IOException: ${e.message}")
+            return ConfigResponse()
+        }
+
+    }
+
+    fun getToken(){
+        //todo implement: compare token exp time with current time to avoid ddosing
+    }
 
     private fun login(): LoginResponse {
         try {

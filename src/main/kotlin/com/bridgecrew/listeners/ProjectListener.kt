@@ -12,7 +12,7 @@ class ProjectListener : ProjectManagerListener {
     }
 
     override fun projectOpened(project: Project) {
-        project.service<AnalyticsService>().releaseAnalytics()
+        project.service<AnalyticsService>().startSchedulerReleasingAnalytics()
         super.projectOpened(project)
     }
 

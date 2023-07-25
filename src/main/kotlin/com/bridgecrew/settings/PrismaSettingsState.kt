@@ -6,6 +6,10 @@ import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 import com.intellij.util.xmlb.XmlSerializerUtil
 
+const val PLUGIN_NAME = "jetbrains"
+// represents the time interval in seconds between sending statistic data from the client to the backend
+const val DEFAULT_REPORTING_INTERVAL = 5 * 60;
+
 
 @State(
     name = "com.bridgecrew.settings.PrismaSettingsState",

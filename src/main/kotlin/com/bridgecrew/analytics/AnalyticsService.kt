@@ -1,6 +1,7 @@
 package com.bridgecrew.analytics
 
 import com.bridgecrew.api.ApiClient
+import com.bridgecrew.scheduler.IntervalRunner
 import com.bridgecrew.services.scan.FullScanStateService
 import com.bridgecrew.services.scan.ScanTaskResult
 import com.bridgecrew.settings.PrismaSettingsState
@@ -164,6 +165,12 @@ class AnalyticsService(val project: Project) {
         } else {
             CacheDataAnalytics().stash(analyticsEventData)
         }
+    }
+
+    fun startSchedulerReleasingAnalytics(){
+        val apiClient = getApiClient()
+        val config = apiClient.getConfig()
+        IntervalRunner().scheduleWithTimer({ releaseAnalytics() }, config.reportingInterval)
     }
 
     private fun getApiClient(): ApiClient {
