@@ -27,7 +27,7 @@ import java.awt.event.ActionListener
 import java.io.File
 import javax.swing.JButton
 
-class SuppressAction(private val buttonInstance: JButton, private var result: BaseCheckovResult) : ActionListener {
+class SuppressAction(private val project: Project, private val buttonInstance: JButton, private var result: BaseCheckovResult) : ActionListener {
     private var isOpenDialog: Boolean = true
 
     override fun actionPerformed(e: ActionEvent?) {
@@ -109,15 +109,13 @@ class SuppressAction(private val buttonInstance: JButton, private var result: Ba
 
     private fun addTextToFile(document: Document, lineNumber: Int, suppressionComment: String) {
         val insertionOffset = document.getLineStartOffset(lineNumber - 1)
-        val dataContext = DataManager.getInstance().dataContext
-        val project = dataContext.getData("project") as Project
 
         val textLine = document.getText(TextRange(insertionOffset, document.getLineStartOffset(lineNumber)))
         val matchSpacesBeforeComment = Regex("^[\\s\\t]+").find(textLine)
         val addSpacesBeforeComment = if(matchSpacesBeforeComment?.value !== null) matchSpacesBeforeComment.value else ""
 
-        WriteCommandAction.runWriteCommandAction(null) {
-            val editor = EditorFactory.getInstance().createEditor(document, null)
+        WriteCommandAction.runWriteCommandAction(project) {
+            val editor = EditorFactory.getInstance().createEditor(document, project)
             val newLineText = "${addSpacesBeforeComment}${suppressionComment}\n"
             document.insertString(insertionOffset, newLineText)
             editor.caretModel.moveToOffset(insertionOffset + newLineText.length)
