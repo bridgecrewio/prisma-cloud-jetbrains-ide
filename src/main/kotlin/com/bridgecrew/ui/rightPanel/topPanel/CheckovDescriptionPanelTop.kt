@@ -3,6 +3,8 @@ package com.bridgecrew.ui.rightPanel.topPanel
 import com.bridgecrew.results.*
 import com.bridgecrew.ui.buttons.SuppressionButton
 import com.bridgecrew.utils.*
+import com.intellij.ide.DataManager
+import com.intellij.openapi.project.Project
 import com.intellij.util.ui.UIUtil
 import java.awt.Dimension
 import java.awt.Font
@@ -61,7 +63,9 @@ open class CheckovDescriptionPanelTop(val result: BaseCheckovResult) : JPanel() 
 
     fun createSuppressionButton(panel: JPanel) {
         if (isShowSuppressionButton(result)) {
-            panel.add(SuppressionButton(result))
+            val dataContext = DataManager.getInstance().dataContext
+            val project = dataContext.getData("project") as Project
+            panel.add(SuppressionButton(project, result))
         }
     }
 }
