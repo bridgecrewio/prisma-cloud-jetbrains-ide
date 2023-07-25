@@ -6,6 +6,7 @@ import com.bridgecrew.results.Category
 import com.bridgecrew.services.CheckovResultsComparatorGenerator
 import com.intellij.openapi.editor.markup.MarkupModel
 import com.intellij.openapi.editor.markup.RangeHighlighter
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.ui.popup.JBPopupListener
@@ -14,7 +15,7 @@ import com.intellij.openapi.wm.ex.WindowManagerEx
 import java.awt.Point
 
 typealias navigationCallback = (Int, String) -> Unit
-class CheckovErrorBubble(val results: List<BaseCheckovResult>, private val modalLocation: Point, private val markup: MarkupModel, private val rangeHighlighter: RangeHighlighter) {
+class CheckovErrorBubble(val project: Project, val results: List<BaseCheckovResult>, private val modalLocation: Point, private val markup: MarkupModel, private val rangeHighlighter: RangeHighlighter) {
 
     private var panelList: ArrayList<ErrorBubbleInnerPanel> = arrayListOf()
     private var currentPanel: ErrorBubbleInnerPanel? = null
@@ -34,13 +35,13 @@ class CheckovErrorBubble(val results: List<BaseCheckovResult>, private val modal
         val totalPanels = otherResults.size + vulnerabilityCount
         var runningIndex = 0
         otherResults.sortedWith(CheckovResultsComparatorGenerator.generateCheckovResultComparator()).forEachIndexed { index, baseCheckovResult ->
-            panelList.add(ErrorBubbleInnerPanel(baseCheckovResult, 0, index, totalPanels, callBack))
+            panelList.add(ErrorBubbleInnerPanel(project, baseCheckovResult, 0, index, totalPanels, callBack))
             runningIndex = index + 1
         }
 
         if (vulnerabilityResults.isNotEmpty()) {
             vulnerabilityResults.sortedBy { it.severity }.forEachIndexed { index, vulnerabilityCheckovResult ->
-                panelList.add(ErrorBubbleInnerPanel(vulnerabilityCheckovResult, 0, runningIndex, totalPanels, callBack))
+                panelList.add(ErrorBubbleInnerPanel(project, vulnerabilityCheckovResult, 0, runningIndex, totalPanels, callBack))
                 runningIndex += 1
             }
         }

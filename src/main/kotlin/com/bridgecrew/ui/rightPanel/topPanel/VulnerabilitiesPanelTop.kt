@@ -1,13 +1,15 @@
 package com.bridgecrew.ui.rightPanel.topPanel
 
+import com.bridgecrew.results.BaseCheckovResult
 import com.bridgecrew.results.VulnerabilityCheckovResult
 import com.bridgecrew.ui.buttons.DocumentationButton
 import com.bridgecrew.ui.buttons.FixButton
 import com.bridgecrew.ui.buttons.FixCVEButton
+import com.intellij.openapi.project.Project
 import java.awt.GridBagConstraints
 import javax.swing.JPanel
 
-class VulnerabilitiesPanelTop(result: VulnerabilityCheckovResult): CheckovDescriptionPanelTop(result) {
+class VulnerabilitiesPanelTop(project: Project, result: BaseCheckovResult): CheckovDescriptionPanelTop(project, result) {
 
     init {
         val gbc = GridBagConstraints()

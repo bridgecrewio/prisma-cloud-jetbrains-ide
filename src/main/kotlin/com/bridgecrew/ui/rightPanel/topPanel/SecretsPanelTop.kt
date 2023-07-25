@@ -6,10 +6,11 @@ import com.bridgecrew.ui.buttons.DocumentationButton
 import com.bridgecrew.ui.buttons.FixButton
 import com.bridgecrew.utils.FileType
 import com.bridgecrew.utils.getFileType
+import com.intellij.openapi.project.Project
 import java.awt.GridBagConstraints
 import javax.swing.JPanel
 
-class SecretsPanelTop(result: BaseCheckovResult): CheckovDescriptionPanelTop(result) {
+class SecretsPanelTop(project: Project, result: BaseCheckovResult): CheckovDescriptionPanelTop(project, result) {
 
     init {
         val gbc = GridBagConstraints()
