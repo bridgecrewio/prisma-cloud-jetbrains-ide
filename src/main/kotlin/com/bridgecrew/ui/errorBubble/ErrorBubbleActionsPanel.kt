@@ -5,17 +5,16 @@ import com.bridgecrew.ui.actions.FixAction
 import com.bridgecrew.ui.actions.FocusOnFileInTree
 import com.bridgecrew.ui.buttons.CheckovLinkButton
 import com.bridgecrew.ui.buttons.DocumentationLinkButton
-import com.bridgecrew.ui.buttons.SuppressionButton
 import com.bridgecrew.ui.buttons.SuppressionLinkButton
 import com.bridgecrew.utils.*
-import com.intellij.openapi.project.ProjectManager
+import com.intellij.openapi.project.Project
 import icons.CheckovIcons
 import java.awt.Color
 import java.awt.Dimension
 import java.awt.Font
 import javax.swing.*
 
-class ErrorBubbleActionsPanel(val result: BaseCheckovResult) : JPanel() {
+class ErrorBubbleActionsPanel(val project: Project, val result: BaseCheckovResult) : JPanel() {
 
     init {
         layout = BoxLayout(this, BoxLayout.X_AXIS)
@@ -37,7 +36,6 @@ class ErrorBubbleActionsPanel(val result: BaseCheckovResult) : JPanel() {
 
     private fun addSuppressIfNeeded() {
         if (isShowSuppressionButton(result)) {
-            val project = ProjectManager.getInstance().defaultProject
             addStyledButton(SuppressionLinkButton(project, result))
         }
     }

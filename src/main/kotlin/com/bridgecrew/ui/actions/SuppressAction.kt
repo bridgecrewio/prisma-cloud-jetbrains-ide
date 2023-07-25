@@ -12,7 +12,6 @@ import com.bridgecrew.utils.FileType
 import com.bridgecrew.utils.PANELTYPE
 import com.bridgecrew.utils.getFileType
 import com.bridgecrew.utils.navigateToFile
-import com.intellij.ide.DataManager
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Document
