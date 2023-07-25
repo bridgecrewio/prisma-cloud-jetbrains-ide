@@ -108,9 +108,10 @@ class SuppressAction(private val project: Project, private val buttonInstance: J
     }
 
     private fun addTextToFile(document: Document, lineNumber: Int, suppressionComment: String) {
-        val insertionOffset = document.getLineStartOffset(lineNumber - 1)
+        val insertionIndex = if (lineNumber == 0) 0 else lineNumber - 1
+        val insertionOffset = document.getLineStartOffset(insertionIndex)
 
-        val textLine = document.getText(TextRange(insertionOffset, document.getLineStartOffset(lineNumber)))
+        val textLine = document.getText(TextRange(insertionOffset, document.getLineStartOffset(insertionIndex + 1)))
         val matchSpacesBeforeComment = Regex("^[\\s\\t]+").find(textLine)
         val addSpacesBeforeComment = if(matchSpacesBeforeComment?.value !== null) matchSpacesBeforeComment.value else ""
 
