@@ -81,7 +81,7 @@ class CheckovToolWindowTree(
                 if (node.userObject is CheckovVulnerabilityTreeNode) {
                     val vulnerabilityTreeNode = node.userObject as CheckovVulnerabilityTreeNode
                     val checkovResult = vulnerabilityTreeNode.checkovResult
-                    split.secondComponent = CheckovErrorRightPanel(checkovResult)
+                    split.secondComponent = CheckovErrorRightPanel(project, checkovResult)
                     WriteCommandAction.runWriteCommandAction(project) {
                         navigateToFile(project, checkovResult.absoluteFilePath, checkovResult.fileLineRange[0])
                     }

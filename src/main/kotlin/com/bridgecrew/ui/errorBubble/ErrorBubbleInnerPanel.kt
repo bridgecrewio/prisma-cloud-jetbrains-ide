@@ -8,12 +8,13 @@ import com.bridgecrew.ui.CodeDiffPanel
 import com.bridgecrew.ui.rightPanel.dictionaryDetails.VulnerabilitiesDictionaryPanel
 import com.bridgecrew.utils.UNKNOWN_LICENSES_DESCRIPTION
 import com.bridgecrew.utils.VIOLATED_LICENSES_DESCRIPTION
+import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBScrollPane
 import java.awt.*
 import javax.swing.*
 
 
-class ErrorBubbleInnerPanel(val result: BaseCheckovResult, private val vulnerabilityCount: Int, index: Int, total: Int, callback: navigationCallback) : JPanel() {
+class ErrorBubbleInnerPanel(val project: Project, val result: BaseCheckovResult, private val vulnerabilityCount: Int, index: Int, total: Int, callback: navigationCallback) : JPanel() {
 
     companion object {
         const val MIN_INNER_PANEL_HEIGHT = 75
@@ -35,7 +36,7 @@ class ErrorBubbleInnerPanel(val result: BaseCheckovResult, private val vulnerabi
         addCenterPanelByCategory()
 
         add(Box.createRigidArea(Dimension(0, 5)))
-        val actionsPanel = ErrorBubbleActionsPanel(result)
+        val actionsPanel = ErrorBubbleActionsPanel(project, result)
         actionsPanel.alignmentX = Component.LEFT_ALIGNMENT
         actionsPanel.border = BorderFactory.createEmptyBorder(0, 25, 0, 0)
         add(actionsPanel)
