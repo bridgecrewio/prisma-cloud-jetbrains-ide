@@ -10,13 +10,14 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.editor.markup.*
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.util.ui.EmptyIcon
 import icons.CheckovIcons
 import java.awt.Point
 import javax.swing.Icon
 
-class CheckovGutterErrorIcon(val results: List<BaseCheckovResult>, val offset: Int, val markup: MarkupModel, val firstRow: Int) : GutterIconRenderer() {
+class CheckovGutterErrorIcon(val project: Project, val results: List<BaseCheckovResult>, val offset: Int, val markup: MarkupModel, val firstRow: Int) : GutterIconRenderer() {
 
     var isFixInProgress = false
 
@@ -59,7 +60,7 @@ class CheckovGutterErrorIcon(val results: List<BaseCheckovResult>, val offset: I
 
                         val screen = editor.contentComponent.locationOnScreen.let { Point(it.x + start.x, it.y + start.y) }
                         ApplicationManager.getApplication().invokeLater {
-                            CheckovErrorBubble(results, screen, markup, rangeHighlighter)
+                            CheckovErrorBubble(project, results, screen, markup, rangeHighlighter)
                         }
                     }
                 }
