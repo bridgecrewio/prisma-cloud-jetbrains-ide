@@ -55,6 +55,26 @@ open class BaseCheckovResult(
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is BaseCheckovResult) return false
+        return this.category == other.category &&
+                this.checkType == other.checkType &&
+                this.filePath == other.filePath &&
+                this.resource == other.resource &&
+                this.name == other.name &&
+                this.id == other.id &&
+                this.severity == other.severity &&
+                this.description == other.description &&
+                this.guideline == other.guideline &&
+                this.absoluteFilePath == other.absoluteFilePath &&
+                this.fileLineRange == other.fileLineRange &&
+                this.fixDefinition == other.fixDefinition &&
+                this.codeBlock == other.codeBlock &&
+                this.codeDiffFirstLine == other.codeDiffFirstLine
+    }
+
+    // this is to compare results that are originally the same, but not entirely equal since we modified them
+    fun mostlyEquals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is BaseCheckovResult) return false
         return this.id == other.id &&
                 this.checkType == other.checkType &&
                 this.filePath == other.filePath &&
@@ -68,7 +88,6 @@ open class BaseCheckovResult(
         result = 31 * result + checkType.hashCode()
         result = 31 * result + filePath.hashCode()
         result = 31 * result + resource.hashCode()
-        result = 31 * result + name.hashCode()
         result = 31 * result + id.hashCode()
         result = 31 * result + severity.hashCode()
         return result
