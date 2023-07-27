@@ -66,6 +66,10 @@ class CheckovResultsListUtils {
             return filteredList.groupBy { it.filePath }
         }
 
+        fun cleanUpFileStateBeforeChanging(filePath: String) {
+            CheckovGlobalState.modifiedCheckovResults = CheckovGlobalState.modifiedCheckovResults.filter { result -> result.filePath != filePath }.toMutableList()
+        }
+
         fun modifyBaseCheckovResultLineNumbers(project: Project, original: BaseCheckovResult, startLine: Int, range: Int) {
             val allResults = project.service<ResultsCacheService>().getAdjustedCheckovResults()
             val resultsByPath = getCheckovResultsByPath(allResults, original.filePath.removePrefix(File.separator))
