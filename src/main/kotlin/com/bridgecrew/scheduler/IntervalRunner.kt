@@ -20,12 +20,7 @@ class IntervalRunner {
                     stopWatch.stop()
                     timer.cancel()
                 }
-
             }
         }, 0, (1000L * period))
-    }
-
-    fun scheduleWithTimer(period: () -> Unit) {
-
     }
 }

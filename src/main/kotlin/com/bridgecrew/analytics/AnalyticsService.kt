@@ -1,6 +1,7 @@
 package com.bridgecrew.analytics
 
 import com.bridgecrew.api.ApiClient
+import com.bridgecrew.cache.CacheDataAnalytics
 import com.bridgecrew.scheduler.IntervalRunner
 import com.bridgecrew.services.scan.FullScanStateService
 import com.bridgecrew.services.scan.ScanTaskResult
@@ -153,7 +154,6 @@ class AnalyticsService(val project: Project) {
 
     fun releaseAnalytics() {
         val apiClient = getApiClient()
-        CacheDataAnalytics().load(analyticsEventData)
         if (analyticsEventData.isEmpty()) {
             return
         }
@@ -162,14 +162,15 @@ class AnalyticsService(val project: Project) {
         val isReleased = apiClient.putDataAnalytics(data)
         if (isReleased) {
             analyticsEventData.clear()
-        } else {
-            CacheDataAnalytics().stash(analyticsEventData)
         }
+
+        CacheDataAnalytics(project).stash(analyticsEventData)
     }
 
     fun startSchedulerReleasingAnalytics(){
         val apiClient = getApiClient()
         val config = apiClient.getConfig()
+        CacheDataAnalytics(project).load(analyticsEventData)
         IntervalRunner().scheduleWithTimer({ releaseAnalytics() }, config.reportingInterval)
     }
 
