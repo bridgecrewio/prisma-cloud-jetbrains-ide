@@ -3,12 +3,13 @@ package com.bridgecrew.ui.rightPanel
 import com.bridgecrew.results.*
 import com.bridgecrew.ui.rightPanel.extraInfoPanel.*
 import com.bridgecrew.ui.rightPanel.topPanel.*
+import com.intellij.openapi.project.Project
 import com.intellij.ui.ScrollPaneFactory
 import com.intellij.util.ui.UIUtil
 import java.awt.GridBagLayout
 import javax.swing.*
 
-class CheckovErrorRightPanel(var result: BaseCheckovResult): JPanel() {
+class CheckovErrorRightPanel(val project: Project, var result: BaseCheckovResult): JPanel() {
 
     init {
         layout = BoxLayout(this, BoxLayout.Y_AXIS)
@@ -21,10 +22,10 @@ class CheckovErrorRightPanel(var result: BaseCheckovResult): JPanel() {
 
     private fun createTitlePanel(): JPanel {
         val titlePanel = when(result.category) {
-            Category.IAC -> IacPanelTop(result as IacCheckovResult)
-            Category.VULNERABILITIES -> VulnerabilitiesPanelTop(result as VulnerabilityCheckovResult)
-            Category.SECRETS -> SecretsPanelTop(result as SecretsCheckovResult)
-            Category.LICENSES -> LicensePanelTop(result as LicenseCheckovResult)
+            Category.IAC -> IacPanelTop(project, result as IacCheckovResult)
+            Category.VULNERABILITIES -> VulnerabilitiesPanelTop(project, result as VulnerabilityCheckovResult)
+            Category.SECRETS -> SecretsPanelTop(project, result as SecretsCheckovResult)
+            Category.LICENSES -> LicensePanelTop(project, result as LicenseCheckovResult)
         }
         return titlePanel
     }

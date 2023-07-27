@@ -3,10 +3,11 @@ package com.bridgecrew.ui.rightPanel.topPanel
 import com.bridgecrew.results.BaseCheckovResult
 import com.bridgecrew.ui.buttons.DocumentationButton
 import com.bridgecrew.ui.buttons.FixButton
+import com.intellij.openapi.project.Project
 import java.awt.GridBagConstraints
 import javax.swing.JPanel
 
-class IacPanelTop(result: BaseCheckovResult): CheckovDescriptionPanelTop(result) {
+class IacPanelTop(project: Project, result: BaseCheckovResult): CheckovDescriptionPanelTop(project, result) {
 
     init {
         val gbc = GridBagConstraints()

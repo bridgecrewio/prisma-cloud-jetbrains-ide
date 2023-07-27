@@ -11,7 +11,7 @@ import java.awt.Font
 import java.awt.GridBagLayout
 import javax.swing.*
 
-open class CheckovDescriptionPanelTop(val result: BaseCheckovResult) : JPanel() {
+open class CheckovDescriptionPanelTop(val project: Project, val result: BaseCheckovResult) : JPanel() {
 
     init {
         layout = GridBagLayout()
@@ -63,8 +63,6 @@ open class CheckovDescriptionPanelTop(val result: BaseCheckovResult) : JPanel() 
 
     fun createSuppressionButton(panel: JPanel) {
         if (isShowSuppressionButton(result)) {
-            val dataContext = DataManager.getInstance().dataContext
-            val project = dataContext.getData("project") as Project
             panel.add(SuppressionButton(project, result))
         }
     }

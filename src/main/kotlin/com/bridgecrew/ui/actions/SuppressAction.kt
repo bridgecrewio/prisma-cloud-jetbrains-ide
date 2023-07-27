@@ -12,7 +12,6 @@ import com.bridgecrew.utils.FileType
 import com.bridgecrew.utils.PANELTYPE
 import com.bridgecrew.utils.getFileType
 import com.bridgecrew.utils.navigateToFile
-import com.intellij.ide.DataManager
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Document
@@ -69,7 +68,7 @@ class SuppressAction(private val project: Project, private val buttonInstance: J
         val document = getDocument(result.absoluteFilePath)
         val lineNumber = getLineNumber(fileType)
         if (document != null && !isSuppressionExists(document, lineNumber, suppressionComment) && !isSuppressionExists(document, lineNumber + 1, suppressionComment)) {
-            addTextToFile(document, lineNumber, suppressionComment)
+            addCommentToFile(fileType, document, lineNumber, suppressionComment)
         }
     }
 
@@ -104,6 +103,64 @@ class SuppressAction(private val project: Project, private val buttonInstance: J
             FileType.GOLANG, FileType.KOTLIN, FileType.GRADLE  -> "//$comment"
             FileType.JSON -> comment
             else -> "#$comment"
+        }
+    }
+
+    private fun addCommentToFile(fileType: FileType, document: Document, lineNumber: Int, suppressionComment: String) {
+        return when(fileType) {
+            FileType.JSON -> addJSONComment(document, suppressionComment)
+            else -> addTextToFile(document, lineNumber, suppressionComment)
+        }
+    }
+
+    private fun addJSONComment(document: Document, suppressionComment: String) {
+        for (lineIndex in 0..document.lineCount ){
+            val lineText = document.getText(TextRange(document.getLineStartOffset(lineIndex), document.getLineEndOffset(lineIndex)))
+
+            // if exists array of multiline comments in JSON root object
+            if(Regex("^(\\s\\s|\\t)\"//\":\\s*\\[").find(lineText)?.value !== null) {
+                // set json comment string value
+                var jsonComment = "\"$suppressionComment\"";
+
+                // set line to insert comment
+                val lineNumber = lineIndex + 2
+
+                // check some comments exists in array
+                val someCommentText = document.getText(TextRange(document.getLineStartOffset(lineIndex + 1), document.getLineEndOffset(lineIndex + 1)))
+                val someCommentExists = Regex("\".*\"").find(someCommentText)?.value
+
+                // format json comment
+                jsonComment = if(someCommentExists !== null) "$jsonComment," else "  $jsonComment";
+
+                // add json comment to file
+                addTextToFile(document, lineNumber, jsonComment)
+                break
+            }
+
+            // if no comments in JSON root object
+            if (lineText.trimEnd() == "}") {
+                // set line to insert comment
+                val lineNumber = lineIndex + 1
+
+                // set json array with first comment string value
+                val jsonComment = "  \"//\": [\n    \"$suppressionComment\"\n  ]";
+
+                // add comma to previous line
+                addTextToLine (document, lineNumber - 1 , ",")
+
+                // add json comment to file
+                addTextToFile(document, lineNumber, jsonComment)
+                break
+            }
+        }
+
+    }
+
+    private fun addTextToLine(document: Document, lineNumber: Int, text: String) {
+        val insertionIndex = if (lineNumber == 0) 0 else lineNumber - 1
+        val insertionOffset = document.getLineEndOffset(insertionIndex)
+        WriteCommandAction.runWriteCommandAction(project) {
+            document.insertString(insertionOffset, text)
         }
     }
 
