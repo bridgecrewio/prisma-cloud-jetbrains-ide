@@ -62,7 +62,6 @@ class AnalyticsService(val project: Project) {
         fullScanData!!.scanFinishedTime = Date()
         LOG.info("Prisma Cloud Plugin Analytics - scan #${fullScanNumber} - full scan finished")
         buildFullScanAnalyticsData()
-        releaseAnalytics()
     }
 
     fun fullScanFrameworkFinishedNoErrors(framework: String) {
@@ -96,7 +95,10 @@ class AnalyticsService(val project: Project) {
 
     fun pluginInstalled(){
         buildPluginInstalledAnalyticsData()
-        releaseAnalytics()
+    }
+
+    fun pluginUninstalled(){
+        buildPluginUninstalledAnalyticsData()
     }
 
     private fun logFullScanAnalytics() {
@@ -171,7 +173,8 @@ class AnalyticsService(val project: Project) {
         val apiClient = getApiClient()
         val config = apiClient.getConfig()
         CacheDataAnalytics(project).load(analyticsEventData)
-        IntervalRunner().scheduleWithTimer({ releaseAnalytics() }, config.reportingInterval)
+        project.service<IntervalRunner>()
+            .scheduleWithTimer({ releaseAnalytics() }, config.reportingInterval)
     }
 
     private fun getApiClient(): ApiClient {
@@ -199,6 +202,13 @@ class AnalyticsService(val project: Project) {
         val analyticsData = PluginInstallAnalyticsData()
         analyticsData.eventTime = Date()
         analyticsData.eventType = EventTypeEnum.ON_PLUGIN_INSTALL
+        analyticsEventData.add(Json.encodeToString(analyticsData))
+    }
+
+    private fun buildPluginUninstalledAnalyticsData(){
+        val analyticsData = PluginInstallAnalyticsData()
+        analyticsData.eventTime = Date()
+        analyticsData.eventType = EventTypeEnum.ON_PLUGIN_UNINSTALL
         analyticsEventData.add(Json.encodeToString(analyticsData))
     }
 }
