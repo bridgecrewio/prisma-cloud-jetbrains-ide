@@ -26,13 +26,16 @@ class ResultsCacheService(val project: Project) {
         }
 
         if (CheckovGlobalState.shouldRecalculateResult) {
+            var changedResults: MutableList<BaseCheckovResult> = mutableListOf()
             CheckovGlobalState.modifiedCheckovResults.forEach { modifiedResult ->
-                val originalResult = modifiedResults.find { res -> res == modifiedResult }
+                val originalResult = modifiedResults.find { res -> res.mostlyEquals(modifiedResult) }
                 if (originalResult != null) {
                     val index = modifiedResults.indexOf(originalResult)
-                    modifiedResults[index] = modifiedResult
+                    modifiedResults.removeAt(index) //FYI working with `list[index] = newVal` DIDNT WORK!!! very messy bug so don't refactor this back
+                    changedResults.add(modifiedResult)
                 }
             }
+            modifiedResults.addAll(changedResults)
             CheckovGlobalState.shouldRecalculateResult = false
         }
 

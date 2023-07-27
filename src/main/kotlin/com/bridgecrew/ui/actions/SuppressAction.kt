@@ -182,6 +182,7 @@ class SuppressAction(private val project: Project, private val buttonInstance: J
 
         CheckovGlobalState.suppressedVulnerabilitiesToIgnore.add(CheckovResultsListUtils.cloneCheckovResultWithModifiedFields(project, result, result.fileLineRange, result.codeBlock))
         CheckovGlobalState.filePathsToIgnore[result.filePath.removePrefix(File.separator)] = System.currentTimeMillis()
+        CheckovResultsListUtils.cleanUpFileStateBeforeChanging(result.filePath)
         CheckovResultsListUtils.modifyBaseCheckovResultLineNumbers(project, result, lineNumber, 1)
         project.service<CheckovToolWindowManagerPanel>().loadMainPanel(PANELTYPE.CHECKOV_FILE_SCAN_FINISHED, result.filePath)
 //        FileDocumentManager.getInstance().saveDocument(document)
