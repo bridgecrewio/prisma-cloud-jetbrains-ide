@@ -40,7 +40,7 @@ class VulnerabilitiesDictionaryPanel(result: VulnerabilityCheckovResult): Dictio
         if (result.checkType == CheckType.SCA_PACKAGE) {
             return mapOf("Root Package" to result.rootPackageName,
             "Root Package Version" to result.rootPackageVersion,
-            "Compliant Version (Fix all CVEs)" to result.rootPackageFixVersion)
+            "Root Package Fix Version" to result.rootPackageFixVersion)
         }
 
         return mapOf()
