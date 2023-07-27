@@ -1,6 +1,8 @@
 package com.bridgecrew.analytics
 
 import com.bridgecrew.api.ApiClient
+import com.bridgecrew.cache.CacheDataAnalytics
+import com.bridgecrew.scheduler.IntervalRunner
 import com.bridgecrew.services.scan.FullScanStateService
 import com.bridgecrew.services.scan.ScanTaskResult
 import com.bridgecrew.settings.PrismaSettingsState
@@ -60,7 +62,6 @@ class AnalyticsService(val project: Project) {
         fullScanData!!.scanFinishedTime = Date()
         LOG.info("Prisma Cloud Plugin Analytics - scan #${fullScanNumber} - full scan finished")
         buildFullScanAnalyticsData()
-        releaseAnalytics()
     }
 
     fun fullScanFrameworkFinishedNoErrors(framework: String) {
@@ -94,7 +95,10 @@ class AnalyticsService(val project: Project) {
 
     fun pluginInstalled(){
         buildPluginInstalledAnalyticsData()
-        releaseAnalytics()
+    }
+
+    fun pluginUninstalled(){
+        buildPluginUninstalledAnalyticsData()
     }
 
     private fun logFullScanAnalytics() {
@@ -152,7 +156,6 @@ class AnalyticsService(val project: Project) {
 
     fun releaseAnalytics() {
         val apiClient = getApiClient()
-        CacheDataAnalytics().load(analyticsEventData)
         if (analyticsEventData.isEmpty()) {
             return
         }
@@ -161,9 +164,17 @@ class AnalyticsService(val project: Project) {
         val isReleased = apiClient.putDataAnalytics(data)
         if (isReleased) {
             analyticsEventData.clear()
-        } else {
-            CacheDataAnalytics().stash(analyticsEventData)
         }
+
+        CacheDataAnalytics(project).stash(analyticsEventData)
+    }
+
+    fun startSchedulerReleasingAnalytics(){
+        val apiClient = getApiClient()
+        val config = apiClient.getConfig()
+        CacheDataAnalytics(project).load(analyticsEventData)
+        project.service<IntervalRunner>()
+            .scheduleWithTimer({ releaseAnalytics() }, config.reportingInterval)
     }
 
     private fun getApiClient(): ApiClient {
@@ -191,6 +202,13 @@ class AnalyticsService(val project: Project) {
         val analyticsData = PluginInstallAnalyticsData()
         analyticsData.eventTime = Date()
         analyticsData.eventType = EventTypeEnum.ON_PLUGIN_INSTALL
+        analyticsEventData.add(Json.encodeToString(analyticsData))
+    }
+
+    private fun buildPluginUninstalledAnalyticsData(){
+        val analyticsData = PluginInstallAnalyticsData()
+        analyticsData.eventTime = Date()
+        analyticsData.eventType = EventTypeEnum.ON_PLUGIN_UNINSTALL
         analyticsEventData.add(Json.encodeToString(analyticsData))
     }
 }

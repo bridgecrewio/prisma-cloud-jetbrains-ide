@@ -1,5 +1,6 @@
 package com.bridgecrew.analytics
 
+import com.bridgecrew.settings.PLUGIN_NAME
 import com.bridgecrew.settings.PrismaSettingsState
 import com.google.gson.annotations.Expose
 import kotlinx.serialization.*
@@ -9,7 +10,7 @@ import kotlinx.serialization.json.JsonObject
 
 @OptIn(ExperimentalSerializationApi::class)
 @Serializable
-sealed class AnalyticsData(@EncodeDefault val pluginName: String = "jetbrains"){
+sealed class AnalyticsData(@EncodeDefault val pluginName: String = PLUGIN_NAME){
     @EncodeDefault
     val installationId: String = PrismaSettingsState().getInstance()!!.installationId
 

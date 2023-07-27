@@ -1,6 +1,8 @@
 package com.bridgecrew.api
 
 
+import com.bridgecrew.settings.DEFAULT_REPORTING_INTERVAL
+import com.bridgecrew.settings.PLUGIN_NAME
 import com.intellij.openapi.diagnostic.logger
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
@@ -18,6 +20,9 @@ data class LoginRequest(val username: String, val password: String)
 @Serializable
 data class LoginResponse(val token: String)
 
+@Serializable
+data class ConfigResponse(val reportingInterval: Int = DEFAULT_REPORTING_INTERVAL)
+
 private val LOG = logger<ApiClient>()
 
 @OptIn(ExperimentalSerializationApi::class)
@@ -32,7 +37,7 @@ class ApiClient(private val username: String, private val password: String, priv
             //todo maybe add jwt parser to get know exp timestamp?
             if (authToken.isEmpty()) {
                 //todo do we need show IDE popup here?
-                LOG.error("Could not authorize for username: $username")
+                LOG.warn("Could not authorize for username: $username")
                 return false
             }
 
@@ -46,8 +51,8 @@ class ApiClient(private val username: String, private val password: String, priv
             val response = client.send(request, HttpResponse.BodyHandlers.ofString())
 
             LOG.debug("PutDataAnalytics method called response body: ${response.body()}")
-            if(response.statusCode() == 403 || response.statusCode() == 401){
-                LOG.error("Could not authorize for token: $authToken")
+            if(response.statusCode() == 403 || response.statusCode() == 401 || response.statusCode() == 404){
+                LOG.warn("Could not authorize for token: $authToken")
                 return false
             }
 
@@ -55,12 +60,50 @@ class ApiClient(private val username: String, private val password: String, priv
 
         } catch (e: IOException) {
             //todo do we need show IDE popup here?
-            LOG.error("IOException: ${e.message}")
+            LOG.warn("IOException: ${e.message}")
             return false
         }
 
     }
 
+    fun getConfig(): ConfigResponse {
+        try {
+            LOG.debug("getConfig method call")
+            val authToken = this.login().token
+            if (authToken.isEmpty()) {
+                LOG.warn("Could not authorize for username: $username")
+                return ConfigResponse()
+            }
+
+            val request = HttpRequest.newBuilder()
+                .uri(prismaURI.resolve("/bridgecrew/api/v1/plugins-analytics/get-config/$PLUGIN_NAME"))
+                .header("Content-Type", "application/json")
+                .header("Authorization", authToken)
+                .GET()
+                .build()
+
+            val response = client.send(request, HttpResponse.BodyHandlers.ofString())
+
+            LOG.debug("getConfig method called response body: ${response.body()}")
+            if(response.statusCode() == 403 || response.statusCode() == 401){
+                LOG.warn("Could not authorize for token: $authToken")
+                return ConfigResponse()
+            }
+
+            val json = Json { ignoreUnknownKeys = true }
+            return json.decodeFromString<ConfigResponse>(response.body())
+
+        } catch (e: IOException) {
+            //todo do we need show IDE popup here?
+            LOG.warn("IOException: ${e.message}")
+            return ConfigResponse()
+        }
+
+    }
+
+    fun getToken(){
+        //todo implement: compare token exp time with current time to avoid ddosing
+    }
 
     private fun login(): LoginResponse {
         try {
@@ -77,7 +120,7 @@ class ApiClient(private val username: String, private val password: String, priv
             val response = client.send(request, HttpResponse.BodyHandlers.ofString())
             if (response.statusCode() == 401) {
                 //todo do we need show IDE popup here?
-                LOG.error("Incorrect username or password")
+                LOG.warn("Incorrect username or password")
                 return LoginResponse("")
             }
 
@@ -85,10 +128,10 @@ class ApiClient(private val username: String, private val password: String, priv
             return json.decodeFromString<LoginResponse>(response.body())
         } catch (e: IOException) {
             //todo do we need show IDE popup here?
-            LOG.error("Method login called with IOException: ${e.message}")
+            LOG.warn("Method login called with IOException: ${e.message}")
             return LoginResponse("")
         } catch (e: SerializationException) {
-            LOG.error("Method login called with SerializationException: ${e.message}")
+            LOG.warn("Method login called with SerializationException: ${e.message}")
             return LoginResponse("")
         }
     }
