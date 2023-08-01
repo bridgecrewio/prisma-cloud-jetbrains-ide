@@ -4,6 +4,7 @@ import com.bridgecrew.analytics.AnalyticsService
 import com.bridgecrew.initialization.InitializationService
 import com.bridgecrew.listeners.InitializationListener
 import com.bridgecrew.listeners.InitializationListener.Companion.INITIALIZATION_TOPIC
+import com.bridgecrew.listeners.PrismaVirtualFileListener
 import com.bridgecrew.settings.PrismaSettingsState
 import com.bridgecrew.ui.CheckovToolWindowManagerPanel
 import com.intellij.ide.plugins.IdeaPluginDescriptor
@@ -13,6 +14,7 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.StartupActivity
+import com.intellij.openapi.vfs.LocalFileSystem
 import java.util.*
 
 
@@ -43,6 +45,8 @@ class PostStartupActivity : StartupActivity {
                 LOG.info("Plugin was uninstalled")
             }
         })
+
+        LocalFileSystem.getInstance().addVirtualFileListener(PrismaVirtualFileListener(project))
 
         initializeProject(project)
         sendAnalyticsPluginInstalled(project)
