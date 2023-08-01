@@ -58,6 +58,12 @@ class ResultsCacheService(val project: Project) {
         setCheckovResultsFromResultsList(newCheckovResults)
     }
 
+    fun removeCheckovResultByFilePath(filePath: String) {
+        checkovResults.removeIf { savedCheckovResult ->
+            savedCheckovResult.absoluteFilePath == filePath
+        }
+    }
+
     fun deleteAllCheckovResults() {
         checkovResults.clear()
     }
