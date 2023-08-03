@@ -10,13 +10,13 @@ abstract class CheckovScanCommandsService(val project: Project) {
     protected val settings = PrismaSettingsState().getInstance()
     private var gitRepo = getRepoName()
 
-    fun getExecCommandForSingleFile(filePath: String, outputFilePath: String): ArrayList<String> {
+    fun getExecCommandForSingleFile(filePaths: List<String>, outputFilePath: String): ArrayList<String> {
         val cmds = ArrayList<String>()
         cmds.addAll(getCheckovRunningCommandByServiceType(outputFilePath))
         cmds.addAll(getCheckovCliArgsForExecCommand(outputFilePath))
 
-        cmds.add("-f")
-        cmds.add(getFilePath(filePath))
+        filePaths.forEach{ path -> cmds.add("-f"); cmds.add(getFilePath(path)) }
+
         return cmds
     }
 

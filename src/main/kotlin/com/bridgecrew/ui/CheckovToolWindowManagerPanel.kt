@@ -15,10 +15,7 @@ import com.bridgecrew.ui.errorBubble.CheckovGutterErrorIcon
 import com.bridgecrew.ui.actions.SeverityFilterActions
 import com.bridgecrew.ui.topPanel.CheckovTopPanel
 import com.bridgecrew.ui.vulnerabilitiesTree.CheckovToolWindowTree
-import com.bridgecrew.utils.FULL_SCAN_EXCLUDED_PATHS
-import com.bridgecrew.utils.PANELTYPE
-import com.bridgecrew.utils.getGitIgnoreValues
-import com.bridgecrew.utils.toVirtualFilePath
+import com.bridgecrew.utils.*
 import com.intellij.ide.ui.LafManagerListener
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.ApplicationManager
@@ -278,9 +275,10 @@ class CheckovToolWindowManagerPanel(val project: Project) : SimpleToolWindowPane
             isIgnoreFile = true
         }
 
-        return ProjectRootManager.getInstance(project).fileIndex.isInContent(virtualFile) &&
-                excludedPaths.find { excludedPath -> virtualFilePath.startsWith(excludedPath) }.isNullOrEmpty() &&
-                !isIgnoreFile
+        return ProjectRootManager.getInstance(project).fileIndex.isInContent(virtualFile)
+                && excludedPaths.find { excludedPath -> virtualFilePath.startsWith(excludedPath) }.isNullOrEmpty()
+                && EXCLUDED_FILE_NAMES.find{excludedFile -> virtualFilePath.endsWith(excludedFile)}.isNullOrEmpty()
+                && !isIgnoreFile
     }
 
     fun subscribeToInternalEvents(project: Project) {
