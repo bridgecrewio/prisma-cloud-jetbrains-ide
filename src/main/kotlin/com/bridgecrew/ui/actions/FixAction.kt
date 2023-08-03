@@ -61,16 +61,17 @@ class FixAction(private val buttonInstance: JButton, val result: BaseCheckovResu
     private val LOG = logger<FixAction>()
 
     override fun actionPerformed(e: ActionEvent?) {
-        buttonInstance.isEnabled = false
         ApplicationManager.getApplication().invokeLater {
             if (result.category == Category.VULNERABILITIES) {
                 handleSCEFixes()
             } else {
+                buttonInstance.isEnabled = false
                 applyFixDefinition()
+                val project = ProjectManager.getInstance().defaultProject
+                project.messageBus.syncPublisher(ErrorBubbleFixListener.ERROR_BUBBLE_FIX_TOPIC).fixClicked()
             }
         }
-        val project = ProjectManager.getInstance().defaultProject
-        project.messageBus.syncPublisher(ErrorBubbleFixListener.ERROR_BUBBLE_FIX_TOPIC).fixClicked()
+
     }
 
     private fun applyFixDefinition(): Boolean {
