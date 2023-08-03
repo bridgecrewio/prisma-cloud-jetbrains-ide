@@ -155,7 +155,7 @@ class AnalyticsService(val project: Project) {
     }
 
     fun releaseAnalytics() {
-        val apiClient = getApiClient()
+        val apiClient = getApiClient() ?: return
         if (analyticsEventData.isEmpty()) {
             return
         }
@@ -170,25 +170,25 @@ class AnalyticsService(val project: Project) {
     }
 
     fun startSchedulerReleasingAnalytics(){
-        val apiClient = getApiClient()
+        val apiClient = getApiClient() ?: return
         val config = apiClient.getConfig()
         CacheDataAnalytics(project).load(analyticsEventData)
         project.service<IntervalRunner>()
             .scheduleWithTimer({ releaseAnalytics() }, config.reportingInterval)
     }
 
-    private fun getApiClient(): ApiClient {
+    private fun getApiClient(): ApiClient? {
         if (this.apiClient != null) {
-            return this.apiClient!!
+            return this.apiClient
         }
 
         val settings = PrismaSettingsState().getInstance()
-        if (settings?.accessKey!!.isNotEmpty() && settings.secretKey.isNotEmpty() && settings.prismaURL.isNotEmpty()) {
+        if (settings != null && settings.isConfigured()) {
             this.apiClient = ApiClient(settings.accessKey, settings.secretKey, settings.prismaURL)
-            return this.apiClient!!
+            return this.apiClient
         }
 
-        throw Exception("Prisma could parameters: accessKey, secretKey, prismaURL have not been initialized!")
+        return null
     }
 
     private fun buildFullScanAnalyticsData(){

@@ -132,9 +132,8 @@ class CheckovToolWindowManagerPanel(val project: Project) : SimpleToolWindowPane
     private fun loadAutoChoosePanel() {
         val setting = PrismaSettingsState().getInstance()
         when {
-            setting?.accessKey.isNullOrEmpty() -> add(checkovDescription.configurationDescription())
-            setting?.secretKey.isNullOrEmpty() -> add(checkovDescription.configurationDescription())
-            else -> add(checkovDescription.preScanDescription())
+            setting!!.isConfigured() -> add(checkovDescription.preScanDescription())
+            else -> add(checkovDescription.configurationDescription())
         }
     }
 

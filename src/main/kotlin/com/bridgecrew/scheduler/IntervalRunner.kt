@@ -1,6 +1,5 @@
 package com.bridgecrew.scheduler
 
-import com.bridgecrew.analytics.AnalyticsService
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.project.Project
