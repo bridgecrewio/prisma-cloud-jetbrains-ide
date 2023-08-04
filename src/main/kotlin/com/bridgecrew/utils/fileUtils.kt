@@ -125,6 +125,10 @@ fun createCheckovTempFile(prefix: String, suffix: String): File {
             checkovTempDirPath.toFile())
 }
 
+fun getPackageJsonLockFile(filePath: String): String{
+    return filePath.replace("package.json", "package-lock.json")
+}
+
 fun deleteCheckovTempDir() {
     try {
         if (!Files.exists(checkovTempDirPath)) {

@@ -5,6 +5,7 @@ import com.bridgecrew.errors.CheckovErrorHandlerService
 import com.bridgecrew.listeners.CheckovScanListener
 import com.bridgecrew.services.ResultsCacheService
 import com.bridgecrew.services.checkovScanCommandsService.CheckovScanCommandsService
+import com.bridgecrew.services.checkovScanCommandsService.ExecCommandSingleFileBuilder
 import com.bridgecrew.settings.CheckovGlobalState
 import com.bridgecrew.settings.PrismaSettingsState
 import com.bridgecrew.ui.actions.CheckovScanAction
@@ -54,7 +55,9 @@ class CheckovScanService: Disposable {
             project.messageBus.syncPublisher(CheckovScanListener.SCAN_TOPIC).fileScanningStarted()
 
             val checkovResultFile = createCheckovTempFile("${extractFileNameFromPath(filePath)}-checkov-result", ".json")
-            val execCommand = prepareExecCommand(filePath, checkovResultFile.path, ScanSourceType.FILE)
+
+            val filePaths = ExecCommandSingleFileBuilder(filePath).buildExecCommand()
+            val execCommand = prepareExecCommand(filePaths, checkovResultFile.path, ScanSourceType.FILE)
             val generalCommandLine = generateCheckovCommand(execCommand)
 
             val processHandler: ProcessHandler = OSProcessHandler.Silent(generalCommandLine)
@@ -99,7 +102,7 @@ class CheckovScanService: Disposable {
 
                 kotlin.run {
                     val checkovResultFile: File = createCheckovTempFile("$framework-checkov-result", ".json")
-                    val execCommand: List<String> = prepareExecCommand(framework, checkovResultFile.path, ScanSourceType.FRAMEWORK)
+                    val execCommand: List<String> = prepareExecCommand(listOf(framework), checkovResultFile.path, ScanSourceType.FRAMEWORK)
 
                     val processHandler: ProcessHandler = OSProcessHandler.Silent(generateCheckovCommand(execCommand))
 
@@ -176,10 +179,10 @@ class CheckovScanService: Disposable {
         return generalCommandLine
     }
 
-    private fun prepareExecCommand(scanningSource: String, checkovResultFilePath: String, scanSourceType: ScanSourceType): List<String> {
+    private fun prepareExecCommand(scanningSource: List<String>, checkovResultFilePath: String, scanSourceType: ScanSourceType): List<String> {
         val execCommand = if(scanSourceType == ScanSourceType.FILE)
             selectedCheckovScanner!!.getExecCommandForSingleFile(scanningSource, checkovResultFilePath) else
-                selectedCheckovScanner!!.getExecCommandsForRepositoryByFramework(scanningSource, checkovResultFilePath)
+                selectedCheckovScanner!!.getExecCommandsForRepositoryByFramework(scanningSource.first(), checkovResultFilePath)
 
         val maskedCommand = replaceApiToken(execCommand.joinToString(" "))
         LOG.info("Running command with service ${selectedCheckovScanner!!.javaClass}: $maskedCommand")
