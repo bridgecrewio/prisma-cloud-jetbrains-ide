@@ -29,7 +29,6 @@ class PrismaSettingsState : PersistentStateComponent<PrismaSettingsState> {
                 field = value
             }
         }
-    var analyticsEventData: MutableList<String> = arrayListOf()
 
     fun getApiKey(): String {
         if(accessKey.isNotEmpty() && secretKey.isNotEmpty()){
@@ -41,6 +40,10 @@ class PrismaSettingsState : PersistentStateComponent<PrismaSettingsState> {
 
     fun getInstance(): PrismaSettingsState? {
         return ApplicationManager.getApplication().getService(PrismaSettingsState::class.java)
+    }
+
+    fun isConfigured(): Boolean{
+        return accessKey.isNotEmpty() && secretKey.isNotEmpty() && prismaURL.isNotEmpty()
     }
 
     override fun getState(): PrismaSettingsState = this

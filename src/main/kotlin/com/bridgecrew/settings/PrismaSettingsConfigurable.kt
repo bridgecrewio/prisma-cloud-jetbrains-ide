@@ -29,13 +29,14 @@ class PrismaSettingsConfigurable(val project: Project) : Configurable {
 
         val secretKeyModified = !prismaSettingsComponent.accessKeyField.text.equals(settings?.accessKey)
         val accessKeyModified = !prismaSettingsComponent.secretKeyField.text.equals(settings?.secretKey)
+        val prismaURLModified = !prismaSettingsComponent.prismaURLField.text.equals(settings?.prismaURL)
 
         settings?.secretKey = prismaSettingsComponent.secretKeyField.text.trim()
         settings?.accessKey = prismaSettingsComponent.accessKeyField.text.trim()
         settings?.certificate = prismaSettingsComponent.certificateField.text.trim()
         settings?.prismaURL = prismaSettingsComponent.prismaURLField.text.trim()
 
-        if (accessKeyModified || secretKeyModified){
+        if (accessKeyModified || secretKeyModified || prismaURLModified){
             project.messageBus.syncPublisher(CheckovSettingsListener.SETTINGS_TOPIC).settingsUpdated()
         }
     }
