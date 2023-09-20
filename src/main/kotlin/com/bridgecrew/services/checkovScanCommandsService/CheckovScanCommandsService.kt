@@ -26,6 +26,7 @@ abstract class CheckovScanCommandsService(val project: Project) {
         baseCmds.addAll(getCheckovRunningCommandByServiceType(outputFilePath))
 
         baseCmds.add("-d")
+
         baseCmds.add(getDirectory())
 
         baseCmds.addAll(getExcludePathCommand())
@@ -50,6 +51,12 @@ abstract class CheckovScanCommandsService(val project: Project) {
         val command = arrayListOf("-s", "--bc-api-key", apiToken, "--repo-id", gitRepo, "--quiet", "-o", "cli", "-o", "json",
                 "--output-file-path", "console,$outputFilePath")
         command.addAll(getCertParams())
+
+        val prismaUrl = settings?.prismaURL
+        if (!prismaUrl.isNullOrEmpty()) {
+            command.addAll(arrayListOf("--prisma-api-url", prismaUrl))
+        }
+
         return command
     }
 
@@ -68,7 +75,10 @@ abstract class CheckovScanCommandsService(val project: Project) {
 
     private fun getNormalizedExcludePath(excludePath: String): String {
         if (System.getProperty("os.name").lowercase().contains("win")) {
-            return StringUtils.removeEnd(excludePath, "\\")
+            var winExcludePath = StringUtils.removeEnd(excludePath, "\\")
+            winExcludePath = StringUtils.removeStart(winExcludePath, "**/")
+            winExcludePath = StringUtils.removeStart(winExcludePath, "*")
+            return winExcludePath
         }
 
         return StringUtils.removeEnd(excludePath, "/")
