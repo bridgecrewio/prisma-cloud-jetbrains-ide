@@ -57,7 +57,9 @@ class CheckovToolWindowManagerPanel(val project: Project) : SimpleToolWindowPane
      * @return JBSplitter
      */
     init {
-        loadMainPanel(PANELTYPE.CHECKOV_INITIALIZATION_PROGRESS)
+        ApplicationManager.getApplication().invokeLater {
+            project.service<CheckovToolWindowManagerPanel>().loadMainPanel(PANELTYPE.CHECKOV_INITIALIZATION_PROGRESS)
+        }
     }
 
     companion object {
