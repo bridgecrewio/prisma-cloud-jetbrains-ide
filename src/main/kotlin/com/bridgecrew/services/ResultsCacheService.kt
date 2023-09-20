@@ -6,6 +6,7 @@ import com.bridgecrew.settings.CheckovGlobalState
 import com.bridgecrew.utils.CheckovUtils
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
+import org.apache.commons.io.FilenameUtils
 import org.jetbrains.rpc.LOG
 import java.io.File
 import java.nio.file.Paths
@@ -15,7 +16,7 @@ class ResultsCacheService(val project: Project) {
     var checkovResults: MutableList<BaseCheckovResult> = mutableListOf()
     var modifiedResults: MutableList<BaseCheckovResult> = mutableListOf()
 
-    private val baseDir: String = project.basePath!!
+    private val baseDir: String = if (System.getProperty("os.name").lowercase().contains("win")) FilenameUtils.separatorsToWindows(project.basePath!!) else project.basePath!!
 
     // This function returns `checkovResults` after accounting for changes that were done between scans
     // For example, after fixing or suppressing a resource, we want to clean those entries from all client facing usages.
@@ -143,7 +144,7 @@ class ResultsCacheService(val project: Project) {
                     }
                 }
             } catch (e: Exception) {
-                LOG.info("Error while adding checkov result $result")
+                LOG.info("Error while adding checkov result $result", e)
             }
 
         }
