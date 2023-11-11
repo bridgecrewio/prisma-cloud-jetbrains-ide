@@ -24,13 +24,15 @@ const val IAC_TAB_NAME = "IaC"
 const val VULNERABILITIES_TAB_NAME = "Vulnerabilities"
 const val LICENSES_TAB_NAME = "Licenses"
 const val SECRETS_TAB_NAME = "Secrets"
+const val WEAKNESSES_TAB_NAME = "Weaknesses"
 
 private val tabNameToCategory: Map<String, Category?> = mapOf(
         OVERVIEW_TAB_NAME to null,
         IAC_TAB_NAME to Category.IAC,
         VULNERABILITIES_TAB_NAME to Category.VULNERABILITIES,
         LICENSES_TAB_NAME to Category.LICENSES,
-        SECRETS_TAB_NAME to Category.SECRETS
+        SECRETS_TAB_NAME to Category.SECRETS,
+        WEAKNESSES_TAB_NAME to Category.WEAKNESSES
 )
 
 class CheckovToolWindowFactory : ToolWindowFactory {

@@ -197,7 +197,7 @@ class CheckovToolWindowTree(
             val resourceNode = DefaultMutableTreeNode(CheckovResourceTreeNode(resource, parentIcon, "${relativeFilePath}/${resource}"))
             results.forEach { checkovResult ->
                 val checkName = DefaultMutableTreeNode(CheckovVulnerabilityTreeNode(checkovResult, "${relativeFilePath}/${resource}/${checkovResult.name}"))
-                if (checkovResult.category == Category.SECRETS) {
+                if (checkovResult.category in setOf(Category.SECRETS,Category.WEAKNESSES)) {
                     secretsNodes.add(checkName)
                 } else {
                     resourceNode.add(checkName)

@@ -146,6 +146,15 @@ class CheckovResultsListUtils {
                             codeBlock, (checkovResult as LicenseCheckovResult).policy, checkovResult.licenseType, checkovResult.approvedSPDX
                     )
                 }
+
+                Category.WEAKNESSES -> {
+                    cloned = WeaknessCheckovResult(
+                            checkovResult.checkType, checkovResult.filePath,
+                            checkovResult.resource, checkovResult.name, checkovResult.id, checkovResult.severity, checkovResult.description,
+                            checkovResult.guideline, checkovResult.absoluteFilePath, fileLineRange, checkovResult.fixDefinition,
+                            codeBlock, (checkovResult as SecretsCheckovResult).checkName
+                    )
+                }
             }
             return cloned
         }

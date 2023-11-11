@@ -4,7 +4,8 @@ enum class Category(category: String) {
     SECRETS("Secrets"),
     IAC("IAC"),
     VULNERABILITIES("Vulnerabilities"),
-    LICENSES("Licenses")
+    LICENSES("Licenses"),
+    WEAKNESSES("Weaknesses")
 }
 
 enum class CheckType(checkType: String) {
@@ -24,7 +25,8 @@ enum class CheckType(checkType: String) {
     SECRETS("secrets"),
     SERVERLESS("serverless"),
     TERRAFORM("terraform"),
-    TERRAFORM_PLAN("terraform_plan")
+    TERRAFORM_PLAN("terraform_plan"),
+    SAST("sast")
 }
 
 enum class Severity {

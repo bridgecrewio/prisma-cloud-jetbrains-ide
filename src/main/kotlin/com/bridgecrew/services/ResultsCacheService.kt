@@ -69,11 +69,19 @@ class ResultsCacheService(val project: Project) {
         checkovResults.clear()
     }
 
+    private fun getCheckType(checkType: String): CheckType {
+        val typePart = checkType.split("_").first().uppercase()
+
+        return if (typePart == CheckType.SAST.toString())
+            CheckType.SAST
+            else CheckType.valueOf(checkType.uppercase())
+    }
+
     fun setCheckovResultsFromResultsList(results: List<CheckovResult>) {
         for (result in results) {
             try {
                 val category: Category = mapCheckovCheckTypeToScanType(result.check_type, result.check_id)
-                val checkType = CheckType.valueOf(result.check_type.uppercase())
+                val checkType = this.getCheckType(result.check_type)
                 val resource: String = CheckovUtils.extractResource(result, category, checkType)
                 val name: String = getResourceName(result, category)
                 val severity = Severity.valueOf(result.severity.uppercase())
@@ -142,6 +150,15 @@ class ResultsCacheService(val project: Project) {
                         checkovResults.add(licenseCheckovResult)
                         continue
                     }
+
+                    Category.WEAKNESSES -> {
+                        val weaknessCheckovResult = WeaknessCheckovResult(checkType, filePath,
+                                resource, name, result.check_id, severity, description,
+                                result.guideline, fileAbsPath, result.file_line_range, result.fixed_definition,
+                                result.code_block, result.check_name)
+                        checkovResults.add(weaknessCheckovResult)
+                        continue
+                    }
                 }
             } catch (e: Exception) {
                 LOG.info("Error while adding checkov result $result", e)
@@ -151,22 +168,26 @@ class ResultsCacheService(val project: Project) {
     }
 
     private fun mapCheckovCheckTypeToScanType(checkType: String, checkId: String): Category {
-        when (checkType) {
-            "ansible", "arm", "bicep", "cloudformation", "dockerfile", "helm", "json",
-            "yaml", "kubernetes", "kustomize", "openapi", "serverless", "terraform", "terraform_plan" -> {
+        when  {
+            arrayOf("ansible", "arm", "bicep", "cloudformation", "dockerfile", "helm", "json",
+                    "yaml", "kubernetes", "kustomize", "openapi", "serverless", "terraform", "terraform_plan").contains(checkType) -> {
                 return Category.IAC
             }
 
-            "secrets" -> {
+            checkType == "secrets" -> {
                 return Category.SECRETS
             }
 
-            "sca_package", "sca_image" -> {
+            arrayOf("sca_package", "sca_image").contains(checkType) -> {
                 if (checkId.uppercase().startsWith("BC_LIC")) {
                     return Category.LICENSES
                 } else if (checkId.uppercase().startsWith("BC_VUL")) {
                     return Category.VULNERABILITIES
                 }
+            }
+
+            checkType.startsWith("sast_") -> {
+                return Category.WEAKNESSES
             }
         }
 
@@ -185,6 +206,10 @@ class ResultsCacheService(val project: Project) {
 
             Category.VULNERABILITIES -> {
                 "${result.vulnerability_details?.package_name}:${result.vulnerability_details?.package_version}  (${result.vulnerability_details?.id})"
+            }
+
+            Category.WEAKNESSES ->{
+                getIACResourceName(result.check_name, result.file_line_range[0], result.file_line_range[1])
             }
         }
     }
