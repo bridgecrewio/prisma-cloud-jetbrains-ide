@@ -110,6 +110,10 @@ class ErrorBubbleInnerPanel(val project: Project, val result: BaseCheckovResult,
                 }
                 buildCenterPanel(text)
             }
+
+            Category.WEAKNESSES -> {
+                buildCenterPanel(result.description ?: "")
+            }
         }
     }
 

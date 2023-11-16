@@ -18,7 +18,9 @@ const val DEFAULT_FRAMEWORK_TIMEOUT: Long = 720000 // 12 minutes
 const val GIT_DEFAULT_REPOSITORY_NAME = "jetbrains/extension"
 
 val FULL_SCAN_FRAMEWORKS = arrayListOf("ansible", "arm", "bicep", "cloudformation", "dockerfile", "helm", "json",
-        "yaml", "kubernetes", "kustomize", "openapi", "sca_package", "sca_image", "secrets", "serverless", "terraform", "terraform_plan")
+        "yaml", "kubernetes", "kustomize", "openapi", "sca_package", "sca_image", "secrets", "serverless", "terraform",
+        "terraform_plan", "sast")
+
 val FULL_SCAN_EXCLUDED_PATHS = arrayListOf("node_modules")
 val EXCLUDED_FILE_NAMES = arrayListOf("package-lock.json")
 const val FULL_SCAN_STATE_FILE = "full_scan_state"
