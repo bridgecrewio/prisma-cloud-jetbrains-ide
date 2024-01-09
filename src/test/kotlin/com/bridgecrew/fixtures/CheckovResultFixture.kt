@@ -1,4 +1,4 @@
-package com.bridgecrew.services.fixtures
+package com.bridgecrew.fixtures
 
 import com.bridgecrew.CheckovResult
 
@@ -19,11 +19,11 @@ fun createDefaultResults(): CheckovResult {
             guideline = "",
             code_block = listOf(listOf(1.0, "class MyBadImplementation extends java.security.MessageDigest {], [2.0 ], [3.0, }")),
             check_type = "sast_java",
-            fixed_definition = ""
+            fixed_definition = "",
     )
 }
 
-fun createSastCheckovResultResults(): CheckovResult {
+fun createSastCheckovResult(): CheckovResult {
     return CheckovResult(
             check_id = "CKV3_SAST_13",
             bc_check_id = "",
@@ -40,6 +40,7 @@ fun createSastCheckovResultResults(): CheckovResult {
             guideline = "",
             code_block = listOf(listOf(1.0, "class MyBadImplementation extends java.security.MessageDigest {], [2.0 ], [3.0, }")),
             check_type = "sast_java",
+            cwe = arrayListOf("CWE-327: Use of a Broken or Risky Cryptographic Algorithm"),
             fixed_definition = ""
     )
 }
