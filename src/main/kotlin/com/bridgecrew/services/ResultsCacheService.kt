@@ -155,7 +155,7 @@ class ResultsCacheService(val project: Project) {
                         val weaknessCheckovResult = WeaknessCheckovResult(checkType, filePath,
                                 resource, name, result.check_id, severity, description,
                                 result.guideline, fileAbsPath, result.file_line_range, result.fixed_definition,
-                                result.code_block, result.check_name)
+                                result.code_block, result.check_name, result.cwe, result.owasp, result.metadata)
                         checkovResults.add(weaknessCheckovResult)
                         continue
                     }

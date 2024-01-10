@@ -1,8 +1,9 @@
 package com.bridgecrew.services
 
+import com.bridgecrew.fixtures.createSastCheckovResult
 import com.bridgecrew.results.Category
 import com.bridgecrew.results.CheckType
-import com.bridgecrew.services.fixtures.*
+import com.bridgecrew.fixtures.*
 import com.intellij.mock.MockProject
 import com.intellij.openapi.util.Disposer
 import org.jetbrains.annotations.SystemIndependent
@@ -26,7 +27,7 @@ class ResultsCacheServiceTest {
     fun `setCheckovResultsFromResultsList should set WeaknessCheckovResult`() {
         val resultsCacheService = ResultsCacheService(project)
 
-        val checkovResult = createSastCheckovResultResults()
+        val checkovResult = createSastCheckovResult()
         resultsCacheService.setCheckovResultsFromResultsList(listOf(checkovResult));
 
         assertEquals(resultsCacheService.checkovResults.size, 1)

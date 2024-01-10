@@ -152,7 +152,7 @@ class CheckovResultsListUtils {
                             checkovResult.checkType, checkovResult.filePath,
                             checkovResult.resource, checkovResult.name, checkovResult.id, checkovResult.severity, checkovResult.description,
                             checkovResult.guideline, checkovResult.absoluteFilePath, fileLineRange, checkovResult.fixDefinition,
-                            codeBlock, (checkovResult as SecretsCheckovResult).checkName
+                            codeBlock, (checkovResult as WeaknessCheckovResult).checkName, checkovResult.cwe, checkovResult.owasp, checkovResult.metadata
                     )
                 }
             }

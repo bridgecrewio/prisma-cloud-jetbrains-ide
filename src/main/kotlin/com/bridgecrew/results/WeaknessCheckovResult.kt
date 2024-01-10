@@ -1,5 +1,7 @@
 package com.bridgecrew.results
 
+import com.bridgecrew.Metadata
+
 class WeaknessCheckovResult(
         checkType: CheckType,
         filePath: String,
@@ -13,7 +15,10 @@ class WeaknessCheckovResult(
         fileLineRange: List<Int>,
         fixDefinition: String?,
         codeBlock: List<List<Any>>,
-        val checkName: String) :
+        val checkName: String,
+        val cwe: List<String>,
+        val owasp: String,
+        val metadata: Metadata?) :
         BaseCheckovResult(
                 category = Category.WEAKNESSES,
                 checkType,

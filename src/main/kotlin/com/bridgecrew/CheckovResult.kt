@@ -44,5 +44,25 @@ data class CheckovResult(
         val guideline: String = "\"No Guide\")",
         val code_block: List<List<Any>>,
         var check_type: String,
-        val fixed_definition: String = ""
+        val fixed_definition: String = "",
+        val cwe: ArrayList<String> = ArrayList(),
+        val owasp: String = "",
+        val metadata: Metadata? = null
+)
+
+data class Metadata(
+        val code_locations: List<DataFlow>?,
+        val taint_mode: List<DataFlow>?
+)
+
+data class DataFlow(
+        val path: String,
+        val start: CodePosition,
+        val end: CodePosition,
+        val code_block: String
+)
+
+data class CodePosition(
+        val row: Int,
+        val column: Int
 )

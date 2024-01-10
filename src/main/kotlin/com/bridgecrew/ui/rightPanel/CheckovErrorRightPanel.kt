@@ -37,7 +37,7 @@ class CheckovErrorRightPanel(val project: Project, var result: BaseCheckovResult
             Category.VULNERABILITIES -> VulnerabilitiesExtraInfoPanel(result as VulnerabilityCheckovResult)
             Category.SECRETS -> SecretsExtraInfoPanel(result as SecretsCheckovResult)
             Category.LICENSES -> LicenseExtraInfoPanel(result as LicenseCheckovResult)
-            Category.WEAKNESSES -> WeaknessExtraInfoPanel(result as WeaknessCheckovResult)
+            Category.WEAKNESSES -> WeaknessExtraInfoPanel(result as WeaknessCheckovResult, project)
         }
         return ScrollPaneFactory.createScrollPane(
                 extraInfoPanel,
