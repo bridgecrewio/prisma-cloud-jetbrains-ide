@@ -51,7 +51,7 @@ class WeaknessDictionaryPanel(private val result: WeaknessCheckovResult, private
     }
 
     private fun extractDataFlow(result: WeaknessCheckovResult): String? {
-        val dataFlow = result.metadata?.code_locations ?: result.metadata?.taint_mode
+        val dataFlow = result.metadata?.code_locations ?: result.metadata?.taint_mode?.data_flow
         if (dataFlow !== null) {
             return this.calculateDataFlow(dataFlow);
         }
@@ -66,7 +66,7 @@ class WeaknessDictionaryPanel(private val result: WeaknessCheckovResult, private
 
 
     private fun getDataFlowDictionary(result: WeaknessCheckovResult): Array<DataFlowDictionary>? {
-        val dataFlow = result.metadata?.code_locations ?: result.metadata?.taint_mode
+        val dataFlow = result.metadata?.code_locations ?: result.metadata?.taint_mode?.data_flow
 
         if (dataFlow !== null) {
             return dataFlow.map {

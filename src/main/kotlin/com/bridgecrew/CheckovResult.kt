@@ -52,7 +52,11 @@ data class CheckovResult(
 
 data class Metadata(
         val code_locations: List<DataFlow>?,
-        val taint_mode: List<DataFlow>?
+        val taint_mode: TaintMode?
+)
+
+data class TaintMode(
+        val data_flow: List<DataFlow>?
 )
 
 data class DataFlow(
