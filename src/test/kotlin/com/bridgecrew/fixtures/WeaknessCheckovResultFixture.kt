@@ -35,29 +35,31 @@ const val metadataCodeCollectionJson = """
 
 const val metadataTaintModeJson = """
     "metadata": {
-         "taint_mode": [{
-             "path": "/Users/sast-core/tests_policies/src/python/EncryptionKeySize.py",
-             "start": {
-                "row": 13,
-                "column": 0
-             },
-             "end": {
-                "row": 13,
-                "column": 66
-             },
-             "code_block": "cryptography.hazmat.primitives.asymmetric.rsa.generate_private_key"
-         }, {
-             "path": "/Users/sast-core/tests_policies/src/python/EncryptionKeySize.py",
-             "start": {
-                "row": 14,
-                "column": 73
-             },
-             "end": {
-                "row": 15,
-                "column": 86
-             },
-             "code_block": "key_size=size"
-         }]
+        "taint_mode":{
+             "data_flow": [{
+                 "path": "/Users/sast-core/tests_policies/src/python/EncryptionKeySize.py",
+                 "start": {
+                    "row": 13,
+                    "column": 0
+                 },
+                 "end": {
+                    "row": 13,
+                    "column": 66
+                 },
+                 "code_block": "cryptography.hazmat.primitives.asymmetric.rsa.generate_private_key"
+             }, {
+                 "path": "/Users/sast-core/tests_policies/src/python/EncryptionKeySize.py",
+                 "start": {
+                    "row": 14,
+                    "column": 73
+                 },
+                 "end": {
+                    "row": 15,
+                    "column": 86
+                 },
+                 "code_block": "key_size=size"
+             }]
+         }
      },
 """
 
