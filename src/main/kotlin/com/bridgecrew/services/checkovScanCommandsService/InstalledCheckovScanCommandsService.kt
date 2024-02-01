@@ -18,6 +18,10 @@ class InstalledCheckovScanCommandsService(project: Project) : CheckovScanCommand
         return FilenameUtils.separatorsToSystem(originalFilePath)
     }
 
+    override fun getOutputFilePath(outputFilePath: String): String {
+        return outputFilePath
+    }
+
     override fun getCertPath(): String {
         return settings?.certificate!!
     }
