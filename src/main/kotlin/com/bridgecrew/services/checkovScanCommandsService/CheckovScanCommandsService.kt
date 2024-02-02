@@ -13,7 +13,7 @@ abstract class CheckovScanCommandsService(val project: Project) {
     fun getExecCommandForSingleFile(filePaths: List<String>, outputFilePath: String): ArrayList<String> {
         val cmds = ArrayList<String>()
         cmds.addAll(getCheckovRunningCommandByServiceType(outputFilePath))
-        cmds.addAll(getCheckovCliArgsForExecCommand(outputFilePath))
+        cmds.addAll(getCheckovCliArgsForExecCommand(getOutputFilePath(outputFilePath)))
 
         filePaths.forEach{ path -> cmds.add("-f"); cmds.add(getFilePath(path)) }
 
@@ -33,7 +33,7 @@ abstract class CheckovScanCommandsService(val project: Project) {
 
         val cmdByFramework = arrayListOf<String>()
         cmdByFramework.addAll(baseCmds)
-        cmdByFramework.addAll(getCheckovCliArgsForExecCommand(outputFilePath))
+        cmdByFramework.addAll(getCheckovCliArgsForExecCommand(getOutputFilePath(outputFilePath)))
         cmdByFramework.add("--framework")
         cmdByFramework.add(framework)
 
@@ -99,4 +99,6 @@ abstract class CheckovScanCommandsService(val project: Project) {
     abstract fun getDirectory(): String
     abstract fun getFilePath(originalFilePath: String): String
     abstract fun getCertPath(): String
+    abstract fun getOutputFilePath(outputFilePath: String): String
+
 }

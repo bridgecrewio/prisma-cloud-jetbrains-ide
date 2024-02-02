@@ -148,3 +148,10 @@ fun deleteCheckovTempDir() {
 fun toVirtualFilePath(project: Project, virtualFile: VirtualFile): String {
     return virtualFile.path.removePrefix(project.basePath!!).removePrefix(File.separator)
 }
+
+fun toDockerFilePath(path: String): String {
+    return path.replace(":/", "[--colon--]")
+}
+fun fromDockerFilePath(path: String): String {
+    return path.replace( "[--colon--]",":/")
+}

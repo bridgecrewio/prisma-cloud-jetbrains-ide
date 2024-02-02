@@ -1,6 +1,7 @@
 package com.bridgecrew.services.checkovScanCommandsService
 
 import com.bridgecrew.utils.PLUGIN_ID
+import com.bridgecrew.utils.toDockerFilePath
 import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.project.Project
@@ -9,7 +10,7 @@ import org.apache.commons.io.FilenameUtils
 class DockerCheckovScanCommandsService(project: Project) : CheckovScanCommandsService(project) {
 
     private val image = "bridgecrew/checkov"
-    private val volumeDirectory = FilenameUtils.separatorsToUnix(project.basePath)
+    private val volumeDirectory = getDockerUnixPath(project.basePath)
     private val volumeCertPath = "/usr/lib/ssl/cert.pem"
     override fun getCheckovRunningCommandByServiceType(outputFilePath: String): ArrayList<String> {
         val pluginVersion =
@@ -27,7 +28,7 @@ class DockerCheckovScanCommandsService(project: Project) : CheckovScanCommandsSe
             dockerCommand.addAll(arrayListOf("--volume", volumeCaFile))
         }
 
-        dockerCommand.addAll(arrayListOf("--volume", "$outputFilePath:$outputFilePath"))
+        dockerCommand.addAll(arrayListOf("--volume", "$outputFilePath:/${getDockerUnixPath(outputFilePath)}"))
 
         val volumeDir = "${FilenameUtils.separatorsToUnix(project.basePath)}:/${volumeDirectory}"
         dockerCommand.addAll(arrayListOf("--volume", volumeDir, image))
@@ -37,6 +38,15 @@ class DockerCheckovScanCommandsService(project: Project) : CheckovScanCommandsSe
 
     override fun getDirectory(): String {
         return volumeDirectory
+    }
+
+    private fun getDockerUnixPath(path: String?): String {
+        return toDockerFilePath(FilenameUtils.separatorsToUnix(path));
+    }
+
+
+    override fun getOutputFilePath(outputFilePath: String): String {
+        return getDockerUnixPath(outputFilePath)
     }
 
     override fun getFilePath(originalFilePath: String): String {

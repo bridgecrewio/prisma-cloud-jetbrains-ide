@@ -4,6 +4,7 @@ import com.bridgecrew.CheckovResult
 import com.bridgecrew.results.*
 import com.bridgecrew.settings.CheckovGlobalState
 import com.bridgecrew.utils.CheckovUtils
+import com.bridgecrew.utils.fromDockerFilePath
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import org.apache.commons.io.FilenameUtils
@@ -15,8 +16,7 @@ import java.nio.file.Paths
 class ResultsCacheService(val project: Project) {
     var checkovResults: MutableList<BaseCheckovResult> = mutableListOf()
     var modifiedResults: MutableList<BaseCheckovResult> = mutableListOf()
-
-    private val baseDir: String = if (System.getProperty("os.name").lowercase().contains("win")) FilenameUtils.separatorsToWindows(project.basePath!!) else project.basePath!!
+    private val baseDir: String = project.basePath!!
 
     // This function returns `checkovResults` after accounting for changes that were done between scans
     // For example, after fixing or suppressing a resource, we want to clean those entries from all client facing usages.
@@ -80,13 +80,15 @@ class ResultsCacheService(val project: Project) {
     fun setCheckovResultsFromResultsList(results: List<CheckovResult>) {
         for (result in results) {
             try {
+                result.file_abs_path = fromDockerFilePath(result.file_abs_path)
+
                 val category: Category = mapCheckovCheckTypeToScanType(result.check_type, result.check_id)
                 val checkType = this.getCheckType(result.check_type)
                 val resource: String = CheckovUtils.extractResource(result, category, checkType)
                 val name: String = getResourceName(result, category)
                 val severity = Severity.valueOf(result.severity.uppercase())
                 val description = if(!result.description.isNullOrEmpty()) result.description else result.short_description
-                val filePath = result.file_abs_path.replace(baseDir, "")
+                val filePath = result.file_abs_path.replace(baseDir, "").replace("//", "/")
                 val fileAbsPath = if (!result.file_abs_path.contains(baseDir)) Paths.get(baseDir, File.separator, result.file_abs_path).toString() else result.file_abs_path
 
                 when (category) {
