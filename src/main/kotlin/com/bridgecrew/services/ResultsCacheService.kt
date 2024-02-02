@@ -47,6 +47,8 @@ class ResultsCacheService(val project: Project) {
     fun addCheckovResultFromFileScan(newCheckovResults: List<CheckovResult>, filePath: String) {
         newCheckovResults.forEach { newCheckovResult ->
             run {
+                newCheckovResult.file_abs_path = fromDockerFilePath(newCheckovResult.file_abs_path)
+
                 if ( newCheckovResult.file_abs_path != filePath &&
                         filePath.contains(newCheckovResult.file_abs_path)) {
                     newCheckovResult.file_abs_path = filePath
