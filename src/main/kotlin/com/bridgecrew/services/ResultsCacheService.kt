@@ -16,8 +16,6 @@ import java.nio.file.Paths
 class ResultsCacheService(val project: Project) {
     var checkovResults: MutableList<BaseCheckovResult> = mutableListOf()
     var modifiedResults: MutableList<BaseCheckovResult> = mutableListOf()
-
-    // private val baseDir: String = if (System.getProperty("os.name").lowercase().contains("win")) FilenameUtils.separatorsToWindows(project.basePath!!) else project.basePath!!
     private val baseDir: String = project.basePath!!
 
     // This function returns `checkovResults` after accounting for changes that were done between scans
