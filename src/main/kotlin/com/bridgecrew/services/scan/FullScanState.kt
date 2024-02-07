@@ -173,7 +173,7 @@ class FullScanStateService(val project: Project) {
             return ""
         }
 
-        return "${invalidFilesSize}} files were detected as invalid.\n"
+        return "${invalidFilesSize} files were detected as invalid.\n"
     }
 
     fun wereAllFrameworksFinished(): Boolean {
