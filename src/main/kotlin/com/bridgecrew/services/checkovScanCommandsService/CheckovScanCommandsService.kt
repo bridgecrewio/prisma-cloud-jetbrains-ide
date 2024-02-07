@@ -34,10 +34,20 @@ abstract class CheckovScanCommandsService(val project: Project) {
         val cmdByFramework = arrayListOf<String>()
         cmdByFramework.addAll(baseCmds)
         cmdByFramework.addAll(getCheckovCliArgsForExecCommand(getOutputFilePath(outputFilePath)))
+        cmdByFramework.addAll(getCheckovNoFailOnCrash(framework))
+
         cmdByFramework.add("--framework")
         cmdByFramework.add(framework)
 
         return cmdByFramework
+    }
+    private fun getCheckovNoFailOnCrash(framework: String): ArrayList<String> {
+        val command = ArrayList<String>()
+        if (framework === "sast") {
+            command.add("--no-fail-on-crash")
+        }
+
+        return command
     }
 
     private fun getCheckovCliArgsForExecCommand(outputFilePath: String): ArrayList<String> {

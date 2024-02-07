@@ -279,6 +279,10 @@ class CheckovScanService: Disposable {
 
         }
 
+        if (scanTaskResult.errorReason.contains("ModuleNotEnabledError")) {
+            return true // skip module not enabled error
+        }
+
         if (errorCode != 0 || scanTaskResult.errorReason.isNotEmpty()) {
             project.service<CheckovErrorHandlerService>().scanningError(scanTaskResult, scanningSource, Exception("Error while scanning $scanningSource, exit code - $errorCode, error reason - ${scanTaskResult.errorReason}"), scanSourceType)
             return false
