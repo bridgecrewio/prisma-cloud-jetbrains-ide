@@ -140,4 +140,8 @@ tasks {
             events(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED)
         }
     }
+
+    runPluginVerifier {
+        ideVersions.set(listOf("IC-2020.3.4", "IC-2021.1.3", "IC-2021.2.4"))
+    }
 }
