@@ -11,7 +11,7 @@ plugins {
     // Kotlin support
     id("org.jetbrains.kotlin.jvm") version "1.8.0"
     // gradle-intellij-plugin - read more: https://github.com/JetBrains/gradle-intellij-plugin
-    id("org.jetbrains.intellij") version "1.3.0"
+    id("org.jetbrains.intellij") version "1.10.1"
     // gradle-changelog-plugin - read more: https://github.com/JetBrains/gradle-changelog-plugin
     id("org.jetbrains.changelog") version "1.3.1"
     // Gradle Qodana Plugin
@@ -139,5 +139,9 @@ tasks {
             exceptionFormat = TestExceptionFormat.FULL // Use SHORT or SUMMARY if needed
             events(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED)
         }
+    }
+
+    runPluginVerifier {
+        ideVersions.set(listOf("IC-2020.3.4", "IC-2021.1.3", "IC-2021.2.4"))
     }
 }

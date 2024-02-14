@@ -17,7 +17,7 @@ class WeaknessCheckovResult(
         codeBlock: List<List<Any>>,
         val checkName: String,
         val cwe: List<String>,
-        val owasp: String,
+        val owasp: List<String>,
         val metadata: Metadata?) :
         BaseCheckovResult(
                 category = Category.WEAKNESSES,
