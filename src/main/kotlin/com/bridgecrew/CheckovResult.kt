@@ -45,8 +45,8 @@ data class CheckovResult(
         val code_block: List<List<Any>>,
         var check_type: String,
         val fixed_definition: String = "",
-        val cwe: ArrayList<String> = ArrayList(),
-        val owasp: List<String> = ArrayList(),
+        val cwe: ArrayList<String>? = ArrayList(),
+        val owasp: ArrayList<String>? = ArrayList(),
         val metadata: Metadata? = null
 )
 

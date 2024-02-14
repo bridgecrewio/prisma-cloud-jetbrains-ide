@@ -31,15 +31,24 @@ class WeaknessDictionaryPanel(private val result: WeaknessCheckovResult, private
     override var fieldsMap: MutableMap<String, Any?> = mutableMapOf(
             "Description" to result.description,
             "Code" to extractCode(result),
-            "CWE(s)" to result.cwe.joinToString(", "),
-            "OWASP Top 10" to result.owasp.joinToString(", "),
             "Data flow" to extractDataFlow(result)
     )
 
     init {
+        setFieldsMap(result)
         addCustomPolicyGuidelinesIfNeeded(result)
         createDictionaryLayout()
         createDataFlowLayout()
+    }
+
+    private fun setFieldsMap(result: WeaknessCheckovResult){
+        if (!result.owasp.isNullOrEmpty()) {
+            fieldsMap["OWASP Top 10"] = result.owasp.joinToString(", ")
+        }
+
+        if (!result.cwe.isNullOrEmpty()) {
+            fieldsMap["CWE(s)"] = result.cwe.joinToString(", ")
+        }
     }
 
     private fun extractCode(result: WeaknessCheckovResult): Any {
@@ -123,7 +132,7 @@ class WeaknessDictionaryPanel(private val result: WeaknessCheckovResult, private
             // Add mouse listener to the key label
             keyLabel.addMouseListener(object : MouseAdapter() {
                 override fun mouseClicked(e: MouseEvent) {
-                    openFileAtLine(project, item.path, item.row, item.column)
+                    openFileAtLine(project, item.path, item.row - 1, item.column)
                 }
             })
 
