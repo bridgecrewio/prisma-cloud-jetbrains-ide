@@ -77,7 +77,7 @@ fun createWeaknessCheckovResult(metadata: String): WeaknessCheckovResult {
          {
          	"checkName": "Unsafe custom MessageDigest is implemented",
          	"cwe": ["CWE-327: Use of a Broken or Risky Cryptographic Algorithm"],
-         	"owasp": "TBD",
+         	"owasp": ["TBD"],
          	$metadata
          	"category": "WEAKNESSES",
          	"checkType": "SAST",

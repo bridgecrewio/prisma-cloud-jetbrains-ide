@@ -32,7 +32,7 @@ class WeaknessDictionaryPanel(private val result: WeaknessCheckovResult, private
             "Description" to result.description,
             "Code" to extractCode(result),
             "CWE(s)" to result.cwe.joinToString(", "),
-            "OWASP Top 10" to result.owasp,
+            "OWASP Top 10" to result.owasp.joinToString(", "),
             "Data flow" to extractDataFlow(result)
     )
 
