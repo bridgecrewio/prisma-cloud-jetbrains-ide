@@ -54,7 +54,6 @@ jobs:
         with:
           distribution: zulu
           java-version: 11
-          architecture: x64
 
       # Set environment variables
       - name: Export Properties
