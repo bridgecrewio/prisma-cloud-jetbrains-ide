@@ -26,7 +26,8 @@ enum class CheckType(checkType: String) {
     SERVERLESS("serverless"),
     TERRAFORM("terraform"),
     TERRAFORM_PLAN("terraform_plan"),
-    SAST("sast")
+    SAST("sast"),
+    CDK("cdk")
 }
 
 enum class Severity {

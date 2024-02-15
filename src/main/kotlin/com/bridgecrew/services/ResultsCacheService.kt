@@ -73,10 +73,17 @@ class ResultsCacheService(val project: Project) {
 
     private fun getCheckType(checkType: String): CheckType {
         val typePart = checkType.split("_").first().uppercase()
-
-        return if (typePart == CheckType.SAST.toString())
-            CheckType.SAST
-            else CheckType.valueOf(checkType.uppercase())
+        when {
+            typePart == CheckType.SAST.toString() -> {
+                return CheckType.SAST
+            }
+            typePart == CheckType.CDK.toString() -> {
+                return CheckType.CDK
+            }
+            else -> {
+                return CheckType.valueOf(checkType.uppercase())
+            }
+        }
     }
 
     fun setCheckovResultsFromResultsList(results: List<CheckovResult>) {
@@ -88,7 +95,7 @@ class ResultsCacheService(val project: Project) {
                 val checkType = this.getCheckType(result.check_type)
                 val resource: String = CheckovUtils.extractResource(result, category, checkType)
                 val name: String = getResourceName(result, category)
-                val severity = Severity.valueOf(result.severity.uppercase())
+                val severity = runCatching { Severity.valueOf(result.severity.uppercase()) }.getOrDefault(Severity.INFO)
                 val description = if(!result.description.isNullOrEmpty()) result.description else result.short_description
                 val filePath = result.file_abs_path.replace(baseDir, "").replace("//", "/")
                 val fileAbsPath = if (!result.file_abs_path.contains(baseDir)) Paths.get(baseDir, File.separator, result.file_abs_path).toString() else result.file_abs_path
@@ -190,7 +197,7 @@ class ResultsCacheService(val project: Project) {
                 }
             }
 
-            checkType.startsWith("sast_") -> {
+            checkType.startsWith("cdk_") || checkType.startsWith("sast_") -> {
                 return Category.WEAKNESSES
             }
         }
