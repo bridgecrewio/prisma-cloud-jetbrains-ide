@@ -1,9 +1,11 @@
 
 
+import com.bridgecrew.ui.CheckovNotificationBalloon
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.process.OSProcessHandler
 import com.intellij.execution.process.ProcessHandler
 import com.intellij.execution.process.ScriptRunnerUtil
+import com.intellij.notification.NotificationType
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.diagnostic.logger
@@ -63,11 +65,22 @@ class CliService {
         Task.Backgroundable(project, title,true) {
         override fun run(indicator: ProgressIndicator) {
             indicator.isIndeterminate = false
-            val output =
-                ScriptRunnerUtil.getProcessOutput(processHandler,
-                    ScriptRunnerUtil.STDOUT_OR_STDERR_OUTPUT_KEY_FILTER,
+            try {
+                val output = ScriptRunnerUtil.getProcessOutput(processHandler,
+                        ScriptRunnerUtil.STDOUT_OR_STDERR_OUTPUT_KEY_FILTER,
                     720000000)
-            function(output,  processHandler.exitCode!!, project)
+                function(output,  processHandler.exitCode!!, project)
+            }
+            catch (e: Exception) {
+                if (e.message?.contains("Script execution took") == true){
+                    CheckovNotificationBalloon.showNotification(project,
+                        "Exceeded allocated scanning time",
+                        NotificationType.INFORMATION)
+                }
+                else {
+                    throw e
+                }
+            }
         }
 
     }
