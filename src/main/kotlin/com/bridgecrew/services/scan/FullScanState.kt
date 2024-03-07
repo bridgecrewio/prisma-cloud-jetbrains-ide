@@ -55,6 +55,7 @@ class FullScanStateService(val project: Project) {
             } else {
                 displayNotificationForFullScanSummary()
                 previousState = State.SUCCESSFUL_SCAN
+                project.messageBus.syncPublisher(CheckovScanListener.SCAN_TOPIC).scanningFinished(CheckovScanService.ScanSourceType.FRAMEWORK)
             }
         } else {
             returnToPreviousState()
