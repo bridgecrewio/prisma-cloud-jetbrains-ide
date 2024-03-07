@@ -38,7 +38,28 @@
         <group id="com.bridgecrew.checkovScanActions">
             <action id="com.bridgecrew.ui.actions.CheckovScanAction"
                     class="com.bridgecrew.ui.actions.CheckovScanAction"
-                    text="Run Prisma Cloud Scan"/>
+                    text="Run Prisma Cloud Scan">
+                <keyboard-shortcut
+                    keymap="Mac OS X"
+                    first-keystroke="control alt G"
+                    remove="true"/>
+                <keyboard-shortcut
+                    keymap="Mac OS X 10.5+"
+                    first-keystroke="control alt G"
+                    remove="true"/>
+                <keyboard-shortcut
+                    keymap="Default for XWin"
+                    first-keystroke="control alt G"
+                    remove="true"/>
+                <keyboard-shortcut
+                    keymap="Default for KDE"
+                    first-keystroke="control alt G"
+                    remove="true"/>
+                <keyboard-shortcut
+                    keymap="Default for GNOME"
+                    first-keystroke="control alt G"
+                    remove="true"/>
+            </action>
         </group>
     </actions>
 
