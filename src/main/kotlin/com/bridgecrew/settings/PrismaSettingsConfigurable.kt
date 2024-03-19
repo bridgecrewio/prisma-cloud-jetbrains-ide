@@ -21,7 +21,8 @@ class PrismaSettingsConfigurable(val project: Project) : Configurable {
         return !prismaSettingsComponent.accessKeyField.text.equals(settings?.accessKey) ||
                 !prismaSettingsComponent.secretKeyField.text.equals(settings?.secretKey) ||
                 !prismaSettingsComponent.certificateField.text.equals(settings?.certificate) ||
-                !prismaSettingsComponent.prismaURLField.text.equals(settings?.prismaURL)
+                !prismaSettingsComponent.prismaURLField.text.equals(settings?.prismaURL) ||
+                !prismaSettingsComponent.fullScanRepoLimitField.value.equals(settings?.fullScanRepoLimit)
     }
 
     override fun apply() {
@@ -30,13 +31,15 @@ class PrismaSettingsConfigurable(val project: Project) : Configurable {
         val secretKeyModified = !prismaSettingsComponent.accessKeyField.text.equals(settings?.accessKey)
         val accessKeyModified = !prismaSettingsComponent.secretKeyField.text.equals(settings?.secretKey)
         val prismaURLModified = !prismaSettingsComponent.prismaURLField.text.equals(settings?.prismaURL)
+        val fullScanRepoLimitModified = !prismaSettingsComponent.fullScanRepoLimitField.value.equals(settings?.fullScanRepoLimit)
 
         settings?.secretKey = prismaSettingsComponent.secretKeyField.text.trim()
         settings?.accessKey = prismaSettingsComponent.accessKeyField.text.trim()
         settings?.certificate = prismaSettingsComponent.certificateField.text.trim()
         settings?.prismaURL = prismaSettingsComponent.prismaURLField.text.trim()
+        settings?.fullScanRepoLimit = prismaSettingsComponent.fullScanRepoLimitField.text.toInt()
 
-        if (accessKeyModified || secretKeyModified || prismaURLModified){
+        if (accessKeyModified || secretKeyModified || prismaURLModified || fullScanRepoLimitModified){
             project.messageBus.syncPublisher(CheckovSettingsListener.SETTINGS_TOPIC).settingsUpdated()
         }
     }
@@ -47,10 +50,6 @@ class PrismaSettingsConfigurable(val project: Project) : Configurable {
         prismaSettingsComponent.secretKeyField.text = setting?.secretKey
         prismaSettingsComponent.certificateField.text = setting?.certificate
         prismaSettingsComponent.prismaURLField.text = setting?.prismaURL
-
-
+        prismaSettingsComponent.fullScanRepoLimitField.value = setting?.fullScanRepoLimit
     }
-
-
-
 }
