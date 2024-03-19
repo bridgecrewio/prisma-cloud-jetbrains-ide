@@ -21,11 +21,13 @@ val FULL_SCAN_FRAMEWORKS = arrayListOf("ansible", "arm", "bicep", "cloudformatio
         "yaml", "kubernetes", "kustomize", "openapi", "sca_package", "sca_image", "secrets", "serverless", "terraform",
         "terraform_plan", "sast", "cdk")
 
+val PARTIAL_SCAN_FRAMEWORKS = arrayListOf("sast")
+
 val FULL_SCAN_EXCLUDED_PATHS = arrayListOf("node_modules")
 val EXCLUDED_FILE_NAMES = arrayListOf("package-lock.json")
 const val FULL_SCAN_STATE_FILE = "full_scan_state"
 
-val DESIRED_NUMBER_OF_FRAMEWORK_FOR_FULL_SCAN = FULL_SCAN_FRAMEWORKS.size
+var DESIRED_NUMBER_OF_FRAMEWORK_FOR_FULL_SCAN = FULL_SCAN_FRAMEWORKS.size
 const val DESIRED_NUMBER_OF_SINGLE_FILE_SCANS = 10
 
 enum class FileType {
@@ -53,3 +55,5 @@ const val UNKNOWN_LICENSES_TITLE = "Unknown license"
 
 const val VIOLATED_LICENSES_DESCRIPTION = "At least one of the license(s) used by this package and/or its dependencies are not OSI approved."
 const val UNKNOWN_LICENSES_DESCRIPTION = "At least one of the license(s) used by this package and/or its dependencies are not recognized under the SPDX, are unidentifiable or belong to a proprietary open-source license. Ensure these packages are compliant."
+
+const val FULL_SCAN_RERO_LIMIT = 512

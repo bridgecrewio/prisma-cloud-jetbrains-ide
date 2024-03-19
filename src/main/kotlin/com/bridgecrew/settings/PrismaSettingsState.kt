@@ -1,5 +1,6 @@
 package com.bridgecrew.settings
 
+import com.bridgecrew.utils.FULL_SCAN_RERO_LIMIT
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.State
@@ -21,6 +22,7 @@ class PrismaSettingsState : PersistentStateComponent<PrismaSettingsState> {
     var secretKey: String = ""
     var certificate: String = ""
     var prismaURL: String = ""
+    var fullScanRepoLimit: Int = FULL_SCAN_RERO_LIMIT
     var installationId: String = ""
         set(value) {
             if (field.isNotEmpty()) {

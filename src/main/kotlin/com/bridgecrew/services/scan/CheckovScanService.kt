@@ -8,12 +8,14 @@ import com.bridgecrew.services.checkovScanCommandsService.CheckovScanCommandsSer
 import com.bridgecrew.services.checkovScanCommandsService.ExecCommandSingleFileBuilder
 import com.bridgecrew.settings.CheckovGlobalState
 import com.bridgecrew.settings.PrismaSettingsState
+import com.bridgecrew.ui.CheckovNotificationBalloon
 import com.bridgecrew.ui.actions.CheckovScanAction
 import com.bridgecrew.utils.*
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.process.OSProcessHandler
 import com.intellij.execution.process.ProcessHandler
 import com.intellij.ide.plugins.PluginManagerCore
+import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
@@ -26,6 +28,7 @@ import com.intellij.openapi.project.Project
 import java.io.File
 import java.nio.charset.Charset
 import javax.swing.SwingUtilities
+import kotlin.io.path.Path
 
 private val LOG = logger<CheckovScanService>()
 
@@ -92,13 +95,15 @@ class CheckovScanService: Disposable {
 
             project.service<FullScanStateService>().saveCurrentState()
             project.service<ResultsCacheService>().deleteAllCheckovResults()
-
             project.messageBus.syncPublisher(CheckovScanListener.SCAN_TOPIC).projectScanningStarted()
 
             project.service<FullScanStateService>().fullScanStarted()
             project.service<AnalyticsService>().fullScanStarted()
 
-            for (framework in FULL_SCAN_FRAMEWORKS) {
+            // adjust frameworks list depending on repo size
+            val frameworks = getFrameworksDependingOnRepoSize(project)
+
+            for (framework in frameworks) {
 
                 kotlin.run {
                     val checkovResultFile: File = createCheckovTempFile("$framework-checkov-result", ".json")
@@ -289,6 +294,29 @@ class CheckovScanService: Disposable {
         }
 
         return true
+    }
+
+    private fun getFrameworksDependingOnRepoSize(project: Project): ArrayList<String> {
+        val repoFolder = File(project.basePath)
+        val repoSize = repoFolder.walkTopDown().filter { it.isFile }.map { it.length() }.sum() / (1024L * 1024L)
+
+        val limit = settings?.fullScanRepoLimit ?: FULL_SCAN_RERO_LIMIT
+
+        val frameworks: ArrayList<String>
+
+        if (repoSize < limit) {
+            frameworks = FULL_SCAN_FRAMEWORKS
+        } else {
+            frameworks = PARTIAL_SCAN_FRAMEWORKS
+
+            CheckovNotificationBalloon.showNotification(project,
+                    "This repository/directory exceeds the size limit for a full SAST scan. Only open files will be scanned.",
+                    NotificationType.INFORMATION)
+        }
+
+        DESIRED_NUMBER_OF_FRAMEWORK_FOR_FULL_SCAN = frameworks.size
+
+        return frameworks
     }
 
     enum class ScanSourceType {
