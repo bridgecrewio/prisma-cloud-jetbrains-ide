@@ -309,8 +309,9 @@ class CheckovScanService: Disposable {
         } else {
             frameworks = PARTIAL_SCAN_FRAMEWORKS
 
+//            "This repository/directory exceeds the size limit for a full SAST scan. Only open files will be scanned.",
             CheckovNotificationBalloon.showNotification(project,
-                    "This repository/directory exceeds the size limit for a full SAST scan. Only open files will be scanned.",
+                    "This repository/directory exceeds the size limit for a SAST scan.",
                     NotificationType.INFORMATION)
         }
 

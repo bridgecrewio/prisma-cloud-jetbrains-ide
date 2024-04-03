@@ -21,7 +21,9 @@ val FULL_SCAN_FRAMEWORKS = arrayListOf("ansible", "arm", "bicep", "cloudformatio
         "yaml", "kubernetes", "kustomize", "openapi", "sca_package", "sca_image", "secrets", "serverless", "terraform",
         "terraform_plan", "sast", "cdk")
 
-val PARTIAL_SCAN_FRAMEWORKS = arrayListOf("sast")
+val PARTIAL_SCAN_FRAMEWORKS = arrayListOf("ansible", "arm", "bicep", "cloudformation", "dockerfile", "helm", "json",
+    "yaml", "kubernetes", "kustomize", "openapi", "sca_package", "sca_image", "secrets", "serverless", "terraform",
+    "terraform_plan")
 
 val FULL_SCAN_EXCLUDED_PATHS = arrayListOf("node_modules")
 val EXCLUDED_FILE_NAMES = arrayListOf("package-lock.json")
