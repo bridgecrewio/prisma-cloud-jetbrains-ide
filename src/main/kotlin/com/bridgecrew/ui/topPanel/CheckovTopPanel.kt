@@ -1,6 +1,7 @@
 package com.bridgecrew.ui.topPanel
 
 import com.bridgecrew.results.Severity
+import com.bridgecrew.ui.actions.SeverityFilterActions
 import com.bridgecrew.ui.buttons.SeverityFilterButton
 import com.bridgecrew.utils.*
 import com.intellij.openapi.Disposable
@@ -50,16 +51,17 @@ class CheckovTopPanel(val project: Project) : SimpleToolWindowPanel(true, true),
         actionToolbarPanel.add(Box.createRigidArea(Dimension(5, 20)))
     }
 
+    private fun createSeverityFilterButton(actionToolbarPanel: JPanel, text: String, severity: Severity) {
+        actionToolbarPanel.add(SeverityFilterButton(project, text, severity, SeverityFilterActions.severityFilterState[text] == true))
+        actionToolbarPanel.add(Box.createRigidArea(Dimension(3, 0)))
+    }
+
     private fun addFilterActions(actionToolbarPanel: JPanel) {
-        actionToolbarPanel.add(SeverityFilterButton(project, "I", Severity.INFO))
-        actionToolbarPanel.add(Box.createRigidArea(Dimension(3, 0)))
-        actionToolbarPanel.add(SeverityFilterButton(project,"L", Severity.LOW))
-        actionToolbarPanel.add(Box.createRigidArea(Dimension(3, 0)))
-        actionToolbarPanel.add(SeverityFilterButton(project,"M", Severity.MEDIUM))
-        actionToolbarPanel.add(Box.createRigidArea(Dimension(3, 0)))
-        actionToolbarPanel.add(SeverityFilterButton(project,"H", Severity.HIGH))
-        actionToolbarPanel.add(Box.createRigidArea(Dimension(3, 0)))
-        actionToolbarPanel.add(SeverityFilterButton(project,"C", Severity.CRITICAL))
+        createSeverityFilterButton(actionToolbarPanel, "I", Severity.INFO)
+        createSeverityFilterButton(actionToolbarPanel, "L", Severity.LOW)
+        createSeverityFilterButton(actionToolbarPanel, "M", Severity.MEDIUM)
+        createSeverityFilterButton(actionToolbarPanel, "H", Severity.HIGH)
+        createSeverityFilterButton(actionToolbarPanel, "C", Severity.CRITICAL)
     }
 
     override fun dispose() = Unit
