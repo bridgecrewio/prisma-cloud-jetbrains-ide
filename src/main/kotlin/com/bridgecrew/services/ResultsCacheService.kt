@@ -91,6 +91,10 @@ class ResultsCacheService(val project: Project) {
             try {
                 result.file_abs_path = fromDockerFilePath(result.file_abs_path)
 
+                if (CheckovUtils.isWindows()) {
+                    result.file_abs_path = result.file_abs_path.replace("\\", "/");
+                }
+
                 val category: Category = mapCheckovCheckTypeToScanType(result.check_type, result.check_id)
                 val checkType = this.getCheckType(result.check_type)
                 val resource: String = CheckovUtils.extractResource(result, category, checkType)
