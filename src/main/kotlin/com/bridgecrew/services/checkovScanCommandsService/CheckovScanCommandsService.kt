@@ -84,7 +84,7 @@ abstract class CheckovScanCommandsService(val project: Project) {
     }
 
     private fun getNormalizedExcludePath(excludePath: String): String {
-        if (CheckovUtils.isWindows()) {
+        if (isWindows()) {
             var winExcludePath = StringUtils.removeEnd(excludePath, "\\")
             winExcludePath = StringUtils.removeStart(winExcludePath, "**/")
             winExcludePath = StringUtils.removeStart(winExcludePath, "*")
