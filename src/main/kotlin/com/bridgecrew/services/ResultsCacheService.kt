@@ -5,6 +5,7 @@ import com.bridgecrew.results.*
 import com.bridgecrew.settings.CheckovGlobalState
 import com.bridgecrew.utils.CheckovUtils
 import com.bridgecrew.utils.fromDockerFilePath
+import com.bridgecrew.utils.isWindows
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import org.apache.commons.io.FilenameUtils
@@ -90,6 +91,10 @@ class ResultsCacheService(val project: Project) {
         for (result in results) {
             try {
                 result.file_abs_path = fromDockerFilePath(result.file_abs_path)
+
+                if (isWindows()) {
+                    result.file_abs_path = result.file_abs_path.replace("\\", "/");
+                }
 
                 val category: Category = mapCheckovCheckTypeToScanType(result.check_type, result.check_id)
                 val checkType = this.getCheckType(result.check_type)
