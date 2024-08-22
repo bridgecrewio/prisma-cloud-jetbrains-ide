@@ -12,9 +12,9 @@ class DockerCheckovScanCommandsService(project: Project) : CheckovScanCommandsSe
     private val image = "bridgecrew/checkov"
     private val volumeDirectory = getDockerUnixPath(project.basePath)
     private val volumeCertPath = "/usr/lib/ssl/cert.pem"
+
     override fun getCheckovRunningCommandByServiceType(outputFilePath: String): ArrayList<String> {
-        val pluginVersion =
-                PluginManagerCore.getPlugin(PluginId.getId(PLUGIN_ID))?.version ?: "UNKNOWN"
+        val pluginVersion = PluginManagerCore.getPlugin(PluginId.getId(PLUGIN_ID))?.version ?: "UNKNOWN"
 
         val dockerCommand = arrayListOf("docker", "run", "--rm", "-a", "stdout", "-a", "stderr", "--env", "BC_SOURCE=jetbrains", "--env", "BC_SOURCE_VERSION=$pluginVersion", "--env", "LOG_LEVEL=DEBUG")
         val prismaUrl = settings?.prismaURL
@@ -33,7 +33,6 @@ class DockerCheckovScanCommandsService(project: Project) : CheckovScanCommandsSe
         val volumeDir = "${FilenameUtils.separatorsToUnix(project.basePath)}:/${volumeDirectory}"
         dockerCommand.addAll(arrayListOf("--volume", volumeDir, image))
         return dockerCommand
-
     }
 
     override fun getDirectory(): String {

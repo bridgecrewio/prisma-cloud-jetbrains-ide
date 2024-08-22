@@ -40,7 +40,7 @@ class CheckovErrorBubble(val project: Project, val results: List<BaseCheckovResu
         }
 
         if (vulnerabilityResults.isNotEmpty()) {
-            vulnerabilityResults.sortedBy { it.severity }.forEachIndexed { index, vulnerabilityCheckovResult ->
+            vulnerabilityResults.sortedBy { it.severity }.forEach { vulnerabilityCheckovResult ->
                 panelList.add(ErrorBubbleInnerPanel(project, vulnerabilityCheckovResult, 0, runningIndex, totalPanels, callBack))
                 runningIndex += 1
             }

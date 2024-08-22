@@ -61,8 +61,8 @@ class CliService {
         title: String,
         val processHandler: ProcessHandler,
         val function: (output: String, exitCode: Int, project: Project) -> Unit,
-    ) :
-        Task.Backgroundable(project, title,true) {
+    ) : Task.Backgroundable(project, title, true) {
+
         override fun run(indicator: ProgressIndicator) {
             indicator.isIndeterminate = false
             try {
@@ -70,8 +70,7 @@ class CliService {
                         ScriptRunnerUtil.STDOUT_OR_STDERR_OUTPUT_KEY_FILTER,
                     720000000)
                 function(output,  processHandler.exitCode!!, project)
-            }
-            catch (e: Exception) {
+            } catch (e: Exception) {
                 if (e.message?.contains("Script execution took") == true){
                     CheckovNotificationBalloon.showNotification(project,
                         "Exceeded allocated scanning time",
@@ -84,7 +83,6 @@ class CliService {
         }
 
     }
-
 }
 
 

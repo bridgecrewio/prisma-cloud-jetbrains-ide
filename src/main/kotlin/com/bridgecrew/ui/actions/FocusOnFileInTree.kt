@@ -11,8 +11,10 @@ import java.awt.event.ActionListener
 class FocusOnFileInTree(val filePath: String) : ActionListener {
 
     override fun actionPerformed(e: ActionEvent?) {
-        val dataContext = DataManager.getInstance().dataContext
-        val project = dataContext.getData("project") as Project
-        project.service<CheckovToolWindowManagerPanel>().loadMainPanel(PANELTYPE.CHECKOV_FILE_SCAN_FINISHED, filePath)
+        DataManager.getInstance().dataContextFromFocusAsync.then { dataContext ->
+            val project = dataContext.getData("project") as Project
+            project.service<CheckovToolWindowManagerPanel>()
+                .loadMainPanel(PANELTYPE.CHECKOV_FILE_SCAN_FINISHED, filePath)
+        }
     }
 }

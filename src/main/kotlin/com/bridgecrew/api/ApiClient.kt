@@ -4,8 +4,11 @@ package com.bridgecrew.api
 import com.bridgecrew.settings.DEFAULT_REPORTING_INTERVAL
 import com.bridgecrew.settings.PLUGIN_NAME
 import com.intellij.openapi.diagnostic.logger
-import kotlinx.serialization.*
-import kotlinx.serialization.json.*
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.io.IOException
 import java.net.URI
 import java.net.http.HttpClient

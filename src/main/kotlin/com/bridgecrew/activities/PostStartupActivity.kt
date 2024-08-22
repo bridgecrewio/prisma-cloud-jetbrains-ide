@@ -31,7 +31,6 @@ class PostStartupActivity : StartupActivity {
                 project.service<AnalyticsService>().startSchedulerReleasingAnalytics()
                 // project.service<ResultsCacheService>().setMockCheckovResultsFromExampleFile() // MOCK
             }
-
         })
 
         PluginInstaller.addStateListener(object : PluginStateListener {

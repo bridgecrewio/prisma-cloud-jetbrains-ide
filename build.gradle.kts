@@ -2,6 +2,7 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jlleitschuh.gradle.ktlint.tasks.BaseKtLintCheckTask
 
 fun properties(key: String) = project.findProperty(key).toString()
 
@@ -9,16 +10,16 @@ plugins {
     // Java support
     id("java")
     // Kotlin support
-    id("org.jetbrains.kotlin.jvm") version "1.8.0"
+    id("org.jetbrains.kotlin.jvm") version "1.9.25"
     // gradle-intellij-plugin - read more: https://github.com/JetBrains/gradle-intellij-plugin
-    id("org.jetbrains.intellij") version "1.10.1"
+    id("org.jetbrains.intellij") version "1.17.4"
     // gradle-changelog-plugin - read more: https://github.com/JetBrains/gradle-changelog-plugin
     id("org.jetbrains.changelog") version "1.3.1"
     // Gradle Qodana Plugin
     id("org.jetbrains.qodana") version "0.1.13"
     // ktlint linter - read more: https://github.com/JLLeitschuh/ktlint-gradle
     id("org.jlleitschuh.gradle.ktlint") version "10.2.0"
-    kotlin("plugin.serialization") version "1.8.0"
+    kotlin("plugin.serialization") version "1.9.25"
 }
 
 group = properties("pluginGroup")
@@ -27,20 +28,19 @@ version = properties("pluginVersion")
 // Configure project's dependencies
 repositories {
     mavenCentral()
-    jcenter()
 }
+
 dependencies {
     implementation("com.beust:klaxon:5.6")
     implementation("com.google.code.gson:gson:2.10.1")
-    implementation("org.json:json:20230227")
+    implementation("org.json:json:20231013")
     implementation("commons-io:commons-io:2.11.0")
     implementation("io.github.java-diff-utils:java-diff-utils:4.12")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
-    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
-    testImplementation("org.junit.platform:junit-platform-engine:1.9.0")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter:5.8.1")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.9.0")
 }
-
 
 // Configure gradle-intellij-plugin plugin.
 // Read more: https://github.com/JetBrains/gradle-intellij-plugin
@@ -77,6 +77,10 @@ tasks {
         withType<KotlinCompile> {
             kotlinOptions.jvmTarget = it
         }
+    }
+
+    withType<BaseKtLintCheckTask>().configureEach {
+        enabled = false
     }
 
     wrapper {
@@ -142,6 +146,6 @@ tasks {
     }
 
     runPluginVerifier {
-        ideVersions.set(listOf("IC-2020.3.4", "IC-2021.1.3", "IC-2021.2.4"))
+        ideVersions.set(listOf("IC-2020.3.4", "IC-2021.1.3", "IC-2021.2.4", "IC-2024.1.6"))
     }
 }

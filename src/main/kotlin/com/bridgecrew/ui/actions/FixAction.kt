@@ -7,6 +7,7 @@ import com.bridgecrew.results.BaseCheckovResult
 import com.bridgecrew.results.Category
 import com.bridgecrew.results.VulnerabilityCheckovResult
 import com.bridgecrew.services.scan.CheckovScanService
+import com.bridgecrew.settings.CheckovGlobalState
 import com.bridgecrew.utils.navigateToFile
 import com.intellij.ide.DataManager
 import com.intellij.openapi.application.ApplicationManager
@@ -16,46 +17,47 @@ import com.intellij.openapi.editor.Document
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
+import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 import javax.swing.JButton
-import com.bridgecrew.settings.CheckovGlobalState
-import com.intellij.openapi.ui.Messages
 
 class FixAction(private val buttonInstance: JButton, val result: BaseCheckovResult) : ActionListener {
 
     init {
-        val dataContext = DataManager.getInstance().dataContext
-        val project = dataContext.getData("project") as Project
-        val connection = project.messageBus.connect()
-        val inScanMsg = "Scan in progress. Please wait for completion before retrying."
-        buttonInstance.isEnabled = !CheckovGlobalState.scanInProgress
-        connection.subscribe(CheckovScanListener.SCAN_TOPIC, object : CheckovScanListener {
-            override fun fileScanningStarted(){
-                buttonInstance.isEnabled = false
-                buttonInstance.toolTipText = inScanMsg
-                CheckovGlobalState.scanInProgress = true
-            }
-            override fun projectScanningStarted(){
-                buttonInstance.isEnabled = false
-                buttonInstance.toolTipText = inScanMsg
-                CheckovGlobalState.scanInProgress = true
-            }
-            override fun scanningFinished(scanSourceType: CheckovScanService.ScanSourceType){
-                buttonInstance.isEnabled = true
-                buttonInstance.toolTipText = ""
-                CheckovGlobalState.scanInProgress = false
-            }
-            override fun fullScanFailed(){
-                buttonInstance.isEnabled = true
-                buttonInstance.toolTipText = ""
-                CheckovGlobalState.scanInProgress = false
-            }
-        })
+        DataManager.getInstance().dataContextFromFocusAsync.then { dataContext ->
+            val project = dataContext.getData("project") as Project
+            val connection = project.messageBus.connect()
+            val inScanMsg = "Scan in progress. Please wait for completion before retrying."
+            buttonInstance.isEnabled = !CheckovGlobalState.scanInProgress
+            connection.subscribe(CheckovScanListener.SCAN_TOPIC, object : CheckovScanListener {
+                override fun fileScanningStarted() {
+                    buttonInstance.isEnabled = false
+                    buttonInstance.toolTipText = inScanMsg
+                    CheckovGlobalState.scanInProgress = true
+                }
 
+                override fun projectScanningStarted() {
+                    buttonInstance.isEnabled = false
+                    buttonInstance.toolTipText = inScanMsg
+                    CheckovGlobalState.scanInProgress = true
+                }
 
+                override fun scanningFinished(scanSourceType: CheckovScanService.ScanSourceType) {
+                    buttonInstance.isEnabled = true
+                    buttonInstance.toolTipText = ""
+                    CheckovGlobalState.scanInProgress = false
+                }
+
+                override fun fullScanFailed() {
+                    buttonInstance.isEnabled = true
+                    buttonInstance.toolTipText = ""
+                    CheckovGlobalState.scanInProgress = false
+                }
+            })
+        }
     }
 
     private val LOG = logger<FixAction>()
@@ -86,14 +88,16 @@ class FixAction(private val buttonInstance: JButton, val result: BaseCheckovResu
             val startOffset = document!!.getLineStartOffset(startLine)
             val endOffset = document.getLineEndOffset(endLine)
 
-            val dataContext = DataManager.getInstance().dataContext
-            val project = dataContext.getData("project") as Project
+            DataManager.getInstance().dataContextFromFocusAsync.then { dataContext ->
+                val project = dataContext.getData("project") as Project
 
-            WriteCommandAction.runWriteCommandAction(project) {
-                document.replaceString(startOffset, endOffset, result.fixDefinition!!)
-                FileDocumentManager.getInstance().saveDocument(document)
-                navigateToFile(project, virtualFile, result.codeDiffFirstLine)
+                WriteCommandAction.runWriteCommandAction(project) {
+                    document.replaceString(startOffset, endOffset, result.fixDefinition!!)
+                    FileDocumentManager.getInstance().saveDocument(document)
+                    navigateToFile(project, virtualFile, result.codeDiffFirstLine)
+                }
             }
+
         } catch (e: Exception) {
             LOG.warn("error while trying to apply fix", e)
             buttonInstance.isEnabled = true
@@ -126,12 +130,14 @@ class FixAction(private val buttonInstance: JButton, val result: BaseCheckovResu
     }
 
     private fun showSCAFixModal(fixCommand: FixCommand, isSuccess: Boolean) {
-        val dataContext = DataManager.getInstance().dataContext
-        val project = dataContext.getData("project") as Project
-        Messages.showInfoMessage(project,
+        DataManager.getInstance().dataContextFromFocusAsync.then { dataContext ->
+            val project = dataContext.getData("project") as Project
+            Messages.showInfoMessage(
+                project,
                 buildModalMessage(fixCommand, isSuccess),
                 "SCA Fix - Additional Action Required"
-        )
+            )
+        }
     }
 
     private fun buildModalMessage(fixCommand: FixCommand, isSuccess: Boolean): String {

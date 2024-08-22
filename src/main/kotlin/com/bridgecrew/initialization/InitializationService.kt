@@ -2,9 +2,9 @@ package com.bridgecrew.initialization
 
 import CheckovInstallerService
 import CliService
+import com.bridgecrew.cache.InMemCache
 import com.bridgecrew.listeners.CheckovInstallerListener
 import com.bridgecrew.listeners.InitializationListener
-import com.bridgecrew.services.scan.CheckovScanService
 import com.bridgecrew.services.checkovScanCommandsService.CheckovScanCommandsService
 import com.bridgecrew.services.checkovScanCommandsService.DockerCheckovScanCommandsService
 import com.bridgecrew.services.checkovScanCommandsService.InstalledCheckovScanCommandsService
@@ -12,6 +12,7 @@ import com.bridgecrew.services.installation.DockerInstallerCommandService
 import com.bridgecrew.services.installation.InstallerCommandService
 import com.bridgecrew.services.installation.PipInstallerCommandService
 import com.bridgecrew.services.installation.PipenvInstallerCommandService
+import com.bridgecrew.services.scan.CheckovScanService
 import com.bridgecrew.utils.initializeRepoName
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
@@ -25,7 +26,7 @@ private val LOG = logger<InitializationService>()
 class InitializationService(private val project: Project) {
 
     private var isCheckovInstalledGlobally: Boolean = false
-    private var checkovVersion: String = "3.2.20"
+    private var minimalCheckovVersion: String = "3.2.20"
 
     fun initializeProject() {
         initializeCheckovScanService()
@@ -46,6 +47,7 @@ class InitializationService(private val project: Project) {
 
 
         if (output.lowercase().trim().contains("pulling from bridgecrew/checkov") || !checkIfCheckovUpdateNeeded(output)) {
+            LOG.info("Docker picked for Checkov installation")
             setSelectedCheckovService(DockerCheckovScanCommandsService(project))
             return
         }
@@ -54,16 +56,17 @@ class InitializationService(private val project: Project) {
     }
 
     private fun installCheckovIfNeededAndSetCheckovPath() {
-        project.messageBus.connect()
-                .subscribe(CheckovInstallerListener.INSTALLER_TOPIC, object : CheckovInstallerListener {
-                    override fun installerFinished(serviceClass: InstallerCommandService) {
-                        if (serviceClass is PipenvInstallerCommandService) {
-                            updateCheckovPathAfterInstallation()
-                        } else {
-                            setSelectedCheckovServiceFromInstaller(serviceClass)
-                        }
+        project.messageBus.connect().subscribe(CheckovInstallerListener.INSTALLER_TOPIC,
+            object : CheckovInstallerListener {
+                override fun installerFinished(serviceClass: InstallerCommandService) {
+                    if (serviceClass is PipenvInstallerCommandService) {
+                        updateCheckovPathAfterInstallation()
+                    } else {
+                        setSelectedCheckovServiceFromInstaller(serviceClass)
                     }
-                })
+                }
+            }
+        )
 
         LOG.info("Checking global checkov installation with `checkov`")
         val isGloballyInstalledCommand = arrayListOf("checkov", "-v")
@@ -107,8 +110,6 @@ class InitializationService(private val project: Project) {
             val command = PipInstallerCommandService.getUnixCommandsForFindingCheckovPath()
             project.service<CliService>().run(command, project, this::updatePathUnix)
         }
-
-
     }
 
     private fun updatePathUnix(output: String, exitCode: Int, project: Project) {
@@ -225,8 +226,8 @@ class InitializationService(private val project: Project) {
     private fun checkIfCheckovUpdateNeeded(rawVersion: String): Boolean {
         val version = rawVersion.split('\n')[0]
         LOG.info("Checkov version $version")
-
-        return !versionIsNewer(version, checkovVersion)
+        InMemCache.set("checkovVersion", version)
+        return !versionIsNewer(version, minimalCheckovVersion)
     }
 
     private fun updateCheckovPip(project: Project) {
@@ -238,6 +239,7 @@ class InitializationService(private val project: Project) {
         project.service<CliService>().run(cmds, project, this::onCheckovUpdate, this::onCheckovUpdate)
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun onCheckovUpdate(output: String, exitCode: Int, project: Project) {
         if (exitCode != 0) {
             LOG.warn("Failed to pull Checkov image")

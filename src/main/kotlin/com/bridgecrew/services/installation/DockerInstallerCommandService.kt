@@ -1,11 +1,12 @@
 package com.bridgecrew.services.installation
 
+import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.openapi.project.Project
 
 class DockerInstallerCommandService : InstallerCommandService {
 
-    override fun getInstallCommand(): ArrayList<String> {
-        return arrayListOf("docker", "pull", "bridgecrew/checkov")
+    override fun getInstallCommand(): GeneralCommandLine {
+        return GeneralCommandLine(arrayListOf("docker", "pull", "bridgecrew/checkov"))
     }
 
     override fun getVersion(project: Project): ArrayList<String> {

@@ -1,13 +1,14 @@
 package com.bridgecrew.services.installation
 
 import CliService
+import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 
 class PipenvInstallerCommandService : InstallerCommandService {
 
-    override fun getInstallCommand(): ArrayList<String> {
-        return arrayListOf("pipenv", "--python", "3", "install", "checkov")
+    override fun getInstallCommand(): GeneralCommandLine {
+        return GeneralCommandLine(arrayListOf("pipenv", "--python", "3", "install", "checkov"))
     }
 
     override fun getVersion(project: Project): ArrayList<String> {

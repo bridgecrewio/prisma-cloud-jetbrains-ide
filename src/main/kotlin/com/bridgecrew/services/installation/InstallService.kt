@@ -3,7 +3,6 @@ import com.bridgecrew.services.installation.DockerInstallerCommandService
 import com.bridgecrew.services.installation.InstallerCommandService
 import com.bridgecrew.services.installation.PipInstallerCommandService
 import com.bridgecrew.services.installation.PipenvInstallerCommandService
-import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.process.OSProcessHandler
 import com.intellij.execution.process.ProcessHandler
 import com.intellij.execution.process.ScriptRunnerUtil
@@ -31,8 +30,7 @@ class CheckovInstallerService {
         val checkovServices = arrayOf(DockerInstallerCommandService(), PipInstallerCommandService(), PipenvInstallerCommandService())
         for (service in checkovServices) {
             try {
-                val command = service.getInstallCommand()
-                val generalCommandLine = GeneralCommandLine(command)
+                val generalCommandLine = service.getInstallCommand()
                 generalCommandLine.charset = Charset.forName("UTF-8")
                 val processHandler: ProcessHandler = OSProcessHandler(generalCommandLine)
                 commands.add(Pair(service, processHandler))
@@ -44,8 +42,7 @@ class CheckovInstallerService {
         if (commands.isEmpty()) {
             LOG.error("Checkov could not be installed, your machine is missing all 3 installation options.\n Please install docker | pip | pipenv")
         }
-        val installerTask =
-                InstallerTask(project, "Installing checkov", commands)
+        val installerTask = InstallerTask(project, "Installing checkov", commands)
         if (SwingUtilities.isEventDispatchThread()) {
             ProgressManager.getInstance().run(installerTask)
         } else {
@@ -55,8 +52,12 @@ class CheckovInstallerService {
         }
     }
 
-    private class InstallerTask(project: Project, title: String, val services: ArrayList<Pair<InstallerCommandService, ProcessHandler>>) :
-            Task.Backgroundable(project, title, true) {
+    private class InstallerTask(
+        project: Project,
+        title: String,
+        val services: ArrayList<Pair<InstallerCommandService, ProcessHandler>>
+    ) : Task.Backgroundable(project, title, true) {
+
         override fun run(indicator: ProgressIndicator) {
             indicator.isIndeterminate = false
             for (service in services) {

@@ -1,18 +1,40 @@
 package com.bridgecrew.analytics
 
+import com.bridgecrew.cache.InMemCache
 import com.bridgecrew.settings.PLUGIN_NAME
 import com.bridgecrew.settings.PrismaSettingsState
 import com.google.gson.annotations.Expose
-import kotlinx.serialization.*
-import java.util.*
+import com.intellij.ide.plugins.PluginManagerCore
+import com.intellij.openapi.application.ApplicationInfo
+import com.intellij.openapi.extensions.PluginId
+import kotlinx.serialization.EncodeDefault
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import kotlinx.serialization.json.JsonObject
+import java.util.*
 
 
 @OptIn(ExperimentalSerializationApi::class)
 @Serializable
-sealed class AnalyticsData(@EncodeDefault val pluginName: String = PLUGIN_NAME){
+sealed class AnalyticsData(@EncodeDefault val pluginName: String = PLUGIN_NAME) {
+    
     @EncodeDefault
     val installationId: String = PrismaSettingsState().getInstance()!!.installationId
+
+    @EncodeDefault
+    var pluginVersion: String? =
+        PluginManagerCore.getPlugin(PluginId.getId("com.github.bridgecrewio.prismacloud"))?.version
+
+    @EncodeDefault
+    var ideVersion: String? =
+        ApplicationInfo.getInstance().fullApplicationName + " / " + ApplicationInfo.getInstance().build
+
+    @EncodeDefault
+    var operatingSystem: String? = System.getProperty("os.name") + " " + System.getProperty("os.version")
+
+    @EncodeDefault
+    var checkovVersion: String? = InMemCache.get("checkovVersion")
 
     @Serializable
     lateinit var eventType: String
@@ -51,8 +73,7 @@ data class FullScanAnalyticsData(@Transient val scanNumber: Int = 0): AnalyticsD
 @OptIn(ExperimentalSerializationApi::class)
 @Serializable
 data class PluginInstallAnalyticsData(
-        @EncodeDefault
-        override val eventData: JsonObject = JsonObject(mapOf())
+    @EncodeDefault override val eventData: JsonObject = JsonObject(mapOf())
 ) : AnalyticsData()
 
 @Serializable
