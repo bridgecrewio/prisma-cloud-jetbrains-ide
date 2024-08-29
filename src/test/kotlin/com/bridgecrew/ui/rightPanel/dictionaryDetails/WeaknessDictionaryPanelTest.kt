@@ -1,11 +1,10 @@
 package com.bridgecrew.ui.rightPanel.dictionaryDetails
 
 import com.bridgecrew.fixtures.*
-import com.bridgecrew.fixtures.metadataTaintModeJson
 import com.intellij.mock.MockProject
 import com.intellij.openapi.util.Disposer
 import org.jetbrains.annotations.SystemIndependent
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 

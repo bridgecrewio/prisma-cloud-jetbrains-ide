@@ -17,6 +17,7 @@ fun initializeRepoName(project: Project) {
     project.service<CliService>().run(cmds, project, ::extractRepoNameFromOutput)
 }
 
+@Suppress("UNUSED_PARAMETER")
 fun extractRepoNameFromOutput(output: String, exitCode: Int, project: Project) {
     try {
         val lines = output.split("\n")

@@ -28,7 +28,6 @@ import com.intellij.openapi.project.Project
 import java.io.File
 import java.nio.charset.Charset
 import javax.swing.SwingUtilities
-import kotlin.io.path.Path
 
 private val LOG = logger<CheckovScanService>()
 
@@ -111,7 +110,6 @@ class CheckovScanService: Disposable {
 
                     val processHandler: ProcessHandler = OSProcessHandler.Silent(generateCheckovCommand(execCommand))
 
-
                     val scanTask = ScanTask.FrameworkScanTask(project, "Prisma Cloud is scanning your repository by framework $framework", framework, processHandler, checkovResultFile)
                     fullScanTasks.add(scanTask)
                     project.service<AnalyticsService>().fullScanByFrameworkStarted(framework)
@@ -167,8 +165,7 @@ class CheckovScanService: Disposable {
     }
 
     private fun generateCheckovCommand(execCommand: List<String>): GeneralCommandLine {
-        val pluginVersion = PluginManagerCore.getPlugin(PluginId.getId(PLUGIN_ID))?.version
-                ?: "UNKNOWN"
+        val pluginVersion = PluginManagerCore.getPlugin(PluginId.getId(PLUGIN_ID))?.version ?: "UNKNOWN"
         val prismaUrl = settings?.prismaURL
 
         val generalCommandLine = GeneralCommandLine(execCommand)

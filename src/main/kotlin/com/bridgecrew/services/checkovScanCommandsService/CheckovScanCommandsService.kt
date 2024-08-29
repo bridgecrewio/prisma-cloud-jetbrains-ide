@@ -2,9 +2,12 @@ package com.bridgecrew.services.checkovScanCommandsService
 
 import com.bridgecrew.listeners.CheckovSettingsListener
 import com.bridgecrew.settings.PrismaSettingsState
-import com.bridgecrew.utils.*
+import com.bridgecrew.utils.FULL_SCAN_EXCLUDED_PATHS
+import com.bridgecrew.utils.getGitIgnoreValues
+import com.bridgecrew.utils.getRepoName
+import com.bridgecrew.utils.isWindows
 import com.intellij.openapi.project.Project
-import org.apache.commons.lang.StringUtils
+import org.apache.commons.lang3.StringUtils
 
 abstract class CheckovScanCommandsService(val project: Project) {
     protected val settings = PrismaSettingsState().getInstance()
@@ -110,5 +113,4 @@ abstract class CheckovScanCommandsService(val project: Project) {
     abstract fun getFilePath(originalFilePath: String): String
     abstract fun getCertPath(): String
     abstract fun getOutputFilePath(outputFilePath: String): String
-
 }
