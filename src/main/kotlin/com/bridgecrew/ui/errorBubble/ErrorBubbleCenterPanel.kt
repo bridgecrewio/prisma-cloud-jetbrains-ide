@@ -1,10 +1,12 @@
 package com.bridgecrew.ui.errorBubble
 
-import com.bridgecrew.results.BaseCheckovResult
 import com.intellij.ui.ScrollPaneFactory
 import java.awt.BorderLayout
 import java.awt.Dimension
-import javax.swing.*
+import javax.swing.BorderFactory
+import javax.swing.JPanel
+import javax.swing.JTextArea
+import javax.swing.ScrollPaneConstants
 
 class ErrorBubbleCenterPanel(text: String) : JPanel() {
 

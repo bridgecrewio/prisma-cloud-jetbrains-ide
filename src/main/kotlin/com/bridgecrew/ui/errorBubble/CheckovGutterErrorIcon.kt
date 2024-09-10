@@ -1,5 +1,6 @@
 package com.bridgecrew.ui.errorBubble
 
+import com.bridgecrew.icons.CheckovIcons
 import com.bridgecrew.listeners.ErrorBubbleFixListener
 import com.bridgecrew.results.BaseCheckovResult
 import com.bridgecrew.utils.FIX_COLOR_DARK
@@ -13,7 +14,6 @@ import com.intellij.openapi.editor.markup.*
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.util.ui.EmptyIcon
-import icons.CheckovIcons
 import java.awt.Point
 import javax.swing.Icon
 

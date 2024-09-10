@@ -9,21 +9,23 @@ import com.bridgecrew.settings.PrismaSettingsState
 import com.bridgecrew.ui.CheckovToolWindowManagerPanel
 import com.intellij.ide.plugins.IdeaPluginDescriptor
 import com.intellij.ide.plugins.PluginInstaller
+import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.ide.plugins.PluginStateListener
 import com.intellij.openapi.components.service
-import com.intellij.openapi.diagnostic.logger
+import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.startup.StartupActivity
+import com.intellij.openapi.startup.ProjectActivity
 import com.intellij.openapi.vfs.LocalFileSystem
+import org.slf4j.LoggerFactory
 import java.util.*
 
+class PostStartupActivity : ProjectActivity {
 
-private val LOG = logger<PostStartupActivity>()
+    private val logger = LoggerFactory.getLogger(javaClass)
 
-class PostStartupActivity : StartupActivity {
-
-    override fun runActivity(project: Project) {
-        LOG.info("Startup activity starting")
+    override suspend fun execute(project: Project) {
+        val version = PluginManagerCore.getPlugin(PluginId.getId("com.github.bridgecrewio.prismacloud"))?.version
+        logger.info("Starting Prisma Cloud JetBrains plugin version $version")
         project.messageBus.connect(project).subscribe(INITIALIZATION_TOPIC, object : InitializationListener {
             override fun initializationCompleted() {
                 project.service<CheckovToolWindowManagerPanel>().subscribeToInternalEvents(project)
@@ -36,12 +38,12 @@ class PostStartupActivity : StartupActivity {
         PluginInstaller.addStateListener(object : PluginStateListener {
             override fun install(ideaPluginDescriptor: IdeaPluginDescriptor) {
                 //todo this event wasn't trigger, need review
-                LOG.info("Plugin was installed")
+                logger.info("Plugin was installed")
             }
             override fun uninstall(ideaPluginDescriptor: IdeaPluginDescriptor) {
                 //todo uncomment after backend added "onPluginUninstall" event support
                 //sendAnalyticsPluginUninstalled(project)
-                LOG.info("Plugin was uninstalled")
+                logger.info("Plugin was uninstalled")
             }
         })
 
@@ -49,7 +51,7 @@ class PostStartupActivity : StartupActivity {
 
         initializeProject(project)
         sendAnalyticsPluginInstalled(project)
-        LOG.info("Startup activity finished")
+        logger.info("Startup activity finished")
     }
 
     private fun initializeProject(project: Project) {

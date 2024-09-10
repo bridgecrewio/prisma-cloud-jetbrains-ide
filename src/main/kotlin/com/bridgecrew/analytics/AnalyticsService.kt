@@ -8,21 +8,18 @@ import com.bridgecrew.services.scan.ScanTaskResult
 import com.bridgecrew.settings.PrismaSettingsState
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
-import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.project.Project
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import org.slf4j.LoggerFactory
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-
 @Service
-@OptIn(ExperimentalSerializationApi::class)
 class AnalyticsService(val project: Project) {
 
-    private val LOG = logger<AnalyticsService>()
+    private val logger = LoggerFactory.getLogger(javaClass)
     private var apiClient: ApiClient? = null
 
     private var fullScanData: FullScanAnalyticsData? = null
@@ -38,41 +35,41 @@ class AnalyticsService(val project: Project) {
     fun fullScanButtonWasPressed() {
         val fullScanButtonWasPressedDate = Date()
         fullScanNumber += 1
-        LOG.info("Prisma Cloud Plugin Analytics - scan #${fullScanNumber} - full scan button was pressed")
+        logger.info("Prisma Cloud Plugin Analytics - scan #${fullScanNumber} - full scan button was pressed")
         fullScanData = FullScanAnalyticsData(fullScanNumber)
         fullScanData!!.buttonPressedTime = fullScanButtonWasPressedDate
     }
 
     fun fullScanStarted() {
-        LOG.info("Prisma Cloud Plugin Analytics - scan #${fullScanNumber} - full scan started")
+        logger.info("Prisma Cloud Plugin Analytics - scan #${fullScanNumber} - full scan started")
         fullScanData!!.scanStartedTime = Date()
     }
 
     fun fullScanByFrameworkStarted(framework: String) {
-        LOG.info("Prisma Cloud Plugin Analytics - scan #${fullScanNumber} - full scan started for framework $framework")
+        logger.info("Prisma Cloud Plugin Analytics - scan #${fullScanNumber} - full scan started for framework $framework")
         fullScanData!!.frameworksScanTime[framework] = FullScanFrameworkScanTimeData(Date())
     }
 
     fun fullScanByFrameworkFinished(framework: String) {
         fullScanData!!.frameworksScanTime[framework]!!.endTime = Date()
         fullScanData!!.frameworksScanTime[framework]!!.totalTimeSeconds = (fullScanData!!.frameworksScanTime[framework]!!.endTime.time - fullScanData!!.frameworksScanTime[framework]!!.startTime.time) / 1000
-        LOG.info("Prisma Cloud Plugin Analytics - scan #${fullScanNumber} - full scan finished for framework $framework and took ${fullScanData!!.frameworksScanTime[framework]!!.totalTimeSeconds} ms")
+        logger.info("Prisma Cloud Plugin Analytics - scan #${fullScanNumber} - full scan finished for framework $framework and took ${fullScanData!!.frameworksScanTime[framework]!!.totalTimeSeconds} ms")
     }
 
     fun fullScanFinished() {
         fullScanData!!.scanFinishedTime = Date()
-        LOG.info("Prisma Cloud Plugin Analytics - scan #${fullScanNumber} - full scan finished")
+        logger.info("Prisma Cloud Plugin Analytics - scan #${fullScanNumber} - full scan finished")
         buildFullScanAnalyticsData()
     }
 
     fun fullScanFrameworkFinishedNoErrors(framework: String) {
-        LOG.info("Prisma Cloud Plugin Analytics - scan #${fullScanNumber} - framework $framework finished with no errors")
+        logger.info("Prisma Cloud Plugin Analytics - scan #${fullScanNumber} - framework $framework finished with no errors")
     }
 
     fun fullScanResultsWereFullyDisplayed() {
         if (fullScanData!!.isFullScanFinished()) {
             fullScanData!!.resultsWereFullyDisplayedTime = Date()
-            LOG.info("Prisma Cloud Plugin Analytics - scan #${fullScanNumber} - full scan results are fully displayed")
+            logger.info("Prisma Cloud Plugin Analytics - scan #${fullScanNumber} - full scan results are fully displayed")
             logFullScanAnalytics()
             wereFullScanResultsDisplayed = true
         }
@@ -83,15 +80,15 @@ class AnalyticsService(val project: Project) {
     }
 
     fun fullScanFrameworkError(framework: String) {
-        LOG.info("Prisma Cloud Plugin Analytics - scan #${fullScanNumber} - error while scanning framework $framework")
+        logger.info("Prisma Cloud Plugin Analytics - scan #${fullScanNumber} - error while scanning framework $framework")
     }
 
     fun fullScanFrameworkDetectedVulnerabilities(framework: String, numberOfVulnerabilities: Int) {
-        LOG.info("Prisma Cloud Plugin Analytics - scan #${fullScanNumber} - $numberOfVulnerabilities security issues were detected while scanning framework $framework")
+        logger.info("Prisma Cloud Plugin Analytics - scan #${fullScanNumber} - $numberOfVulnerabilities security issues were detected while scanning framework $framework")
     }
 
     fun fullScanParsingError(framework: String, failedFilesSize: Int) {
-        LOG.info("Prisma Cloud Plugin Analytics - scan #${fullScanNumber} - parsing error while scanning framework $framework in $failedFilesSize files}")
+        logger.info("Prisma Cloud Plugin Analytics - scan #${fullScanNumber} - parsing error while scanning framework $framework in $failedFilesSize files}")
     }
 
     fun pluginInstalled(){
@@ -127,7 +124,8 @@ class AnalyticsService(val project: Project) {
 
         val frameworkScansFinishedWithErrors: MutableMap<String, ScanTaskResult> = project.service<FullScanStateService>().frameworkScansFinishedWithErrors
 
-        LOG.info("Prisma Cloud Plugin Analytics - scan #${fullScanNumber} - full scan analytics:\n" +
+        logger.info(
+            "Prisma Cloud Plugin Analytics - scan #${fullScanNumber} - full scan analytics:\n" +
                 "full scan took ${formatTimeAsString(fullScanData!!.buttonPressedTime, fullScanData!!.resultsWereFullyDisplayedTime)} minutes from pressing on the scan button to fully display the results\n" +
                 "full scan took ${formatTimeAsString(fullScanData!!.scanStartedTime, fullScanData!!.scanFinishedTime)} minutes from starting Prisma Cloud scans and finishing Prisma Cloud scans for all frameworks\n" +
                 "full scan took ${formatTimeAsString(fullScanData!!.buttonPressedTime, fullScanData!!.scanStartedTime)} minutes from pressing on the scan button to starting Prisma Cloud scan\n" +

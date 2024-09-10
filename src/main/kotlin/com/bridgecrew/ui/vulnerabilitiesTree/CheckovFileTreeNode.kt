@@ -1,9 +1,9 @@
 package com.bridgecrew.ui.vulnerabilitiesTree
 
+import com.bridgecrew.icons.CheckovIcons
 import com.bridgecrew.utils.FileType
 import com.bridgecrew.utils.getFileType
 import com.intellij.icons.AllIcons
-import icons.CheckovIcons
 import javax.swing.Icon
 
 class CheckovFileTreeNode(val fileName: String, override val relativePathNode: String): CheckovTreeNode {

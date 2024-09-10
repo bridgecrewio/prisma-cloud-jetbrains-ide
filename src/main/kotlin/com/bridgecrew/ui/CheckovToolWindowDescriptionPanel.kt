@@ -1,20 +1,21 @@
 package com.bridgecrew.ui
 
+import com.bridgecrew.icons.CheckovIcons
 import com.bridgecrew.utils.createGridRowCol
 import com.intellij.icons.AllIcons
 import com.intellij.ide.DataManager
+import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.uiDesigner.core.GridConstraints
 import com.intellij.uiDesigner.core.GridLayoutManager
-import com.intellij.util.ui.UIUtil
 import com.intellij.util.ui.JBUI
-import icons.CheckovIcons
-import com.intellij.openapi.actionSystem.ActionManager
-import icons.CheckovIcons.pluginLargeIcon
-import java.awt.*
+import com.intellij.util.ui.UIUtil
+import java.awt.Color
+import java.awt.Dimension
+import java.awt.Font
 import javax.swing.*
 
 class CheckovToolWindowDescriptionPanel(val project: Project) : SimpleToolWindowPanel(true, true) {
@@ -98,7 +99,7 @@ class CheckovToolWindowDescriptionPanel(val project: Project) : SimpleToolWindow
         val imagePanel = JPanel()
         imagePanel.layout = GridLayoutManager(2, 2, JBUI.emptyInsets(), -1, -1)
         imagePanel.background = UIUtil.getEditorPaneBackground()
-        imagePanel.add(JLabel(pluginLargeIcon), createGridRowCol(0,0, GridConstraints.ANCHOR_CENTER))
+        imagePanel.add(JLabel(CheckovIcons.pluginLargeIcon), createGridRowCol(0, 0, GridConstraints.ANCHOR_CENTER))
         imagePanel.add(JLabel("Prisma Cloud"), createGridRowCol(1,0, GridConstraints.ANCHOR_NORTHEAST))
         imagePanel.add(JLabel("  "), createGridRowCol(0,1, GridConstraints.ANCHOR_NORTHEAST))
         return imagePanel

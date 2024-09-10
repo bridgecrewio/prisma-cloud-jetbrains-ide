@@ -1,4 +1,4 @@
-package icons
+package com.bridgecrew.icons
 
 import com.intellij.openapi.util.IconLoader
 
@@ -17,4 +17,5 @@ object CheckovIcons {
     val SeverityCritical = IconLoader.getIcon("/icons/severity_critical.svg", javaClass)
     val prismaIcon = IconLoader.getIcon("/icons/prisma.svg", javaClass)
     val pluginLargeIcon = IconLoader.getIcon("/icons/plugin_large_icon.svg", javaClass)
+    val showLogsIcon = IconLoader.getIcon("/icons/showLogs.svg", javaClass)
 }

@@ -15,9 +15,9 @@ import com.google.gson.reflect.TypeToken
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
-import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.project.Project
 import org.json.JSONArray
+import org.slf4j.LoggerFactory
 import java.io.File
 
 @Service
@@ -42,7 +42,7 @@ class FullScanStateService(val project: Project) {
     var previousState = State.FIRST_TIME_SCAN
 
     private val gson = Gson()
-    private val LOG = logger<FullScanStateService>()
+    private val logger = LoggerFactory.getLogger(javaClass)
 
     var isFullScanRunning = false
     var isFrameworkResultsWereDisplayed = false
@@ -97,7 +97,7 @@ class FullScanStateService(val project: Project) {
             project.service<ResultsCacheService>().checkovResults = checkovResultsList
             SeverityFilterActions.restartState()
         } catch (e: Exception) {
-            LOG.warn("Could not restore previous state from file, clearing the list", e)
+            logger.warn("Could not restore previous state from file, clearing the list", e)
         }
     }
 
@@ -105,7 +105,7 @@ class FullScanStateService(val project: Project) {
         try {
             stateFile!!.delete()
         } catch (e: Exception) {
-            LOG.warn("Could not delete previous state file in $stateFile")
+            logger.warn("Could not delete previous state file in $stateFile")
         }
     }
 

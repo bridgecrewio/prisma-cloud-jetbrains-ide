@@ -12,7 +12,6 @@ import com.bridgecrew.utils.navigateToFile
 import com.intellij.ide.DataManager
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.command.WriteCommandAction
-import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.project.Project
@@ -20,6 +19,7 @@ import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
+import org.slf4j.LoggerFactory
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 import javax.swing.JButton
@@ -60,7 +60,7 @@ class FixAction(private val buttonInstance: JButton, val result: BaseCheckovResu
         }
     }
 
-    private val LOG = logger<FixAction>()
+    private val logger = LoggerFactory.getLogger(javaClass)
 
     override fun actionPerformed(e: ActionEvent?) {
         ApplicationManager.getApplication().invokeLater {
@@ -99,7 +99,7 @@ class FixAction(private val buttonInstance: JButton, val result: BaseCheckovResu
             }
 
         } catch (e: Exception) {
-            LOG.warn("error while trying to apply fix", e)
+            logger.warn("error while trying to apply fix", e)
             buttonInstance.isEnabled = true
             return false
         }
@@ -124,7 +124,7 @@ class FixAction(private val buttonInstance: JButton, val result: BaseCheckovResu
                 }
             }
         } catch (e: Exception) {
-            LOG.warn("error while trying to apply SCA fix", e)
+            logger.warn("error while trying to apply SCA fix", e)
             buttonInstance.isEnabled = true
         }
     }

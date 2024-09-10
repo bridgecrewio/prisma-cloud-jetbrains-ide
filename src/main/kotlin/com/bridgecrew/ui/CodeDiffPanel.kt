@@ -2,11 +2,10 @@ package com.bridgecrew.ui
 
 import com.bridgecrew.results.BaseCheckovResult
 import com.bridgecrew.utils.*
-import com.bridgecrew.utils.FIX_COLOR_LIGHT
 import com.github.difflib.text.DiffRow
 import com.github.difflib.text.DiffRowGenerator
-import com.intellij.openapi.diagnostic.logger
 import com.intellij.util.ui.JBUI
+import org.slf4j.LoggerFactory
 import java.awt.Dimension
 import java.awt.Font
 import javax.swing.*
@@ -15,7 +14,7 @@ import javax.swing.text.StyleConstants
 
 class CodeDiffPanel(val result: BaseCheckovResult, isErrorBubble: Boolean): JPanel() {
 
-    private val LOG = logger<CodeDiffPanel>()
+    private val logger = LoggerFactory.getLogger(javaClass)
     var hasDiff = false
     private val codeFont = Font("JetBrains Mono", Font.BOLD, 12)
 
@@ -65,7 +64,7 @@ class CodeDiffPanel(val result: BaseCheckovResult, isErrorBubble: Boolean): JPan
         try {
             result.codeDiffFirstLine = diffRow.newLine.split(" ")[0].toInt()
         } catch (e: Exception) {
-            LOG.debug("Could not update first diff line from new line \"${diffRow.newLine}\"", e)
+            logger.debug("Could not update first diff line from new line \"${diffRow.newLine}\"", e)
         }
     }
 

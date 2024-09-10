@@ -1,4 +1,5 @@
 package com.bridgecrew.utils
+
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.fileEditor.OpenFileDescriptor
@@ -6,13 +7,16 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import org.apache.commons.io.FilenameUtils
-import org.jetbrains.rpc.LOG
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.io.File
 import java.net.URL
 import java.nio.file.Files
 import java.nio.file.Path
 
+var logger: Logger = LoggerFactory.getLogger("FileUtils")
 var checkovTempDirPath: Path = Files.createTempDirectory("checkov")
+
 fun navigateToFile(project: Project, virtualFile: VirtualFile, startLine: Int = 0, startColumn: Int = 0) {
     val line = calculateLineOffset(startLine - 1, virtualFile)
     val column = calculateColumnOffset(startColumn, virtualFile, line)
@@ -93,11 +97,12 @@ fun getFileType(filePath: String): FileType {
 }
 
 fun getGitIgnoreValues(project: Project): List<String> {
+
     try {
         val path = project.basePath + "/.gitignore"
         val gitignoreVirtualFile = LocalFileSystem.getInstance().findFileByPath(path)
         if (gitignoreVirtualFile == null) {
-            LOG.info("no .gitignore file in this project")
+            logger.info("no .gitignore file in this project")
             return arrayListOf()
         }
 
@@ -105,7 +110,7 @@ fun getGitIgnoreValues(project: Project): List<String> {
                 .split(System.lineSeparator()).filter { raw -> !(raw.trim().startsWith("#") || raw.trim().isEmpty() )}
 
     } catch (e: Exception) {
-        LOG.error(Exception("error while reading .gitignore file", e))
+        logger.error("error while reading .gitignore file", e)
     }
     return arrayListOf()
 }
@@ -136,12 +141,16 @@ fun deleteCheckovTempDir() {
         }
 
         val listOfFiles = checkovTempDirPath.toFile().list()!!
-        LOG.info("Checking if Checkov temp dir should be deleted, current files - ${checkovTempDirPath.toFile().list()?.map { path -> path.toString() }}")
+        logger.info(
+            "Checking if Checkov temp dir should be deleted, current files - ${
+                checkovTempDirPath.toFile().list()?.map { path -> path.toString() }
+            }"
+        )
         if (listOfFiles.isEmpty() || listOfFiles.none { filePath -> filePath.startsWith("error") }) {
             checkovTempDirPath.toFile().deleteRecursively()
         }
     } catch (e: Exception) {
-        LOG.warn("could not delete temp directory in $checkovTempDirPath", e)
+        logger.warn("could not delete temp directory in $checkovTempDirPath", e)
     }
 }
 

@@ -8,13 +8,14 @@ import com.bridgecrew.utils.extractFileNameFromPath
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
-import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.project.Project
+import org.slf4j.LoggerFactory
 import java.io.File
 
 @Service
 class CheckovErrorHandlerService(val project: Project) {
-    private val LOG = logger<CheckovErrorHandlerService>()
+
+    private val logger = LoggerFactory.getLogger(javaClass)
 
     private fun notifyAboutScanError(scanTaskResult: ScanTaskResult, dataSourceValue: String, error: Exception, scanSourceType: CheckovScanService.ScanSourceType) {
         try {
@@ -35,20 +36,20 @@ class CheckovErrorHandlerService(val project: Project) {
                     "Prisma Cloud result can be found in ${errorCheckovResultFile.path}.\n" +
                     "To report: open a issue at https://github.com/bridgecrewio/prisma-cloud-jetbrains-ide/issues\n"
 
-            LOG.error(errorMessage, error)
+            logger.error(errorMessage, error)
 
             CheckovNotificationBalloon.showNotification(project,
                     errorMessage,
                     NotificationType.ERROR)
         } catch (e: Exception) {
-            LOG.error("Error while notifying about original exception - $error", e)
+            logger.error("Error while notifying about original exception - $error", e)
         }
     }
 
     fun notifyAboutParsingError(scanningSource: String, scanSourceType: CheckovScanService.ScanSourceType) {
         val errorMessage = "Error while scanning ${scanSourceType.toString().lowercase()} ${scanningSource.replace(project.basePath!!, "")} - file was found as invalid"
 
-        LOG.warn(errorMessage)
+        logger.warn(errorMessage)
 
         CheckovNotificationBalloon.showNotification(project,
                 errorMessage,

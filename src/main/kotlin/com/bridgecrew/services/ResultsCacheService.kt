@@ -8,13 +8,15 @@ import com.bridgecrew.utils.fromDockerFilePath
 import com.bridgecrew.utils.isWindows
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
-import org.apache.commons.io.FilenameUtils
-import org.jetbrains.rpc.LOG
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.io.File
 import java.nio.file.Paths
 
 @Service
 class ResultsCacheService(val project: Project) {
+
+    private val logger: Logger = LoggerFactory.getLogger(javaClass)
     var checkovResults: MutableList<BaseCheckovResult> = mutableListOf()
     var modifiedResults: MutableList<BaseCheckovResult> = mutableListOf()
     private val baseDir: String = project.basePath!!
@@ -177,7 +179,7 @@ class ResultsCacheService(val project: Project) {
                     }
                 }
             } catch (e: Exception) {
-                LOG.info("Error while adding checkov result $result", e)
+                logger.info("Error while adding checkov result $result", e)
             }
 
         }

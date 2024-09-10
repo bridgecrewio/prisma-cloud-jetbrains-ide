@@ -1,4 +1,4 @@
-
+package com.bridgecrew.services
 
 import com.bridgecrew.ui.CheckovNotificationBalloon
 import com.intellij.execution.configurations.GeneralCommandLine
@@ -8,19 +8,19 @@ import com.intellij.execution.process.ScriptRunnerUtil
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
-import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.progress.Task
 import com.intellij.openapi.project.Project
+import org.slf4j.LoggerFactory
 import java.nio.charset.Charset
 import javax.swing.SwingUtilities
 import kotlin.reflect.KFunction3
 
-private val LOG = logger<CliService>()
-
 @Service
 class CliService {
+
+    private val logger = LoggerFactory.getLogger(javaClass)
     var checkovPath: String = ""
     var checkovVersion: String = ""
 
@@ -31,7 +31,7 @@ class CliService {
             onFailureFunction: ((output: String, exitCode: Int, project: Project) -> Unit)? =  null
         ) {
         val commandToPrint = commands.joinToString(" ")
-        LOG.info("Running command: $commandToPrint")
+        logger.info("Running command: $commandToPrint")
         try {
 
             val generalCommandLine = GeneralCommandLine(commands)
@@ -49,7 +49,7 @@ class CliService {
                 }
             }
         } catch (e: Exception){
-            LOG.warn("Cli command $commandToPrint could not run due to exception: $e")
+            logger.warn("Cli command $commandToPrint could not run due to exception: $e")
             if (onFailureFunction != null) {
                 onFailureFunction("",  1, project)
             }

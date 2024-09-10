@@ -20,19 +20,20 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
-import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
+import org.slf4j.LoggerFactory
 import java.io.File
 import java.nio.charset.Charset
 import javax.swing.SwingUtilities
 
-private val LOG = logger<CheckovScanService>()
-
 @Service
 class CheckovScanService: Disposable {
+
+    private val logger = LoggerFactory.getLogger(javaClass)
+
     var selectedCheckovScanner: CheckovScanCommandsService? = null
     private val settings = PrismaSettingsState().getInstance()
     private val fullScanTasks = mutableSetOf<ScanTask.FrameworkScanTask>()
@@ -45,15 +46,15 @@ class CheckovScanService: Disposable {
             }
 
             if (singleFileCurrentScans.size == DESIRED_NUMBER_OF_SINGLE_FILE_SCANS) {
-                LOG.warn("${singleFileCurrentScans.size} scans for files are currently running. Please try scanning again in a couple of minutes")
+                logger.warn("${singleFileCurrentScans.size} scans for files are currently running. Please try scanning again in a couple of minutes")
                 return
             }
 
             if (selectedCheckovScanner == null) {
-                LOG.warn("Checkov is not installed")
+                logger.warn("Checkov is not installed")
             }
 
-            LOG.info("Trying to scan a file using $selectedCheckovScanner")
+            logger.info("Trying to scan a file using $selectedCheckovScanner")
             project.messageBus.syncPublisher(CheckovScanListener.SCAN_TOPIC).fileScanningStarted()
 
             val checkovResultFile = createCheckovTempFile("${extractFileNameFromPath(filePath)}-checkov-result", ".json")
@@ -79,18 +80,17 @@ class CheckovScanService: Disposable {
             }
             clearGlobalState(project)
         } catch (e: Exception) {
-            LOG.error(e)
-            return
+            logger.error("Failed to scan file $filePath", e)
         }
     }
 
     fun scanProject(project: Project) {
         try {
             if (selectedCheckovScanner == null) {
-                LOG.warn("Checkov is not installed")
+                logger.warn("Checkov is not installed")
             }
 
-            LOG.info("Trying to scan the project $selectedCheckovScanner")
+            logger.info("Trying to scan the project $selectedCheckovScanner")
 
             project.service<FullScanStateService>().saveCurrentState()
             project.service<ResultsCacheService>().deleteAllCheckovResults()
@@ -125,7 +125,7 @@ class CheckovScanService: Disposable {
                                     }
                                 }
                             } catch (e: ProcessCanceledException) {
-                                LOG.warn("Process for running framework $framework was canceled")
+                                logger.warn("Process for running framework $framework was canceled")
                                 project.service<FullScanStateService>().frameworkWasCancelled()
                             }
                         }
@@ -136,7 +136,7 @@ class CheckovScanService: Disposable {
             }
         } catch (e: Exception) {
             CheckovScanAction.resetActionDynamically(true)
-            LOG.error(e)
+            logger.error("Failed to scan project $project", e)
             return
         }
     }
@@ -150,7 +150,7 @@ class CheckovScanService: Disposable {
     }
 
     fun cancelFullScan(project: Project) {
-        LOG.info("Going to cancel full scan")
+        logger.info("Going to cancel full scan")
         project.service<FullScanStateService>().onCancel = true
 
         for (frameworkScanTask in fullScanTasks) {
@@ -187,7 +187,7 @@ class CheckovScanService: Disposable {
                 selectedCheckovScanner!!.getExecCommandsForRepositoryByFramework(scanningSource.first(), checkovResultFilePath)
 
         val maskedCommand = replaceApiToken(execCommand.joinToString(" "))
-        LOG.info("Running command with service ${selectedCheckovScanner!!.javaClass}: $maskedCommand")
+        logger.info("Running command with service ${selectedCheckovScanner!!.javaClass}: $maskedCommand")
 
         return execCommand
     }
@@ -229,7 +229,7 @@ class CheckovScanService: Disposable {
             scanTaskResult.deleteResultsFile()
 
         } catch (error: Exception) {
-            LOG.warn("Error while analyzing scan results for framework $framework", error)
+            logger.warn("Error while analyzing scan results for framework $framework", error)
             project.service<CheckovErrorHandlerService>().scanningError(scanTaskResult, framework, error, ScanSourceType.FRAMEWORK)
         }
     }
@@ -249,7 +249,14 @@ class CheckovScanService: Disposable {
             }
 
             if (extractionResult.failedChecks.isEmpty()) {
-                LOG.info("Checkov scanning finished, no errors have been detected for file: ${filePath.replace(project.basePath!!, "")}")
+                logger.info(
+                    "Checkov scanning finished, no errors have been detected for file: ${
+                        filePath.replace(
+                            project.basePath!!,
+                            ""
+                        )
+                    }"
+                )
                 scanTaskResult.deleteResultsFile()
                 return
             }
@@ -259,7 +266,7 @@ class CheckovScanService: Disposable {
 
             scanTaskResult.deleteResultsFile()
         } catch (error: Exception) {
-            LOG.warn("Error while analyzing scan results for file $filePath", error)
+            logger.warn("Error while analyzing scan results for file $filePath", error)
             project.service<CheckovErrorHandlerService>().scanningError(scanTaskResult, filePath, error, ScanSourceType.FILE)
         }
     }
@@ -268,13 +275,13 @@ class CheckovScanService: Disposable {
         if (scanTaskResult.errorReason.contains("Please check your API token")) {
             project.service<CheckovErrorHandlerService>().scanningError(scanTaskResult, scanningSource, Exception("Please check your API token"), scanSourceType)
 
-            LOG.error("Please check you API token\n\n")
+            logger.error("Please check you API token\n\n")
             return false
         }
 
         if (scanTaskResult.errorReason.contains("missing dependencies (e.g., helm or kustomize, which require those tools to be on your system")) {
             val errorMessage = "Framework $scanningSource was not scanned since it's probably not installed: ${scanTaskResult.errorReason}"
-            LOG.warn(errorMessage)
+            logger.warn(errorMessage)
             scanTaskResult.deleteResultsFile()
             project.service<FullScanStateService>().frameworkWasNotScanned(scanningSource)
             return false
