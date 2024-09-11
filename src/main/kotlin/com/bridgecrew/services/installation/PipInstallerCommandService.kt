@@ -1,6 +1,6 @@
 package com.bridgecrew.services.installation
 
-import CliService
+import com.bridgecrew.services.CliService
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project

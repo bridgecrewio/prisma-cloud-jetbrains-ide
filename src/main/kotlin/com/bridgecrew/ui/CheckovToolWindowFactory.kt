@@ -9,7 +9,6 @@ import com.bridgecrew.ui.topPanel.CheckovActionToolbar
 import com.bridgecrew.utils.PANELTYPE
 import com.bridgecrew.utils.formatNumberWithCommas
 import com.intellij.openapi.components.service
-import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.wm.ToolWindow
@@ -17,6 +16,7 @@ import com.intellij.openapi.wm.ToolWindowFactory
 import com.intellij.openapi.wm.ToolWindowManager
 import com.intellij.openapi.wm.ex.ToolWindowManagerListener
 import com.intellij.util.messages.MessageBusConnection
+import org.slf4j.LoggerFactory
 
 const val PRISMA_CLOUD_TOOL_WINDOW_ID = "Prisma Cloud"
 const val OVERVIEW_TAB_NAME = "Overview"
@@ -37,7 +37,7 @@ private val tabNameToCategory: Map<String, Category?> = mapOf(
 
 class CheckovToolWindowFactory : ToolWindowFactory {
 
-    private val LOG = logger<CheckovToolWindowFactory>()
+    private val logger = LoggerFactory.getLogger(javaClass)
 
     companion object {
         var internalExecution = false
@@ -79,7 +79,7 @@ class CheckovToolWindowFactory : ToolWindowFactory {
                         reloadContents(project, checkovTabContent.id)
                     }
                 } catch (e: Exception) {
-                    LOG.error("Error while creating tool window: $e.message")
+                    logger.error("Error while creating tool window: $e.message")
                 } finally {
                     currentlyRunning = false
                 }

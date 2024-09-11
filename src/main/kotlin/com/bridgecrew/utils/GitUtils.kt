@@ -1,6 +1,6 @@
 package com.bridgecrew.utils
 
-import CliService
+import com.bridgecrew.services.CliService
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 

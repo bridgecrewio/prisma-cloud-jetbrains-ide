@@ -1,6 +1,6 @@
 package com.bridgecrew.results
 
-enum class Category(category: String) {
+enum class Category(val category: String) {
     SECRETS("Secrets"),
     IAC("IAC"),
     VULNERABILITIES("Vulnerabilities"),
@@ -8,7 +8,7 @@ enum class Category(category: String) {
     WEAKNESSES("Weaknesses")
 }
 
-enum class CheckType(checkType: String) {
+enum class CheckType(val checkType: String) {
     ANSIBLE("ansible"),
     ARM("arm"),
     BICEP("bicep"),

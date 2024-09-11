@@ -1,12 +1,8 @@
 package com.bridgecrew.testing
 
-import com.bridgecrew.CheckovResult
-import com.google.gson.Gson
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import java.io.File
 import java.io.InputStream
-
-
 
 class CheckovRunnerTesting : SimpleToolWindowPanel(false, true) {
     val results: List<String> = mutableListOf("""{

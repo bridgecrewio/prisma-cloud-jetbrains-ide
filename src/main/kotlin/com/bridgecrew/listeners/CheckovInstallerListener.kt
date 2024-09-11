@@ -1,4 +1,5 @@
 package com.bridgecrew.listeners
+
 import com.bridgecrew.services.installation.InstallerCommandService
 import com.intellij.util.messages.Topic
 

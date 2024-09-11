@@ -2,11 +2,22 @@
 
 # checkov-jetbrains-idea Changelog
 
+## [1.0.22] - 2024-09-10
+
+### Added
+
+- Added a new 'show logs' button in the plugin panel that opens the plugin log file
+
+### Misc
+
+- Upgraded gradle version to 8.10.1
+- Migrated the IntelliJ platform plugin to version 2.0.1
+
 ## [1.0.21] - 2024-08-29
 
 ### Added
 
-- Added the following data to Prisma Cloid analytics
+- Added the following data to Prisma Cloud analytics
 
   - Extension version
   - VS Code version

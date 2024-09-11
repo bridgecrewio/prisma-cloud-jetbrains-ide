@@ -10,9 +10,11 @@ import com.bridgecrew.utils.UNKNOWN_LICENSES_DESCRIPTION
 import com.bridgecrew.utils.VIOLATED_LICENSES_DESCRIPTION
 import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBScrollPane
-import java.awt.*
+import java.awt.BorderLayout
+import java.awt.Component
+import java.awt.Dimension
+import java.awt.Point
 import javax.swing.*
-
 
 class ErrorBubbleInnerPanel(val project: Project, val result: BaseCheckovResult, private val vulnerabilityCount: Int, index: Int, total: Int, callback: navigationCallback) : JPanel() {
 

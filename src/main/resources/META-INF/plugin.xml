@@ -9,21 +9,15 @@
     ]]></description>
     <!-- Product and plugin compatibility requirements -->
     <!-- https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
-
     <depends>com.intellij.modules.lang</depends>
     <depends>com.intellij.modules.platform</depends>
     <idea-version since-build="212.4746.92"/>
-
-
     <extensions defaultExtensionNs="com.intellij">
         <toolWindow id="Prisma Cloud"
                     anchor="bottom"
                     factoryClass="com.bridgecrew.ui.CheckovToolWindowFactory"
                     icon="/icons/plugin_small_icon.svg"/>
-
         <postStartupActivity implementation="com.bridgecrew.activities.PostStartupActivity"/>
-
-
         <projectConfigurable id="com.bridgecrew.settings.PrismaSettingsConfigurable"
                              instance="com.bridgecrew.settings.PrismaSettingsConfigurable"
                              groupId="tools"
@@ -31,21 +25,20 @@
         <applicationService serviceImplementation="com.bridgecrew.settings.PrismaSettingsState"/>
         <notificationGroup id="CheckovError"
                            displayType="BALLOON"/>
-
     </extensions>
-
     <actions>
         <group id="com.bridgecrew.checkovScanActions">
             <action id="com.bridgecrew.ui.actions.CheckovScanAction"
                     class="com.bridgecrew.ui.actions.CheckovScanAction"
                     text="Run Prisma Cloud Scan"/>
+            <action id="com.bridgecrew.ui.actions.ShowLogFileAction"
+                    class="com.bridgecrew.ui.actions.ShowLogFileAction"
+                    text="Open Log File"/>
         </group>
     </actions>
-
     <projectListeners>
         <listener
                 class="com.bridgecrew.listeners.ProjectListener"
                 topic="com.intellij.openapi.project.ProjectManagerListener"/>
     </projectListeners>
-
 </idea-plugin>

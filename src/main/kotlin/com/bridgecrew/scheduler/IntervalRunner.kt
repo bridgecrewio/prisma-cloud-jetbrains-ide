@@ -1,16 +1,16 @@
 package com.bridgecrew.scheduler
 
 import com.intellij.openapi.components.Service
-import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.project.Project
-import java.util.Timer
 import org.apache.commons.lang3.time.StopWatch
+import org.slf4j.LoggerFactory
 import java.util.*
 import java.util.concurrent.TimeUnit
 
 @Service
 class IntervalRunner(val project: Project) {
-    private val LOG = logger<IntervalRunner>()
+
+    private val logger = LoggerFactory.getLogger(javaClass)
     private val timer = Timer()
     fun scheduleWithTimer(intervalFunction: () -> Unit, period: Int) {
         val stopWatch = StopWatch.createStarted()
@@ -20,9 +20,13 @@ class IntervalRunner(val project: Project) {
                 try {
                     stopWatch.time
                     intervalFunction()
-                    LOG.info("Function in scheduleWithTimer for ${project.name} executed with delay " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.time))
+                    logger.info(
+                        "Function in scheduleWithTimer for ${project.name} executed with delay " + TimeUnit.MILLISECONDS.toSeconds(
+                            stopWatch.time
+                        )
+                    )
                 } catch (e: Throwable) {
-                    LOG.info("Catch the exception: $e")
+                    logger.info("Catch the exception: $e")
                     stopWatch.stop()
                     timer.cancel()
                 }
@@ -32,6 +36,6 @@ class IntervalRunner(val project: Project) {
 
     fun stop(){
         timer.cancel()
-        LOG.info("Timer stopped for ${project.name}")
+        logger.info("Timer stopped for ${project.name}")
     }
 }

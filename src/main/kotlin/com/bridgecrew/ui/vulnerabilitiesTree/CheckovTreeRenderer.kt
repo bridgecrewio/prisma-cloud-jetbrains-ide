@@ -6,7 +6,6 @@ import javax.swing.JTree
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.DefaultTreeCellRenderer
 
-
 class CheckovTreeRenderer : DefaultTreeCellRenderer() {
     override fun getTreeCellRendererComponent(tree: JTree?,
                                               value: Any?,

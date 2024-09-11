@@ -2,7 +2,7 @@ package com.bridgecrew.services
 
 import com.bridgecrew.results.BaseCheckovResult
 import com.bridgecrew.results.Category
-import com.intellij.openapi.diagnostic.logger
+import org.slf4j.LoggerFactory
 
 class CheckovResultsComparatorGenerator {
 
@@ -13,7 +13,7 @@ class CheckovResultsComparatorGenerator {
     }
 
     companion object {
-        private val LOG = logger<CheckovResultProperty>()
+        private val logger = LoggerFactory.getLogger(this::class.java)
         fun generateCheckovResultComparator(): Comparator<BaseCheckovResult> {
             return generateNameComparator(CheckovResultProperty.FILE_PATH)
                     .thenComparing(generateResourceComparator())
@@ -39,7 +39,7 @@ class CheckovResultsComparatorGenerator {
                 return@Comparator try {
                     getAlphanumericComparator().compare(name1, name2)
                 } catch (e: Exception) {
-                    LOG.warn("Error while comparing ${property.name.lowercase()}", e)
+                    logger.warn("Error while comparing ${property.name.lowercase()}", e)
                     name1.compareTo(name2, true)
                 }
             }

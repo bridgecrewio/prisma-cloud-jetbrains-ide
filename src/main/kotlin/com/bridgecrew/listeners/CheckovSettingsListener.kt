@@ -1,4 +1,5 @@
 package com.bridgecrew.listeners
+
 import com.intellij.util.messages.Topic
 
 interface CheckovSettingsListener {

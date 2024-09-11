@@ -1,10 +1,10 @@
 package com.bridgecrew.ui.vulnerabilitiesTree
 
-import com.bridgecrew.settings.CheckovGlobalState
 import com.bridgecrew.results.BaseCheckovResult
 import com.bridgecrew.results.Category
-import com.bridgecrew.services.ResultsCacheService
 import com.bridgecrew.services.CheckovResultsListUtils
+import com.bridgecrew.services.ResultsCacheService
+import com.bridgecrew.settings.CheckovGlobalState
 import com.bridgecrew.ui.CheckovToolWindowDescriptionPanel
 import com.bridgecrew.ui.rightPanel.CheckovErrorRightPanel
 import com.bridgecrew.utils.navigateToFile
@@ -28,7 +28,6 @@ import javax.swing.event.TreeExpansionListener
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.TreeNode
 import javax.swing.tree.TreePath
-
 
 class CheckovToolWindowTree(
         val project: Project, private val split: JBSplitter, private val descriptionPanel: CheckovToolWindowDescriptionPanel, private val selectedPath: String

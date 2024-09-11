@@ -1,6 +1,6 @@
 package com.bridgecrew.services.checkovScanCommandsService
 
-import CliService
+import com.bridgecrew.services.CliService
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import org.apache.commons.io.FilenameUtils

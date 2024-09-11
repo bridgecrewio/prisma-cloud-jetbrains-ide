@@ -1,0 +1,22 @@
+[versions]
+# libraries
+junit = "4.13.2"
+jupiterApi = "5.8.1"
+
+# plugins
+changelog = "2.2.1"
+intelliJPlatform = "2.0.1"
+kotlin = "1.9.25"
+kover = "0.8.3"
+qodana = "0.1.13"
+
+[libraries]
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+jupiterApi = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "jupiterApi" }
+
+[plugins]
+changelog = { id = "org.jetbrains.changelog", version.ref = "changelog" }
+intelliJPlatform = { id = "org.jetbrains.intellij.platform", version.ref = "intelliJPlatform" }
+kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
+qodana = { id = "org.jetbrains.qodana", version.ref = "qodana" }

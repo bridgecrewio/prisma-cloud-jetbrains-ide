@@ -1,11 +1,11 @@
 package com.bridgecrew.utils
 
+import com.bridgecrew.icons.CheckovIcons
 import com.bridgecrew.results.BaseCheckovResult
 import com.bridgecrew.results.Category
 import com.bridgecrew.results.Severity
 import com.intellij.openapi.editor.colors.EditorColorsManager
 import com.intellij.uiDesigner.core.GridConstraints
-import icons.CheckovIcons
 import java.awt.Color
 import java.awt.Font
 import java.awt.Insets

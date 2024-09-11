@@ -2,14 +2,16 @@ package com.bridgecrew.services.scan
 
 import com.bridgecrew.analytics.AnalyticsService
 import com.bridgecrew.listeners.CheckovScanListener
-import com.bridgecrew.utils.*
+import com.bridgecrew.utils.DEFAULT_FILE_TIMEOUT
+import com.bridgecrew.utils.DEFAULT_FRAMEWORK_TIMEOUT
+import com.bridgecrew.utils.createCheckovTempFile
+import com.bridgecrew.utils.extractFileNameFromPath
 import com.intellij.execution.ExecutionException
 import com.intellij.execution.process.ProcessAdapter
 import com.intellij.execution.process.ProcessEvent
 import com.intellij.execution.process.ProcessHandler
 import com.intellij.execution.process.ProcessOutputTypes
 import com.intellij.openapi.components.service
-import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
@@ -17,6 +19,7 @@ import com.intellij.openapi.progress.Task
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManagerListener
 import com.intellij.openapi.util.Key
+import org.slf4j.LoggerFactory
 import java.io.File
 
 data class ScanTaskResult(
@@ -35,7 +38,7 @@ data class ScanTaskResult(
 abstract class ScanTask(project: Project, title: String, private val sourceName: String, private val processHandler: ProcessHandler, val checkovResultFile: File) :
         Task.Backgroundable(project, title, true) {
 
-    protected val LOG = logger<ScanTask>()
+    protected val logger = LoggerFactory.getLogger(javaClass)
 
     val debugOutputFile: File = createCheckovTempFile("${sourceName}-debug-output", ".txt")
     var errorReason = ""
@@ -43,14 +46,16 @@ abstract class ScanTask(project: Project, title: String, private val sourceName:
     protected var indicator: ProgressIndicator? = null
 
     protected fun getScanOutputs(timeout: Long): ScanTaskResult {
-        LOG.assertTrue(!processHandler.isStartNotified)
+        if (!processHandler.isStartNotified) {
+            logger.error("Assertion failed: processHandler.isStartNotified = ${processHandler.isStartNotified}")
+        }
 
         processHandler.addProcessListener(object : ProcessAdapter() {
 
             override fun onTextAvailable(event: ProcessEvent, outputType: Key<*>) {
                 try {
                     if (processHandler.isProcessTerminated || processHandler.isProcessTerminating) {
-                        LOG.info("Process is terminating for $sourceName")
+                        logger.info("Process is terminating for $sourceName")
                         return
                     }
 
@@ -67,9 +72,12 @@ abstract class ScanTask(project: Project, title: String, private val sourceName:
                         errorReason = updateErrorReason(text)
                     }
 
-                    LOG.debug(text)
+                    logger.debug(text)
                 } catch (e: ProcessCanceledException) {
-                    LOG.info("Process was canceled for $sourceName during onTextAvailable, destroying process for processHandler", e)
+                    logger.info(
+                        "Process was canceled for $sourceName during onTextAvailable, destroying process for processHandler",
+                        e
+                    )
                     processHandler.destroyProcess()
                 }
 
@@ -98,12 +106,12 @@ abstract class ScanTask(project: Project, title: String, private val sourceName:
 
     fun cancelTask() {
         if (this.indicator != null) {
-            LOG.info("Going to cancel task for $sourceName")
+            logger.info("Going to cancel task for $sourceName")
             this.indicator!!.cancel()
             ProgressManager.canceled(indicator!!)
             processHandler.destroyProcess()
             deleteResultsFile()
-            LOG.info("Task was canceled for $sourceName")
+            logger.info("Task was canceled for $sourceName")
         }
     }
 
@@ -121,26 +129,26 @@ abstract class ScanTask(project: Project, title: String, private val sourceName:
             try {
                 this.indicator = indicator
                 checkOnCancel()
-                LOG.info("Going to scan for framework $framework")
+                logger.info("Going to scan for framework $framework")
                 indicator.isIndeterminate = false
 
                 val scanTaskResult: ScanTaskResult = getScanOutputs(DEFAULT_FRAMEWORK_TIMEOUT)
                 indicator.checkCanceled()
 
-                LOG.info("Checkov scan task finished successfully for framework $framework")
+                logger.info("Checkov scan task finished successfully for framework $framework")
 
                 project.service<AnalyticsService>().fullScanByFrameworkFinished(framework)
 
                 project.service<CheckovScanService>().analyzeFrameworkScan(scanTaskResult, processHandler.exitCode!!, project, framework)
 
             } catch (e: ProcessCanceledException) {
-                LOG.info("Task for framework $framework was canceled ", e)
+                logger.info("Task for framework $framework was canceled ", e)
                 processHandler.destroyProcess()
                 deleteResultsFile()
                 project.service<FullScanStateService>().frameworkWasCancelled()
                 project.messageBus.syncPublisher(CheckovScanListener.SCAN_TOPIC).scanningFinished(CheckovScanService.ScanSourceType.FRAMEWORK)
             } catch (error: Exception) {
-                LOG.error("error while scanning framework $framework", error)
+                logger.error("error while scanning framework $framework", error)
                 project.service<AnalyticsService>().fullScanByFrameworkFinished(framework)
                 project.service<FullScanStateService>().frameworkFinishedWithErrors(framework, ScanTaskResult(checkovResultFile, debugOutputFile, errorReason))
                 throw error
@@ -162,23 +170,23 @@ abstract class ScanTask(project: Project, title: String, private val sourceName:
 
                 this.indicator = indicator
                 indicator.checkCanceled()
-                LOG.info("Going to scan for file $filePath")
+                logger.info("Going to scan for file $filePath")
                 indicator.isIndeterminate = false
 
                 val scanTaskResult: ScanTaskResult = getScanOutputs(DEFAULT_FILE_TIMEOUT)
                 indicator.checkCanceled()
 
-                LOG.info("Checkov scan task finished successfully for file $filePath")
+                logger.info("Checkov scan task finished successfully for file $filePath")
 
                 project.service<CheckovScanService>().analyzeFileScan(scanTaskResult, processHandler.exitCode!!, project, filePath)
 
             } catch (e: ProcessCanceledException) {
-                LOG.info("Task for file $filePath was canceled", e)
+                logger.info("Task for file $filePath was canceled", e)
                 processHandler.destroyProcess()
                 deleteResultsFile()
             }
             catch (error: Exception) {
-                LOG.error("error while scanning file $filePath", error)
+                logger.error("error while scanning file $filePath", error)
                 throw error
             }
         }

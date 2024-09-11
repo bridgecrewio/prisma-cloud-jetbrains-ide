@@ -11,8 +11,8 @@ import com.bridgecrew.services.scan.FullScanStateService
 import com.bridgecrew.settings.CheckovGlobalState
 import com.bridgecrew.settings.PrismaSettingsState
 import com.bridgecrew.ui.actions.CheckovScanAction
-import com.bridgecrew.ui.errorBubble.CheckovGutterErrorIcon
 import com.bridgecrew.ui.actions.SeverityFilterActions
+import com.bridgecrew.ui.errorBubble.CheckovGutterErrorIcon
 import com.bridgecrew.ui.topPanel.CheckovTopPanel
 import com.bridgecrew.ui.vulnerabilitiesTree.CheckovToolWindowTree
 import com.bridgecrew.utils.*
@@ -21,14 +21,16 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
-import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.colors.EditorColorsListener
 import com.intellij.openapi.editor.colors.EditorColorsScheme
 import com.intellij.openapi.editor.markup.HighlighterLayer
 import com.intellij.openapi.editor.markup.MarkupModel
 import com.intellij.openapi.editor.markup.RangeHighlighter
-import com.intellij.openapi.fileEditor.*
+import com.intellij.openapi.fileEditor.FileEditorManager
+import com.intellij.openapi.fileEditor.FileEditorManagerEvent
+import com.intellij.openapi.fileEditor.FileEditorManagerListener
+import com.intellij.openapi.fileEditor.TextEditor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.ui.SimpleToolWindowPanel
@@ -40,6 +42,7 @@ import com.intellij.openapi.vfs.newvfs.events.VFileEvent
 import com.intellij.openapi.wm.ToolWindowManager
 import com.intellij.openapi.wm.ex.ToolWindowManagerListener
 import com.intellij.ui.OnePixelSplitter
+import org.slf4j.LoggerFactory
 import java.awt.BorderLayout
 import java.io.File
 import javax.swing.SwingUtilities
@@ -49,7 +52,7 @@ class CheckovToolWindowManagerPanel(val project: Project) : SimpleToolWindowPane
 
     private val checkovDescription = CheckovToolWindowDescriptionPanel(project)
     private val mainPanelSplitter = OnePixelSplitter(PANEL_SPLITTER_KEY, 0.5f)
-    private val LOG = logger<CheckovToolWindowManagerPanel>()
+    private val logger = LoggerFactory.getLogger(javaClass)
     private val key = Key<Boolean>("prismaCloudPlugin")
 
     /**
@@ -237,7 +240,7 @@ class CheckovToolWindowManagerPanel(val project: Project) : SimpleToolWindowPane
                     return
                 }
 
-                LOG.debug("file event for file: ${events[0].file!!.path}. isValid: ${events[0].isValid}, isFromRefresh: ${events[0].isFromRefresh}, isFromSave: ${events[0].isFromSave}, requestor: ${events[0].requestor}")
+                logger.debug("file event for file: ${events[0].file!!.path}. isValid: ${events[0].isValid}, isFromRefresh: ${events[0].isFromRefresh}, isFromSave: ${events[0].isFromSave}, requestor: ${events[0].requestor}")
 
                 if (events.isEmpty() || !events[0].isFromSave || events[0].file == null) {
                     return
@@ -283,42 +286,46 @@ class CheckovToolWindowManagerPanel(val project: Project) : SimpleToolWindowPane
     }
 
     fun subscribeToInternalEvents(project: Project) {
+
         // Subscribe to Scanning Topic
-        project.messageBus.connect(this)
-                .subscribe(CheckovScanListener.SCAN_TOPIC, object : CheckovScanListener {
+        project.messageBus.connect(this).subscribe(CheckovScanListener.SCAN_TOPIC, object : CheckovScanListener {
 
-                    override fun fileScanningStarted(){}
+            override fun fileScanningStarted() {}
 
-                    override fun projectScanningStarted() {
-                        SeverityFilterActions.restartState()
-                        project.service<CheckovToolWindowManagerPanel>().loadMainPanel(PANELTYPE.CHECKOV_REPOSITORY_SCAN_STARTED)
+            override fun projectScanningStarted() {
+                SeverityFilterActions.restartState()
+                project.service<CheckovToolWindowManagerPanel>()
+                    .loadMainPanel(PANELTYPE.CHECKOV_REPOSITORY_SCAN_STARTED)
+            }
+
+            override fun scanningFinished(scanSourceType: CheckovScanService.ScanSourceType) {
+                ApplicationManager.getApplication().invokeLater {
+                    SeverityFilterActions.onScanFinishedForDisplayingResults(project)
+                    if (scanSourceType == CheckovScanService.ScanSourceType.FILE) {
+                        project.service<CheckovToolWindowManagerPanel>()
+                            .loadMainPanel(PANELTYPE.CHECKOV_FILE_SCAN_FINISHED)
+                    } else {
+                        project.service<CheckovToolWindowManagerPanel>()
+                            .loadMainPanel(PANELTYPE.CHECKOV_FRAMEWORK_SCAN_FINISHED)
                     }
+                }
+            }
 
-                    override fun scanningFinished(scanSourceType: CheckovScanService.ScanSourceType) {
-                        ApplicationManager.getApplication().invokeLater {
-                            SeverityFilterActions.onScanFinishedForDisplayingResults(project)
-                            if (scanSourceType == CheckovScanService.ScanSourceType.FILE) {
-                                project.service<CheckovToolWindowManagerPanel>().loadMainPanel(PANELTYPE.CHECKOV_FILE_SCAN_FINISHED)
-                            } else {
-                                project.service<CheckovToolWindowManagerPanel>().loadMainPanel(PANELTYPE.CHECKOV_FRAMEWORK_SCAN_FINISHED)
-                            }
-                        }
-                    }
-
-                    override fun fullScanFailed() {
-                        ApplicationManager.getApplication().invokeLater {
-                            project.service<CheckovToolWindowManagerPanel>().loadMainPanel(PANELTYPE.CHECKOV_REPOSITORY_SCAN_FAILED)
-                        }
-                    }
-                })
+            override fun fullScanFailed() {
+                ApplicationManager.getApplication().invokeLater {
+                    project.service<CheckovToolWindowManagerPanel>()
+                        .loadMainPanel(PANELTYPE.CHECKOV_REPOSITORY_SCAN_FAILED)
+                }
+            }
+        })
 
         // Subscribe to Settings Topic
         project.messageBus.connect(this)
-                .subscribe(CheckovSettingsListener.SETTINGS_TOPIC, object: CheckovSettingsListener {
-                    override fun settingsUpdated() {
-                        project.service<CheckovToolWindowManagerPanel>().loadMainPanel()
-                    }
-                })
+            .subscribe(CheckovSettingsListener.SETTINGS_TOPIC, object : CheckovSettingsListener {
+                override fun settingsUpdated() {
+                    project.service<CheckovToolWindowManagerPanel>().loadMainPanel()
+                }
+            })
     }
 
     private fun updateErrorsInFile(){

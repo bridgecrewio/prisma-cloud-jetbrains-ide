@@ -1,14 +1,15 @@
 package com.bridgecrew.utils
 
-import com.bridgecrew.*
+import com.bridgecrew.CheckovResult
+import com.bridgecrew.VulnerabilityDetails
+import com.bridgecrew.gson
 import com.bridgecrew.results.BaseCheckovResult
 import com.bridgecrew.results.Category
 import com.bridgecrew.results.CheckType
 import com.google.gson.reflect.TypeToken
-import com.intellij.openapi.diagnostic.logger
 import org.json.JSONArray
 import org.json.JSONObject
-
+import org.slf4j.LoggerFactory
 
 data class CheckovResultExtractionData(
         val failedChecks: List<CheckovResult> = arrayListOf(),
@@ -17,8 +18,11 @@ data class CheckovResultExtractionData(
 )
 
 class CheckovUtils {
+
     companion object {
-        private val LOG = logger<CheckovUtils>()
+
+        private val logger = LoggerFactory.getLogger(this::class.java)
+
         fun isCustomPolicy(result: BaseCheckovResult): Boolean {
             return (result.category == Category.IAC || result.category == Category.SECRETS) && !result.id.startsWith("CKV")
         }
@@ -63,7 +67,7 @@ class CheckovUtils {
                 val image = result.resource.split(" ").find { token -> token.startsWith("(") }
                 image!!.replace("(", "")
             } catch (error: Error) {
-                LOG.warn("Could not find image name from result resource ${result.resource}", error)
+                logger.warn("Could not find image name from result resource ${result.resource}", error)
                 generateVulnerabilityResourceByPackage(vulnerabilityDetails.package_name, vulnerabilityDetails.package_version, result.resource)
             }
         }
@@ -85,7 +89,7 @@ class CheckovUtils {
                 return CheckovResultExtractionData(arrayListOf(), 0, 0)
             }
 
-            LOG.info("found checkov result for source $scanningSource")
+            logger.info("found checkov result for source $scanningSource")
             val checkovResult = rawResult.replace("\u001B[0m", "")
 
             return when (checkovResult[0]) {
@@ -148,7 +152,7 @@ class CheckovUtils {
             try {
                 return summary.getInt("parsing_errors")
             } catch (e: Exception) {
-                LOG.error("Error while extracting parsing errors", e)
+                logger.error("Error while extracting parsing errors", e)
             }
 
             return 0

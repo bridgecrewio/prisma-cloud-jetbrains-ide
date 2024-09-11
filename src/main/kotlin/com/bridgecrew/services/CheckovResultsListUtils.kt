@@ -6,11 +6,15 @@ import com.bridgecrew.ui.CheckovToolWindowFactory
 import com.bridgecrew.ui.actions.SeverityFilterActions
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
-import org.jetbrains.rpc.LOG
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.io.File
 
 class CheckovResultsListUtils {
+
     companion object {
+
+        val logger: Logger = LoggerFactory.getLogger(this::class.java)
         private val checkovResultsComparator: Comparator<BaseCheckovResult> = CheckovResultsComparatorGenerator.generateCheckovResultComparator()
 
         private fun filterResultsByCategories(sourceList: List<BaseCheckovResult>, categories: List<Category>?): List<BaseCheckovResult> {
@@ -45,7 +49,7 @@ class CheckovResultsListUtils {
             try {
                 sourceList.sortWith(checkovResultsComparator)
             } catch (e: Exception) {
-                LOG.warn("error while sorting list", e)
+                logger.warn("error while sorting list", e)
             }
         }
 

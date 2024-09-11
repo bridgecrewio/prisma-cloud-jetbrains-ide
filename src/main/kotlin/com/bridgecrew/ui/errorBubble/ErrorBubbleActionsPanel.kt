@@ -1,5 +1,6 @@
 package com.bridgecrew.ui.errorBubble
 
+import com.bridgecrew.icons.CheckovIcons
 import com.bridgecrew.results.BaseCheckovResult
 import com.bridgecrew.ui.actions.FixAction
 import com.bridgecrew.ui.actions.FocusOnFileInTree
@@ -8,7 +9,6 @@ import com.bridgecrew.ui.buttons.DocumentationLinkButton
 import com.bridgecrew.ui.buttons.SuppressionLinkButton
 import com.bridgecrew.utils.*
 import com.intellij.openapi.project.Project
-import icons.CheckovIcons
 import java.awt.Color
 import java.awt.Dimension
 import java.awt.Font
