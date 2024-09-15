@@ -3,6 +3,8 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 fun properties(key: String): String = project.findProperty(key).toString()
@@ -10,11 +12,11 @@ fun properties(key: String): String = project.findProperty(key).toString()
 plugins {
     id("java") // Java support
     alias(libs.plugins.kotlin) // Kotlin support
+//    alias(libs.plugins.kotlinSerialization) // Kotlin serialization support
     alias(libs.plugins.intelliJPlatform) // IntelliJ Platform Gradle Plugin
     alias(libs.plugins.changelog) // Gradle Changelog Plugin
     alias(libs.plugins.qodana) // Gradle Qodana Plugin
     alias(libs.plugins.kover) // Gradle Kover Plugin
-    kotlin("plugin.serialization") version "1.9.25"
 }
 
 group = properties("pluginGroup")
@@ -38,9 +40,13 @@ dependencies {
     implementation("org.json:json:20231013")
     implementation("commons-io:commons-io:2.11.0")
     implementation("io.github.java-diff-utils:java-diff-utils:4.12")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
     implementation("org.slf4j:slf4j-api:2.0.16")
     implementation("ch.qos.logback:logback-classic:1.5.6")
+    implementation(libs.springWeb)
+//    implementation(libs.kotlinxSerializationJson)
+    implementation(libs.jackson)
+    compileOnly(libs.lombok)
+    annotationProcessor(libs.lombok)
     testImplementation(libs.junit)
     testImplementation(libs.jupiterApi)
     testRuntimeOnly("org.junit.jupiter:junit-jupiter:5.8.1")
@@ -118,7 +124,10 @@ tasks {
             targetCompatibility = it
         }
         withType<KotlinCompile> {
-            kotlinOptions.jvmTarget = it
+            compilerOptions {
+                jvmTarget = JvmTarget.fromTarget(it)
+                apiVersion = KotlinVersion.KOTLIN_2_0
+            }
         }
     }
 

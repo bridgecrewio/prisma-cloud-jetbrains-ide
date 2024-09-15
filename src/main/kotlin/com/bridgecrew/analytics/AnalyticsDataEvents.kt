@@ -3,85 +3,67 @@ package com.bridgecrew.analytics
 import com.bridgecrew.cache.InMemCache
 import com.bridgecrew.settings.PLUGIN_NAME
 import com.bridgecrew.settings.PrismaSettingsState
-import com.google.gson.annotations.Expose
+import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.openapi.application.ApplicationInfo
 import com.intellij.openapi.extensions.PluginId
-import kotlinx.serialization.EncodeDefault
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
-import kotlinx.serialization.json.JsonObject
 import java.util.*
 
+open class AnalyticsData {
 
-@OptIn(ExperimentalSerializationApi::class)
-@Serializable
-sealed class AnalyticsData(@EncodeDefault val pluginName: String = PLUGIN_NAME) {
-    
-    @EncodeDefault
+    val pluginName: String = PLUGIN_NAME
+
     val installationId: String = PrismaSettingsState().getInstance()!!.installationId
 
-    @EncodeDefault
-    var pluginVersion: String? =
-        PluginManagerCore.getPlugin(PluginId.getId("com.github.bridgecrewio.prismacloud"))?.version
+    val pluginVersion: String? = PluginManagerCore.getPlugin(PluginId.getId("com.github.bridgecrewio.prismacloud"))?.version
 
-    @EncodeDefault
-    var ideVersion: String? =
-        ApplicationInfo.getInstance().fullApplicationName + " / " + ApplicationInfo.getInstance().build
+    val ideVersion: String = ApplicationInfo.getInstance().fullApplicationName + " / " + ApplicationInfo.getInstance().build
 
-    @EncodeDefault
-    var operatingSystem: String? = System.getProperty("os.name") + " " + System.getProperty("os.version")
+    val operatingSystem: String = System.getProperty("os.name") + " " + System.getProperty("os.version")
 
-    @EncodeDefault
-    var checkovVersion: String? = InMemCache.get("checkovVersion")
+    val checkovVersion: String? = InMemCache.get("checkovVersion")
 
-    @Serializable
     lateinit var eventType: String
 
-    @Serializable(with = DateSerializer::class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSSZ", locale = "en")
     lateinit var eventTime: Date
 
-    abstract val eventData: Any
+    open var eventData: MutableMap<String, *> = mutableMapOf<String, Any>()
 
 }
 
-@Serializable
-data class FullScanAnalyticsData(@Transient val scanNumber: Int = 0): AnalyticsData() {
-    @Transient
+data class FullScanAnalyticsData(@JsonIgnore val scanNumber: Int = 0): AnalyticsData() {
+
+    @JsonIgnore
     lateinit var buttonPressedTime: Date
 
-    @Transient
+    @JsonIgnore
     lateinit var scanStartedTime: Date
 
-    @Transient
+    @JsonIgnore
     val frameworksScanTime: MutableMap<String, FullScanFrameworkScanTimeData> = mutableMapOf()
 
-    @Expose
-    override lateinit var eventData: MutableMap<String, FullScanFrameworkScanTimeData>
-
-    @Transient
+    @JsonIgnore
     lateinit var scanFinishedTime: Date
 
-    @Transient
+    @JsonIgnore
     lateinit var resultsWereFullyDisplayedTime: Date
 
+    @JsonIgnore
     fun isFullScanFinished() = ::scanFinishedTime.isInitialized
+
+    @JsonIgnore
     fun isFullScanStarted() = ::scanStartedTime.isInitialized
 }
 
-@OptIn(ExperimentalSerializationApi::class)
-@Serializable
-data class PluginInstallAnalyticsData(
-    @EncodeDefault override val eventData: JsonObject = JsonObject(mapOf())
-) : AnalyticsData()
+class FullScanFrameworkScanTimeData {
 
-@Serializable
-data class FullScanFrameworkScanTimeData(
-        @Serializable(with = DateSerializer::class)
-        val startTime: Date
-) {
-    @Serializable(with = DateSerializer::class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSSZ", locale = "en")
+    val startTime: Date = Date()
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSSZ", locale = "en")
     var endTime: Date = Date()
+
     var totalTimeSeconds = 0L
 }

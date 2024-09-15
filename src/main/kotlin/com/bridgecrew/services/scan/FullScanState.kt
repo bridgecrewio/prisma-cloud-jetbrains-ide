@@ -20,7 +20,7 @@ import org.json.JSONArray
 import org.slf4j.LoggerFactory
 import java.io.File
 
-@Service
+@Service(Service.Level.PROJECT)
 class FullScanStateService(val project: Project) {
     private var fullScanFinishedFrameworksNumber: Int = 0
         set(value) {

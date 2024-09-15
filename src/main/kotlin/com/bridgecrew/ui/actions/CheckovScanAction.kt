@@ -3,13 +3,14 @@ package com.bridgecrew.ui.actions
 import com.bridgecrew.analytics.AnalyticsService
 import com.bridgecrew.services.scan.CheckovScanService
 import com.intellij.icons.AllIcons
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.*
+import com.intellij.openapi.actionSystem.Presentation
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.DumbAware
 
-object CheckovScanAction : AnAction(AllIcons.Actions.Execute), DumbAware {
+object CheckovScanAction : AnAction(), DumbAware {
 
     private val presentation = Presentation()
     private var isExecuteState = true
@@ -17,6 +18,10 @@ object CheckovScanAction : AnAction(AllIcons.Actions.Execute), DumbAware {
     init {
         updateIcon()
         presentation.isEnabled = false
+    }
+
+    override fun getActionUpdateThread(): ActionUpdateThread {
+        return ActionUpdateThread.EDT
     }
 
     override fun actionPerformed(actionEvent: AnActionEvent) {
@@ -38,6 +43,7 @@ object CheckovScanAction : AnAction(AllIcons.Actions.Execute), DumbAware {
     override fun update(e: AnActionEvent) {
         super.update(e)
         e.presentation.copyFrom(presentation)
+        updateIcon()
     }
 
     private fun updateIcon() {

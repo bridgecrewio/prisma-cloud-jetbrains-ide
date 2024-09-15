@@ -52,7 +52,7 @@ class CheckovToolWindowFactory : ToolWindowFactory {
         CheckovActionToolbar.setComponent(checkovToolWindowPanel)
         buildTabs(project, toolWindow, checkovToolWindowPanel)
 
-        Disposer.register(project, checkovToolWindowPanel)
+        Disposer.register(toolWindow.disposable, checkovToolWindowPanel)
 
         val connection: MessageBusConnection = project.messageBus.connect()
         connection.subscribe(InitializationListener.INITIALIZATION_TOPIC, object : InitializationListener {

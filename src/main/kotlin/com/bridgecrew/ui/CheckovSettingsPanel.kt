@@ -3,12 +3,14 @@ package com.bridgecrew.ui
 import com.bridgecrew.settings.PrismaSettingsConfigurable
 import com.bridgecrew.utils.createGridRowCol
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.uiDesigner.core.GridLayoutManager
-import com.intellij.uiDesigner.core.GridConstraints
-import javax.swing.*
 import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.project.Project
+import com.intellij.uiDesigner.core.GridConstraints
+import com.intellij.uiDesigner.core.GridLayoutManager
 import com.intellij.util.ui.JBUI
+import javax.swing.JButton
+import javax.swing.JLabel
+import javax.swing.JPanel
 
 class CheckovSettingsPanel(project: Project): JPanel() {
 
