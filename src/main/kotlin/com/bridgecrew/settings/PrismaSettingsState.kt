@@ -44,7 +44,7 @@ class PrismaSettingsState : PersistentStateComponent<PrismaSettingsState> {
         return ApplicationManager.getApplication().getService(PrismaSettingsState::class.java)
     }
 
-    fun isConfigured(): Boolean{
+    fun isConfigured(): Boolean {
         return accessKey.isNotEmpty() && secretKey.isNotEmpty() && prismaURL.isNotEmpty()
     }
 

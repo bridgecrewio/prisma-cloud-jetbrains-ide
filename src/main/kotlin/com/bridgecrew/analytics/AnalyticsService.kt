@@ -1,31 +1,32 @@
 package com.bridgecrew.analytics
 
-import com.bridgecrew.api.ApiClient
+import com.bridgecrew.api.PrismaApiClient
 import com.bridgecrew.cache.CacheDataAnalytics
 import com.bridgecrew.scheduler.IntervalRunner
 import com.bridgecrew.services.scan.FullScanStateService
 import com.bridgecrew.services.scan.ScanTaskResult
-import com.bridgecrew.settings.PrismaSettingsState
+import com.bridgecrew.util.ApplicationServiceUtil
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import org.slf4j.LoggerFactory
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-@Service
+// TODO:
+//  This service should be an application level service, but it requires a major refactor with how it handles
+//  FullScanStateService and CacheDataAnalytics on a project level
+@Service(Service.Level.PROJECT)
 class AnalyticsService(val project: Project) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
-    private var apiClient: ApiClient? = null
+    private val analyticsReleaseTask = IntervalRunner("Analytics")
 
     private var fullScanData: FullScanAnalyticsData? = null
     private var fullScanNumber = 0
 
-    private var analyticsEventData: MutableList<String> = arrayListOf()
+    private var analyticsEventData: MutableList<AnalyticsData> = mutableListOf()
 
     var wereFullScanResultsDisplayed = false
     var wereSingleFileScanResultsDisplayed = false
@@ -47,7 +48,7 @@ class AnalyticsService(val project: Project) {
 
     fun fullScanByFrameworkStarted(framework: String) {
         logger.info("Prisma Cloud Plugin Analytics - scan #${fullScanNumber} - full scan started for framework $framework")
-        fullScanData!!.frameworksScanTime[framework] = FullScanFrameworkScanTimeData(Date())
+        fullScanData!!.frameworksScanTime[framework] = FullScanFrameworkScanTimeData()
     }
 
     fun fullScanByFrameworkFinished(framework: String) {
@@ -153,14 +154,18 @@ class AnalyticsService(val project: Project) {
         return "${minutes}:${secondsString}"
     }
 
-    fun releaseAnalytics() {
-        val apiClient = getApiClient() ?: return
+    fun stopAnalyticsService() {
+        logger.info("Analytics service for project ${project.name} is stopping, releasing all analytics")
+        analyticsReleaseTask.stop()
+        releaseAnalytics()
+    }
+
+    private fun releaseAnalytics() {
+        val apiClient = ApplicationServiceUtil.getService(PrismaApiClient::class.java) ?: return
         if (analyticsEventData.isEmpty()) {
             return
         }
-
-        val data = analyticsEventData.joinToString(prefix = "[", postfix = "]")
-        val isReleased = apiClient.putDataAnalytics(data)
+        val isReleased = apiClient.putDataAnalytics(analyticsEventData)
         if (isReleased) {
             analyticsEventData.clear()
         }
@@ -169,45 +174,30 @@ class AnalyticsService(val project: Project) {
     }
 
     fun startSchedulerReleasingAnalytics(){
-        val apiClient = getApiClient() ?: return
+        val apiClient = ApplicationServiceUtil.getService(PrismaApiClient::class.java) ?: return
         val config = apiClient.getConfig()
         CacheDataAnalytics(project).load(analyticsEventData)
-        project.service<IntervalRunner>()
-            .scheduleWithTimer({ releaseAnalytics() }, config.reportingInterval)
-    }
-
-    private fun getApiClient(): ApiClient? {
-        if (this.apiClient != null) {
-            return this.apiClient
-        }
-
-        val settings = PrismaSettingsState().getInstance()
-        if (settings != null && settings.isConfigured()) {
-            this.apiClient = ApiClient(settings.accessKey, settings.secretKey, settings.prismaURL)
-            return this.apiClient
-        }
-
-        return null
+        analyticsReleaseTask.scheduleWithTimer({ releaseAnalytics() }, config?.reportingInterval ?: 300)
     }
 
     private fun buildFullScanAnalyticsData(){
         fullScanData!!.eventData = fullScanData!!.frameworksScanTime
         fullScanData!!.eventTime = fullScanData!!.buttonPressedTime
         fullScanData!!.eventType = EventTypeEnum.ON_FULL_SCAN
-        analyticsEventData.add(Json.encodeToString(fullScanData))
+        analyticsEventData.add(fullScanData!!)
     }
 
      private fun buildPluginInstalledAnalyticsData(){
-        val analyticsData = PluginInstallAnalyticsData()
+        val analyticsData = AnalyticsData()
         analyticsData.eventTime = Date()
         analyticsData.eventType = EventTypeEnum.ON_PLUGIN_INSTALL
-        analyticsEventData.add(Json.encodeToString(analyticsData))
+        analyticsEventData.add(analyticsData)
     }
 
     private fun buildPluginUninstalledAnalyticsData(){
-        val analyticsData = PluginInstallAnalyticsData()
+        val analyticsData = AnalyticsData()
         analyticsData.eventTime = Date()
         analyticsData.eventType = EventTypeEnum.ON_PLUGIN_UNINSTALL
-        analyticsEventData.add(Json.encodeToString(analyticsData))
+        analyticsEventData.add(analyticsData)
     }
 }

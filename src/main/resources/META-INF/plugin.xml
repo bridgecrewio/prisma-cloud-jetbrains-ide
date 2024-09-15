@@ -18,7 +18,7 @@
                     factoryClass="com.bridgecrew.ui.CheckovToolWindowFactory"
                     icon="/icons/plugin_small_icon.svg"/>
         <postStartupActivity implementation="com.bridgecrew.activities.PostStartupActivity"/>
-        <projectConfigurable id="com.bridgecrew.settings.PrismaSettingsConfigurable"
+        <applicationConfigurable id="com.bridgecrew.settings.PrismaSettingsConfigurable"
                              instance="com.bridgecrew.settings.PrismaSettingsConfigurable"
                              groupId="tools"
                              displayName="Prisma Cloud"/>

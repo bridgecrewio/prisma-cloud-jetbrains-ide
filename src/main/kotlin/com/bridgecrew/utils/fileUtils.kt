@@ -14,7 +14,7 @@ import java.net.URL
 import java.nio.file.Files
 import java.nio.file.Path
 
-var logger: Logger = LoggerFactory.getLogger("FileUtils")
+val logger: Logger = LoggerFactory.getLogger("FileUtils")
 var checkovTempDirPath: Path = Files.createTempDirectory("checkov")
 
 fun navigateToFile(project: Project, virtualFile: VirtualFile, startLine: Int = 0, startColumn: Int = 0) {

@@ -2,13 +2,13 @@ package com.bridgecrew.settings
 
 import com.bridgecrew.listeners.CheckovSettingsListener
 import com.bridgecrew.ui.PrismaSettingsComponent
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.options.Configurable
-import com.intellij.openapi.project.Project
 import javax.swing.JComponent
 
-class PrismaSettingsConfigurable(val project: Project) : Configurable {
+class PrismaSettingsConfigurable : Configurable {
 
-    private val prismaSettingsComponent = PrismaSettingsComponent()
+    private val prismaSettingsComponent = PrismaSettingsComponent(this)
 
     override fun getDisplayName(): String = "Checkov"
 
@@ -26,6 +26,10 @@ class PrismaSettingsConfigurable(val project: Project) : Configurable {
     }
 
     override fun apply() {
+
+        if (!prismaSettingsComponent.isValid()) {
+            return
+        }
         val settings = PrismaSettingsState().getInstance()
 
         val secretKeyModified = !prismaSettingsComponent.accessKeyField.text.equals(settings?.accessKey)
@@ -39,8 +43,9 @@ class PrismaSettingsConfigurable(val project: Project) : Configurable {
         settings?.prismaURL = prismaSettingsComponent.prismaURLField.text.trim()
         settings?.fullScanRepoLimit = prismaSettingsComponent.fullScanRepoLimitField.text.toInt()
 
-        if (accessKeyModified || secretKeyModified || prismaURLModified || fullScanRepoLimitModified){
-            project.messageBus.syncPublisher(CheckovSettingsListener.SETTINGS_TOPIC).settingsUpdated()
+        if (accessKeyModified || secretKeyModified || prismaURLModified || fullScanRepoLimitModified) {
+            ApplicationManager.getApplication().messageBus.syncPublisher(CheckovSettingsListener.SETTINGS_TOPIC)
+                .settingsUpdated()
         }
     }
 

@@ -26,7 +26,7 @@ class PostStartupActivity : ProjectActivity {
     override suspend fun execute(project: Project) {
         val version = PluginManagerCore.getPlugin(PluginId.getId("com.github.bridgecrewio.prismacloud"))?.version
         logger.info("Starting Prisma Cloud JetBrains plugin version $version")
-        project.messageBus.connect(project).subscribe(INITIALIZATION_TOPIC, object : InitializationListener {
+        project.messageBus.connect().subscribe(INITIALIZATION_TOPIC, object : InitializationListener {
             override fun initializationCompleted() {
                 project.service<CheckovToolWindowManagerPanel>().subscribeToInternalEvents(project)
                 project.service<CheckovToolWindowManagerPanel>().subscribeToProjectEventChange()
