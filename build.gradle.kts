@@ -38,7 +38,7 @@ dependencies {
     implementation("com.beust:klaxon:5.6")
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("org.json:json:20231013")
-    implementation("commons-io:commons-io:2.11.0")
+    implementation("commons-io:commons-io:2.16.1")
     implementation("io.github.java-diff-utils:java-diff-utils:4.12")
     implementation("org.slf4j:slf4j-api:2.0.16")
     implementation("ch.qos.logback:logback-classic:1.5.6")
