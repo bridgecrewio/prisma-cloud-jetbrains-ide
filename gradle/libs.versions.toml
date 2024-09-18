@@ -1,12 +1,16 @@
 [versions]
 
 # libraries
-lombok = "1.18.34"
-junit = "4.13.2"
-jupiterApi = "5.8.1"
-springWeb = "6.1.12"
 jackson = "2.17.2"
-# kotlinxSerializationJson = "1.7.2"
+lombok = "1.18.34"
+springWeb = "6.1.12"
+commons-io = "2.16.1"
+slf4j = "2.0.16"
+logback = "1.5.6"
+diffUtils = "4.12"
+junit = "4.13.2"
+jupiter = "5.8.1"
+junitPlatform = "1.9.0"
 
 # plugins
 changelog = "2.2.1"
@@ -17,16 +21,20 @@ qodana = "0.1.13"
 
 [libraries]
 jackson = { group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin", version.ref = "jackson"}
-# kotlinxSerializationJson = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson"}
 lombok = { group = "org.projectlombok", name = "lombok", version.ref = "lombok" }
-junit = { group = "junit", name = "junit", version.ref = "junit" }
-jupiterApi = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "jupiterApi" }
 springWeb = { group = "org.springframework", name = "spring-web", version.ref = "springWeb" }
+commons = { group = "commons-io", name = "commons-io", version.ref = "commons-io" }
+slf4j = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4j" }
+logback = { group = "ch.qos.logback", name = "logback-classic", version.ref = "logback" }
+diffUtils = { group = "io.github.java-diff-utils", name = "java-diff-utils", version.ref = "diffUtils" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+jupiterApi = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "jupiter" }
+jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "jupiter" }
+junitPlatform = { group = "org.junit.platform", name = "junit-platform-launcher", version.ref = "junitPlatform" }
 
 [plugins]
 changelog = { id = "org.jetbrains.changelog", version.ref = "changelog" }
 intelliJPlatform = { id = "org.jetbrains.intellij.platform", version.ref = "intelliJPlatform" }
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-# kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
 qodana = { id = "org.jetbrains.qodana", version.ref = "qodana" }

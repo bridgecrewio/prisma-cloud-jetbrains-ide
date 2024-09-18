@@ -19,6 +19,7 @@ import com.intellij.openapi.progress.Task
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManagerListener
 import com.intellij.openapi.util.Key
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
 
@@ -35,10 +36,15 @@ data class ScanTaskResult(
     }
 }
 
-abstract class ScanTask(project: Project, title: String, private val sourceName: String, private val processHandler: ProcessHandler, val checkovResultFile: File) :
-        Task.Backgroundable(project, title, true) {
+abstract class ScanTask(
+    project: Project,
+    title: String,
+    private val sourceName: String,
+    private val processHandler: ProcessHandler,
+    val checkovResultFile: File
+) : Task.Backgroundable(project, title, true) {
 
-    protected val logger = LoggerFactory.getLogger(javaClass)
+    protected val logger: Logger = LoggerFactory.getLogger(javaClass)
 
     val debugOutputFile: File = createCheckovTempFile("${sourceName}-debug-output", ".txt")
     var errorReason = ""
@@ -49,7 +55,6 @@ abstract class ScanTask(project: Project, title: String, private val sourceName:
         if (!processHandler.isStartNotified) {
             logger.error("Assertion failed: processHandler.isStartNotified = ${processHandler.isStartNotified}")
         }
-
         processHandler.addProcessListener(object : ProcessAdapter() {
 
             override fun onTextAvailable(event: ProcessEvent, outputType: Key<*>) {
@@ -122,8 +127,13 @@ abstract class ScanTask(project: Project, title: String, private val sourceName:
             debugOutputFile.delete()
     }
 
-    class FrameworkScanTask(project: Project, title: String, private val framework: String, private val processHandler: ProcessHandler, checkovResultOutputFile: File) :
-            ScanTask(project, title, framework, processHandler, checkovResultOutputFile), ProjectManagerListener {
+    class FrameworkScanTask(
+        project: Project,
+        title: String,
+        private val framework: String,
+        private val processHandler: ProcessHandler,
+        checkovResultOutputFile: File
+    ) : ScanTask(project, title, framework, processHandler, checkovResultOutputFile), ProjectManagerListener {
 
         override fun run(indicator: ProgressIndicator) {
             try {

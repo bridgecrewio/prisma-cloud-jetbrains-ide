@@ -85,7 +85,7 @@ class CodeDiffPanel(val result: BaseCheckovResult, isErrorBubble: Boolean): JPan
     private fun buildCodeBlock(): ArrayList<String> {
         val codeBlock = arrayListOf<String>()
             result.codeBlock.forEach { block ->
-                var currentLine = (block[0] as Double).toInt()
+                val currentLine = block[0].toString().toInt()
                 val code = block[1]
                 codeBlock += "$currentLine\t$code".replace("\n", "")
             }
@@ -108,7 +108,7 @@ class CodeDiffPanel(val result: BaseCheckovResult, isErrorBubble: Boolean): JPan
     private fun buildFixLines(): ArrayList<String> {
         val fixWithRowNumber = arrayListOf<String>()
         if (result.codeBlock.isNotEmpty()) {
-            var currentLine = (result.codeBlock[0][0] as Double).toInt()
+            var currentLine = result.codeBlock[0][0].toString().toInt()
             result.fixDefinition?.split("\n")?.forEach { codeRow ->
                 fixWithRowNumber += "$currentLine\t$codeRow".replace("\n", "")
                 currentLine++

@@ -12,7 +12,6 @@ fun properties(key: String): String = project.findProperty(key).toString()
 plugins {
     id("java") // Java support
     alias(libs.plugins.kotlin) // Kotlin support
-//    alias(libs.plugins.kotlinSerialization) // Kotlin serialization support
     alias(libs.plugins.intelliJPlatform) // IntelliJ Platform Gradle Plugin
     alias(libs.plugins.changelog) // Gradle Changelog Plugin
     alias(libs.plugins.qodana) // Gradle Qodana Plugin
@@ -35,22 +34,19 @@ repositories {
 }
 
 dependencies {
-    implementation("com.beust:klaxon:5.6")
-    implementation("com.google.code.gson:gson:2.10.1")
-    implementation("org.json:json:20231013")
-    implementation("commons-io:commons-io:2.11.0")
-    implementation("io.github.java-diff-utils:java-diff-utils:4.12")
-    implementation("org.slf4j:slf4j-api:2.0.16")
-    implementation("ch.qos.logback:logback-classic:1.5.6")
-    implementation(libs.springWeb)
-//    implementation(libs.kotlinxSerializationJson)
     implementation(libs.jackson)
+    implementation(libs.springWeb)
+    implementation("org.json:json:20231013") // TODO: Remove when possible
+    implementation(libs.commons)
+    implementation(libs.slf4j)
+    implementation(libs.logback)
+    implementation(libs.diffUtils)
     compileOnly(libs.lombok)
     annotationProcessor(libs.lombok)
     testImplementation(libs.junit)
     testImplementation(libs.jupiterApi)
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter:5.8.1")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.9.0")
+    testRuntimeOnly(libs.jupiter)
+    testRuntimeOnly(libs.junitPlatform)
 
     // IntelliJ Platform Gradle Plugin Dependencies Extension - read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-dependencies-extension.html
     intellijPlatform {

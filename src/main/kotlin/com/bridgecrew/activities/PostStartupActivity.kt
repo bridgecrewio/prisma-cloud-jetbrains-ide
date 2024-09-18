@@ -5,8 +5,10 @@ import com.bridgecrew.initialization.InitializationService
 import com.bridgecrew.listeners.InitializationListener
 import com.bridgecrew.listeners.InitializationListener.Companion.INITIALIZATION_TOPIC
 import com.bridgecrew.listeners.PrismaVirtualFileListener
+import com.bridgecrew.log.LoggerService
 import com.bridgecrew.settings.PrismaSettingsState
 import com.bridgecrew.ui.CheckovToolWindowManagerPanel
+import com.bridgecrew.util.ApplicationServiceUtil
 import com.intellij.ide.plugins.IdeaPluginDescriptor
 import com.intellij.ide.plugins.PluginInstaller
 import com.intellij.ide.plugins.PluginManagerCore
@@ -24,6 +26,7 @@ class PostStartupActivity : ProjectActivity {
     private val logger = LoggerFactory.getLogger(javaClass)
 
     override suspend fun execute(project: Project) {
+        ApplicationServiceUtil.getService(LoggerService::class.java).initializeLogger()
         val version = PluginManagerCore.getPlugin(PluginId.getId("com.github.bridgecrewio.prismacloud"))?.version
         logger.info("Starting Prisma Cloud JetBrains plugin version $version")
         project.messageBus.connect().subscribe(INITIALIZATION_TOPIC, object : InitializationListener {
