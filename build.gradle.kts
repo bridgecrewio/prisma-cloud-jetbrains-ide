@@ -36,7 +36,7 @@ repositories {
 dependencies {
     implementation(libs.jackson)
     implementation(libs.springWeb)
-    implementation("org.json:json:20231013") // TODO: Remove when possible
+    implementation("org.json:json:20240303") // TODO: Remove when possible
     implementation(libs.commons)
     implementation(libs.slf4j)
     implementation(libs.logback)
