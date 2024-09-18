@@ -5,6 +5,7 @@ import com.bridgecrew.listeners.CheckovSettingsListener
 import com.bridgecrew.settings.DEFAULT_REPORTING_INTERVAL
 import com.bridgecrew.settings.PLUGIN_NAME
 import com.bridgecrew.settings.PrismaSettingsState
+import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
@@ -33,6 +34,7 @@ data class PrismaConnectionDetails(
 val mapper = ObjectMapper().apply {
     registerModule(KotlinModule.Builder().build())
     configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+    setSerializationInclusion(JsonInclude.Include.NON_NULL)
 }
 
 @Service
@@ -77,7 +79,7 @@ class PrismaApiClient {
     private inline fun <reified T> sendRequest(endpoint: String, method: HttpMethod, payload: Any?, login: Boolean = false): T? {
         try {
             if (connection == null) {
-                logger.warn("API call aborted because Prisma Cloud settings were not configured in the plugin settings")
+                logger.warn("API call '$endpoint' aborted because Prisma Cloud settings were not configured in the plugin settings")
                 return null
             }
             logger.info("Sending {} request '{}' to {}", method, endpoint, connection!!.url)

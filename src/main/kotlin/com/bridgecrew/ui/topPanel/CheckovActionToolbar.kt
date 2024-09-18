@@ -16,6 +16,6 @@ object CheckovActionToolbar {
     }
 
     fun setComponent(component: JComponent) {
-        actionToolBar.setTargetComponent(component)
+        actionToolBar.targetComponent = component
     }
 }

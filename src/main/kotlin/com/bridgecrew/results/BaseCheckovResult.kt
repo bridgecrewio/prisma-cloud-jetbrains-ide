@@ -40,20 +40,20 @@ enum class Severity {
 }
 
 open class BaseCheckovResult(
-        val category: Category,
-        val checkType: CheckType,
-        val filePath: String,
-        val resource: String,
-        val name: String,
-        val id: String,
-        val severity: Severity,
-        val description: String?,
-        val guideline: String?,
-        val absoluteFilePath: String,
-        val fileLineRange: List<Int>,
-        val fixDefinition: String?,
-        val codeBlock: List<List<Any>>,
-        var codeDiffFirstLine: Int = fileLineRange[0]
+    val category: Category,
+    val checkType: CheckType,
+    val filePath: String,
+    val resource: String,
+    val name: String,
+    val id: String,
+    val severity: Severity,
+    val description: String?,
+    val guideline: String?,
+    val absoluteFilePath: String,
+    val fileLineRange: List<Int>,
+    val fixDefinition: String?,
+    val codeBlock: List<List<Any>>,
+    var codeDiffFirstLine: Int = fileLineRange[0]
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

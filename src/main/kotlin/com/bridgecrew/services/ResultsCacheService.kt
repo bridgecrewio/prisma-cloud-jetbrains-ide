@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory
 import java.io.File
 import java.nio.file.Paths
 
-@Service
+@Service(Service.Level.PROJECT)
 class ResultsCacheService(val project: Project) {
 
     private val logger: Logger = LoggerFactory.getLogger(javaClass)
@@ -30,7 +30,7 @@ class ResultsCacheService(val project: Project) {
         }
 
         if (CheckovGlobalState.shouldRecalculateResult) {
-            var changedResults: MutableList<BaseCheckovResult> = mutableListOf()
+            val changedResults: MutableList<BaseCheckovResult> = mutableListOf()
             CheckovGlobalState.modifiedCheckovResults.forEach { modifiedResult ->
                 val originalResult = modifiedResults.find { res -> res.mostlyEquals(modifiedResult) }
                 if (originalResult != null) {
@@ -95,7 +95,7 @@ class ResultsCacheService(val project: Project) {
                 result.file_abs_path = fromDockerFilePath(result.file_abs_path)
 
                 if (isWindows()) {
-                    result.file_abs_path = result.file_abs_path.replace("\\", "/");
+                    result.file_abs_path = result.file_abs_path.replace("\\", "/")
                 }
 
                 val category: Category = mapCheckovCheckTypeToScanType(result.check_type, result.check_id)
@@ -113,34 +113,35 @@ class ResultsCacheService(val project: Project) {
                             throw Exception("type is vulnerability but no vulnerability_details")
                         }
                         val vulnerabilityCheckovResult = VulnerabilityCheckovResult(
-                                checkType, filePath,
-                                resource, name, result.check_id, severity, description,
-                                result.guideline, fileAbsPath, result.file_line_range, result.fixed_definition,
-                                result.code_block,
-                                result.vulnerability_details.cvss,
-                                result.vulnerability_details.package_name,
-                                result.vulnerability_details.package_version,
-                                result.vulnerability_details.lowest_fixed_version,
-                                result.vulnerability_details.link,
-                                result.vulnerability_details.published_date,
-                                result.vulnerability_details.vector,
-                                result.vulnerability_details.id,
-                                result.file_path,
-                                result.vulnerability_details.risk_factors,
-                                result.vulnerability_details.root_package_name,
-                                result.vulnerability_details.root_package_version,
-                                result.vulnerability_details.root_package_fix_version,
-                                result.vulnerability_details.fix_command
-                                )
+                            checkType, filePath,
+                            resource, name, result.check_id, severity, description,
+                            result.guideline, fileAbsPath, result.file_line_range, result.fixed_definition,
+                            result.code_block,
+                            result.vulnerability_details.cvss,
+                            result.vulnerability_details.package_name,
+                            result.vulnerability_details.package_version,
+                            result.vulnerability_details.lowest_fixed_version,
+                            result.vulnerability_details.link,
+                            result.vulnerability_details.published_date,
+                            result.vulnerability_details.vector,
+                            result.vulnerability_details.id,
+                            result.file_path,
+                            result.vulnerability_details.risk_factors,
+                            result.vulnerability_details.root_package_name,
+                            result.vulnerability_details.root_package_version,
+                            result.vulnerability_details.root_package_fix_version,
+                            result.vulnerability_details.fix_command
+                        )
                         checkovResults.add(vulnerabilityCheckovResult)
 
                         continue
                     }
                     Category.SECRETS -> {
-                        val secretCheckovResult = SecretsCheckovResult(checkType, filePath,
-                                resource, name, result.check_id, severity, description,
-                                result.guideline, fileAbsPath, result.file_line_range, result.fixed_definition,
-                                result.code_block, result.check_name)
+                        val secretCheckovResult = SecretsCheckovResult(
+                            checkType, filePath, resource, name, result.check_id, severity, description,
+                            result.guideline, fileAbsPath, result.file_line_range, result.fixed_definition,
+                            result.code_block, result.check_name
+                        )
                         checkovResults.add(secretCheckovResult)
                         continue
                     }

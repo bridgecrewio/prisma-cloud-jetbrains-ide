@@ -1,6 +1,7 @@
 package com.bridgecrew.services.scan
 
 import com.bridgecrew.analytics.AnalyticsService
+import com.bridgecrew.api.mapper
 import com.bridgecrew.listeners.CheckovScanListener
 import com.bridgecrew.results.BaseCheckovResult
 import com.bridgecrew.services.ResultsCacheService
@@ -10,13 +11,11 @@ import com.bridgecrew.ui.actions.SeverityFilterActions
 import com.bridgecrew.utils.DESIRED_NUMBER_OF_FRAMEWORK_FOR_FULL_SCAN
 import com.bridgecrew.utils.FULL_SCAN_STATE_FILE
 import com.bridgecrew.utils.createCheckovTempFile
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
-import org.json.JSONArray
 import org.slf4j.LoggerFactory
 import java.io.File
 
@@ -41,7 +40,6 @@ class FullScanStateService(val project: Project) {
     var onCancel: Boolean = false
     var previousState = State.FIRST_TIME_SCAN
 
-    private val gson = Gson()
     private val logger = LoggerFactory.getLogger(javaClass)
 
     var isFullScanRunning = false
@@ -84,16 +82,13 @@ class FullScanStateService(val project: Project) {
     fun saveCurrentState() {
         val currentResults: List<BaseCheckovResult> = project.service<ResultsCacheService>().getAdjustedCheckovResults()
         stateFile = createCheckovTempFile(FULL_SCAN_STATE_FILE, ".json")
-
-        val resultsAsJson = JSONArray(currentResults)
-        stateFile!!.writeText(resultsAsJson.toString())
+        stateFile!!.writeText(mapper.writeValueAsString(currentResults))
     }
 
     private fun returnToPreviousState() {
         try {
             val stateContent = stateFile!!.readText()
-            val resultsListType = object : TypeToken<List<BaseCheckovResult>>() {}.type
-            val checkovResultsList: MutableList<BaseCheckovResult> = gson.fromJson(stateContent, resultsListType)
+            val checkovResultsList: MutableList<BaseCheckovResult> = mapper.readValue(stateContent, jacksonTypeRef())
             project.service<ResultsCacheService>().checkovResults = checkovResultsList
             SeverityFilterActions.restartState()
         } catch (e: Exception) {

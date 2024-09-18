@@ -1,9 +1,8 @@
 package com.bridgecrew.fixtures
 
+import com.bridgecrew.api.mapper
 import com.bridgecrew.results.WeaknessCheckovResult
-import com.google.gson.Gson
-
-
+import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 
 const val metadataCodeCollectionJson = """
     "metadata": {
@@ -97,8 +96,7 @@ fun createWeaknessCheckovResult(metadata: String): WeaknessCheckovResult {
          }
     """.trimIndent()
 
-    val gson = Gson()
-    val userObject: WeaknessCheckovResult = gson.fromJson(resultJson, WeaknessCheckovResult::class.java)
+    val userObject: WeaknessCheckovResult = mapper.readValue(resultJson, jacksonTypeRef())
 
     return userObject
 }

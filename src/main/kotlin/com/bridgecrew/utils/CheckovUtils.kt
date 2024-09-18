@@ -2,11 +2,11 @@ package com.bridgecrew.utils
 
 import com.bridgecrew.CheckovResult
 import com.bridgecrew.VulnerabilityDetails
-import com.bridgecrew.gson
+import com.bridgecrew.api.mapper
 import com.bridgecrew.results.BaseCheckovResult
 import com.bridgecrew.results.Category
 import com.bridgecrew.results.CheckType
-import com.google.gson.reflect.TypeToken
+import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import org.json.JSONArray
 import org.json.JSONObject
 import org.slf4j.LoggerFactory
@@ -139,10 +139,9 @@ class CheckovUtils {
                 return arrayListOf()
             }
             val failedChecks = results.getJSONArray("failed_checks")
-            val resultsList = object : TypeToken<List<CheckovResult>>() {}.type
             val checkType = outputObj.getString("check_type")
 
-            val checkovResults: ArrayList<CheckovResult> = gson.fromJson(failedChecks.toString(), resultsList)
+            val checkovResults: ArrayList<CheckovResult> = mapper.readValue(failedChecks.toString(), jacksonTypeRef())
             checkovResults.forEach { result -> result.check_type = checkType }
 
             return checkovResults
