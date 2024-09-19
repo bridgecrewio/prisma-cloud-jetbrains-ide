@@ -16,16 +16,16 @@ import com.intellij.ide.plugins.PluginStateListener
 import com.intellij.openapi.components.service
 import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.startup.ProjectActivity
+import com.intellij.openapi.startup.StartupActivity
 import com.intellij.openapi.vfs.LocalFileSystem
 import org.slf4j.LoggerFactory
 import java.util.*
 
-class PostStartupActivity : ProjectActivity {
+class PostStartupActivity : StartupActivity {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    override suspend fun execute(project: Project) {
+    override fun runActivity(project: Project) {
         ApplicationServiceUtil.getService(LoggerService::class.java).initializeLogger()
         val version = PluginManagerCore.getPlugin(PluginId.getId("com.github.bridgecrewio.prismacloud"))?.version
         logger.info("Starting Prisma Cloud JetBrains plugin version $version")
