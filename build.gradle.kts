@@ -2,7 +2,9 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.markdownToHTML
+import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
+import org.jetbrains.intellij.platform.gradle.models.ProductRelease
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -71,7 +73,7 @@ intellijPlatform {
         version = properties("pluginVersion")
         ideaVersion {
             sinceBuild = properties("pluginSinceBuild")
-            untilBuild = properties("pluginUntilBuild")
+            untilBuild = provider { null }
         }
         val changelog = project.changelog // local variable for configuration cache compatibility
         // Get the latest available change notes from the changelog file
@@ -83,6 +85,16 @@ intellijPlatform {
                         .withEmptySections(false),
                     Changelog.OutputType.HTML,
                 )
+            }
+        }
+    }
+    pluginVerification {
+        ides {
+            select {
+                types = listOf(IntelliJPlatformType.fromCode(properties("platformType")))
+                channels = listOf(ProductRelease.Channel.RELEASE)
+                sinceBuild = properties("pluginSinceBuild")
+                untilBuild = provider { null }
             }
         }
     }
@@ -122,7 +134,7 @@ tasks {
         withType<KotlinCompile> {
             compilerOptions {
                 jvmTarget = JvmTarget.fromTarget(it)
-                apiVersion = KotlinVersion.KOTLIN_2_0
+                apiVersion = KotlinVersion.KOTLIN_1_8
             }
         }
     }

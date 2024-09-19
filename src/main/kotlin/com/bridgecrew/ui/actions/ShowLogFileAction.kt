@@ -3,7 +3,6 @@ package com.bridgecrew.ui.actions
 import com.bridgecrew.icons.CheckovIcons
 import com.bridgecrew.log.LoggerService
 import com.bridgecrew.util.ApplicationServiceUtil
-import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.Presentation
@@ -22,9 +21,10 @@ class ShowLogFileAction : AnAction(), DumbAware {
         presentation.icon = CheckovIcons.showLogsIcon
     }
 
-    override fun getActionUpdateThread(): ActionUpdateThread {
-        return ActionUpdateThread.EDT
-    }
+//    TODO: Uncomment when moving to Kotlin 2 + Java 21
+//    override fun getActionUpdateThread(): ActionUpdateThread {
+//        return ActionUpdateThread.EDT
+//    }
 
     override fun actionPerformed(event: AnActionEvent) {
         val logFilePath = ApplicationServiceUtil.getService(LoggerService::class.java).getLogFilePath()

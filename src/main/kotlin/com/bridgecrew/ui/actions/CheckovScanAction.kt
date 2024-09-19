@@ -3,7 +3,6 @@ package com.bridgecrew.ui.actions
 import com.bridgecrew.analytics.AnalyticsService
 import com.bridgecrew.services.scan.CheckovScanService
 import com.intellij.icons.AllIcons
-import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.Presentation
@@ -20,9 +19,10 @@ object CheckovScanAction : AnAction(), DumbAware {
         presentation.isEnabled = false
     }
 
-    override fun getActionUpdateThread(): ActionUpdateThread {
-        return ActionUpdateThread.EDT
-    }
+//    TODO: Uncomment when moving to Kotlin 2 + Java 21
+//    override fun getActionUpdateThread(): ActionUpdateThread {
+//        return ActionUpdateThread.EDT
+//    }
 
     override fun actionPerformed(actionEvent: AnActionEvent) {
         val project = actionEvent.project
