@@ -28,7 +28,6 @@ object CheckovScanAction : AnAction(), DumbAware {
         val project = actionEvent.project
         if (actionEvent.presentation.icon == AllIcons.Actions.Execute) {
             isExecuteState = false
-            update(actionEvent)
             project!!.service<AnalyticsService>().fullScanButtonWasPressed()
             project.service<CheckovScanService>().scanProject(project)
         } else {
@@ -37,7 +36,6 @@ object CheckovScanAction : AnAction(), DumbAware {
             project?.service<CheckovScanService>()?.cancelFullScan(project)
         }
         updateIcon()
-        update(actionEvent)
     }
 
     override fun update(e: AnActionEvent) {
