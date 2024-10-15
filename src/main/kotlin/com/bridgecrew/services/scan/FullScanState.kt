@@ -1,7 +1,6 @@
 package com.bridgecrew.services.scan
 
 import com.bridgecrew.analytics.AnalyticsService
-import com.bridgecrew.api.mapper
 import com.bridgecrew.listeners.CheckovScanListener
 import com.bridgecrew.results.BaseCheckovResult
 import com.bridgecrew.services.ResultsCacheService
@@ -10,6 +9,7 @@ import com.bridgecrew.ui.actions.CheckovScanAction
 import com.bridgecrew.ui.actions.SeverityFilterActions
 import com.bridgecrew.utils.DESIRED_NUMBER_OF_FRAMEWORK_FOR_FULL_SCAN
 import com.bridgecrew.utils.FULL_SCAN_STATE_FILE
+import com.bridgecrew.utils.GlobalMapper
 import com.bridgecrew.utils.createCheckovTempFile
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.intellij.notification.NotificationType
@@ -82,13 +82,13 @@ class FullScanStateService(val project: Project) {
     fun saveCurrentState() {
         val currentResults: List<BaseCheckovResult> = project.service<ResultsCacheService>().getAdjustedCheckovResults()
         stateFile = createCheckovTempFile(FULL_SCAN_STATE_FILE, ".json")
-        stateFile!!.writeText(mapper.writeValueAsString(currentResults))
+        stateFile!!.writeText(GlobalMapper.i().writeValueAsString(currentResults))
     }
 
     private fun returnToPreviousState() {
         try {
             val stateContent = stateFile!!.readText()
-            val checkovResultsList: MutableList<BaseCheckovResult> = mapper.readValue(stateContent, jacksonTypeRef())
+            val checkovResultsList: MutableList<BaseCheckovResult> = GlobalMapper.i().readValue(stateContent, jacksonTypeRef())
             project.service<ResultsCacheService>().checkovResults = checkovResultsList
             SeverityFilterActions.restartState()
         } catch (e: Exception) {

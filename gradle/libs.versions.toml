@@ -3,8 +3,8 @@
 # libraries
 jackson = "2.17.2"
 lombok = "1.18.34"
-springWeb = "5.3.39" # TODO: Change to 6.x.x when moving to Java 17+
-commons-io = "2.16.1"
+springWeb = "6.1.13"
+commons-lang3 = "3.17.0"
 slf4j = "2.0.16"
 logback = "1.5.6"
 diffUtils = "4.12"
@@ -14,8 +14,8 @@ junitPlatform = "1.9.0"
 
 # plugins
 changelog = "2.2.1"
-intelliJPlatform = "2.0.1"
-kotlin = "1.8.22" # TODO: Change to 2.0.x on next version
+intelliJPlatform = "2.1.0"
+kotlin = "2.0.20"
 kover = "0.8.3"
 qodana = "0.1.13"
 
@@ -23,7 +23,7 @@ qodana = "0.1.13"
 jackson = { group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin", version.ref = "jackson"}
 lombok = { group = "org.projectlombok", name = "lombok", version.ref = "lombok" }
 springWeb = { group = "org.springframework", name = "spring-web", version.ref = "springWeb" }
-commons = { group = "commons-io", name = "commons-io", version.ref = "commons-io" }
+commonsLang = { group = "org.apache.commons", name = "commons-lang3", version.ref = "commons-lang3" }
 slf4j = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4j" }
 logback = { group = "ch.qos.logback", name = "logback-classic", version.ref = "logback" }
 diffUtils = { group = "io.github.java-diff-utils", name = "java-diff-utils", version.ref = "diffUtils" }

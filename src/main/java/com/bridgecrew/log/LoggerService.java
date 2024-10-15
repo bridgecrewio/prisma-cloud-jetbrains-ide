@@ -18,8 +18,8 @@ public final class LoggerService {
         LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
         ch.qos.logback.classic.Logger rootLogger = loggerContext.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
         Appender<?> appender = rootLogger.getAppender("FILE");
-        if (appender instanceof FileAppender) {
-            return ((FileAppender<?>)appender).getFile();
+        if (appender instanceof FileAppender<?> fileAppender) {
+            return fileAppender.getFile();
         }
         return null;
     }

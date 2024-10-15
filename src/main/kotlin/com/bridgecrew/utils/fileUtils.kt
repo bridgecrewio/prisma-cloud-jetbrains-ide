@@ -10,7 +10,7 @@ import org.apache.commons.io.FilenameUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
-import java.net.URL
+import java.net.URI
 import java.nio.file.Files
 import java.nio.file.Path
 
@@ -60,7 +60,7 @@ fun isUrl(url: String?): Boolean {
         return false
     }
     return try {
-        URL(url)
+        URI(url).toURL()
         true
     } catch (e: Throwable) {
         false

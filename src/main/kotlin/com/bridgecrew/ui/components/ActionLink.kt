@@ -1,8 +1,10 @@
 package com.bridgecrew.ui.components
 
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.ui.AnimatedIcon
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Runnable
+import kotlinx.coroutines.launch
 import java.awt.Cursor
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
@@ -28,7 +30,7 @@ class ActionLink(
                     setDefaultState()
                     return
                 }
-                ApplicationManager.getApplication().invokeLater {
+                CoroutineScope(Dispatchers.IO).launch {
                     onClick.run()
                     setDefaultState()
                 }

@@ -146,7 +146,7 @@ class CheckovToolWindowDescriptionPanel(val project: Project) : SimpleToolWindow
         scanButton.addActionListener {
             val scanAction = ActionManager.getInstance().getAction("com.bridgecrew.ui.actions.CheckovScanAction")
             val dataContext = DataManager.getInstance().getDataContext(scanButton)
-            val action = AnActionEvent.createFromDataContext(ActionPlaces.UNKNOWN, null, dataContext)
+            val action = AnActionEvent.createFromDataContext(ActionPlaces.TOOLWINDOW_CONTENT, null, dataContext)
             action.presentation.icon = AllIcons.Actions.Execute
             scanAction.actionPerformed(action)
         }

@@ -5,7 +5,7 @@ import com.bridgecrew.cache.CacheDataAnalytics
 import com.bridgecrew.scheduler.IntervalRunner
 import com.bridgecrew.services.scan.FullScanStateService
 import com.bridgecrew.services.scan.ScanTaskResult
-import com.bridgecrew.util.ApplicationServiceUtil
+import com.bridgecrew.utils.ApplicationServiceUtil
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project

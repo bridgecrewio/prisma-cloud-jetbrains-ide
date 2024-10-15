@@ -24,7 +24,7 @@ group = properties("pluginGroup")
 version = properties("pluginVersion")
 
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(properties("javaVersion").toInt())
 }
 
 // Configure project's dependencies
@@ -39,12 +39,10 @@ dependencies {
     implementation(libs.jackson)
     implementation(libs.springWeb)
     implementation("org.json:json:20231013") // TODO: Remove when possible
-    implementation(libs.commons)
+    implementation(libs.commonsLang)
     implementation(libs.slf4j)
     implementation(libs.logback)
     implementation(libs.diffUtils)
-    compileOnly(libs.lombok)
-    annotationProcessor(libs.lombok)
     testImplementation(libs.junit)
     testImplementation(libs.jupiterApi)
     testRuntimeOnly(libs.jupiter)
@@ -134,13 +132,17 @@ tasks {
         withType<KotlinCompile> {
             compilerOptions {
                 jvmTarget = JvmTarget.fromTarget(it)
-                apiVersion = KotlinVersion.KOTLIN_1_8
+                apiVersion = KotlinVersion.KOTLIN_2_0
             }
         }
     }
 
     wrapper {
         gradleVersion = properties("gradleVersion")
+    }
+
+    build {
+        dependsOn(buildPlugin)
     }
 
     patchPluginXml {

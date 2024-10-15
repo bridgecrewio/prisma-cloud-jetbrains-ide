@@ -3,9 +3,11 @@ package com.bridgecrew.ui.actions
 import com.bridgecrew.analytics.AnalyticsService
 import com.bridgecrew.services.scan.CheckovScanService
 import com.intellij.icons.AllIcons
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.Presentation
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.DumbAware
 
@@ -19,21 +21,24 @@ object CheckovScanAction : AnAction(), DumbAware {
         presentation.isEnabled = false
     }
 
-//    TODO: Uncomment when moving to Kotlin 2 + Java 21
-//    override fun getActionUpdateThread(): ActionUpdateThread {
-//        return ActionUpdateThread.EDT
-//    }
+    override fun getActionUpdateThread(): ActionUpdateThread {
+        return ActionUpdateThread.EDT
+    }
 
     override fun actionPerformed(actionEvent: AnActionEvent) {
         val project = actionEvent.project
         if (actionEvent.presentation.icon == AllIcons.Actions.Execute) {
             isExecuteState = false
-            project!!.service<AnalyticsService>().fullScanButtonWasPressed()
-            project.service<CheckovScanService>().scanProject(project)
+            ApplicationManager.getApplication().invokeLater {
+                project!!.service<AnalyticsService>().fullScanButtonWasPressed()
+                project.service<CheckovScanService>().scanProject(project)
+            }
         } else {
             isExecuteState = true
             presentation.isEnabled = false
-            project?.service<CheckovScanService>()?.cancelFullScan(project)
+            ApplicationManager.getApplication().invokeLater {
+                project?.service<CheckovScanService>()?.cancelFullScan(project)
+            }
         }
         updateIcon()
     }

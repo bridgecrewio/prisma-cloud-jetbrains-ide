@@ -10,7 +10,7 @@ import com.intellij.util.ui.JBUI
 import java.awt.Dimension
 import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
-import java.net.URL
+import java.net.URI
 import java.text.NumberFormat
 import java.util.*
 import javax.swing.*
@@ -136,7 +136,7 @@ class PrismaSettingsComponent(private val configurable: Configurable) {
 
     fun isValid(): Boolean {
         try {
-            val url = URL(prismaURLField.text)
+            val url = URI(prismaURLField.text).toURL()
             if (url.protocol.equals("http", ignoreCase = true)) {
                 validationResults.text = "Prisma URL protocol must be https"
                 return false

@@ -2,7 +2,6 @@ package com.bridgecrew.utils
 
 import com.bridgecrew.CheckovResult
 import com.bridgecrew.VulnerabilityDetails
-import com.bridgecrew.api.mapper
 import com.bridgecrew.results.BaseCheckovResult
 import com.bridgecrew.results.Category
 import com.bridgecrew.results.CheckType
@@ -141,7 +140,7 @@ class CheckovUtils {
             val failedChecks = results.getJSONArray("failed_checks")
             val checkType = outputObj.getString("check_type")
 
-            val checkovResults: ArrayList<CheckovResult> = mapper.readValue(failedChecks.toString(), jacksonTypeRef())
+            val checkovResults: ArrayList<CheckovResult> = GlobalMapper.i().readValue(failedChecks.toString(), jacksonTypeRef())
             checkovResults.forEach { result -> result.check_type = checkType }
 
             return checkovResults

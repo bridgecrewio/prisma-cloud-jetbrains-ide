@@ -1,6 +1,8 @@
 <!-- Keep a Changelog guide -> https://keepachangelog.com -->
 
-# checkov-jetbrains-idea Changelog
+# Prisma Cloud Changelog
+
+## [1.1.0] - 2024-09-23
 
 ## [1.0.22] - 2024-09-15
 

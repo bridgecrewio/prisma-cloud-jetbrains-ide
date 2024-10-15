@@ -3,7 +3,6 @@ package com.bridgecrew.scheduler
 import org.apache.commons.lang3.time.StopWatch
 import org.slf4j.LoggerFactory
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 class IntervalRunner(private val name: String) {
 
@@ -16,13 +15,8 @@ class IntervalRunner(private val name: String) {
         timer.schedule(object : TimerTask() {
             override fun run() {
                 try {
-                    stopWatch.time
                     intervalFunction()
-                    logger.info(
-                        "Interval function for $name executed with delay " + TimeUnit.MILLISECONDS.toSeconds(
-                            stopWatch.time
-                        )
-                    )
+                    logger.info("Interval function for $name executed with delay " + stopWatch.duration.toSeconds())
                 } catch (e: Throwable) {
                     logger.info("Catch the exception: $e")
                     stopWatch.stop()

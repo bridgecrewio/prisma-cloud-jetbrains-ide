@@ -8,7 +8,7 @@ import com.bridgecrew.listeners.PrismaVirtualFileListener
 import com.bridgecrew.log.LoggerService
 import com.bridgecrew.settings.PrismaSettingsState
 import com.bridgecrew.ui.CheckovToolWindowManagerPanel
-import com.bridgecrew.util.ApplicationServiceUtil
+import com.bridgecrew.utils.ApplicationServiceUtil
 import com.intellij.ide.plugins.IdeaPluginDescriptor
 import com.intellij.ide.plugins.PluginInstaller
 import com.intellij.ide.plugins.PluginManagerCore
@@ -16,16 +16,16 @@ import com.intellij.ide.plugins.PluginStateListener
 import com.intellij.openapi.components.service
 import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.startup.StartupActivity
+import com.intellij.openapi.startup.ProjectActivity
 import com.intellij.openapi.vfs.LocalFileSystem
 import org.slf4j.LoggerFactory
 import java.util.*
 
-class PostStartupActivity : StartupActivity {
+class PostStartupActivity : ProjectActivity {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    override fun runActivity(project: Project) {
+    override suspend fun execute(project: Project) {
         ApplicationServiceUtil.getService(LoggerService::class.java).initializeLogger()
         val version = PluginManagerCore.getPlugin(PluginId.getId("com.github.bridgecrewio.prismacloud"))?.version
         logger.info("Starting Prisma Cloud JetBrains plugin version $version")
@@ -37,6 +37,12 @@ class PostStartupActivity : StartupActivity {
                 // project.service<ResultsCacheService>().setMockCheckovResultsFromExampleFile() // MOCK
             }
         })
+
+//        ApplicationServiceUtil.getService(CommonsClient::class.java).helloWorld()
+//        logger.info(ApplicationServiceUtil.getService(CommonsClient::class.java).add(3, 4).toString())
+//        val request = Request(listOf("test", "best"), "mest", 1)
+//        val res = ApplicationServiceUtil.getService(CommonsClient::class.java).handleRequest(request)
+//        logger.info(res.toString())
 
         PluginInstaller.addStateListener(object : PluginStateListener {
             override fun install(ideaPluginDescriptor: IdeaPluginDescriptor) {

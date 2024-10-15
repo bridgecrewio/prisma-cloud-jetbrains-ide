@@ -5,12 +5,10 @@ import com.bridgecrew.listeners.CheckovSettingsListener
 import com.bridgecrew.settings.DEFAULT_REPORTING_INTERVAL
 import com.bridgecrew.settings.PLUGIN_NAME
 import com.bridgecrew.settings.PrismaSettingsState
-import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.KotlinModule
+import com.bridgecrew.utils.GlobalMapper
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
+import kotlinx.coroutines.CoroutineScope
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -31,19 +29,15 @@ data class PrismaConnectionDetails(
     val secretKey: String
 )
 
-val mapper = ObjectMapper().apply {
-    registerModule(KotlinModule.Builder().build())
-    configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-    setSerializationInclusion(JsonInclude.Include.NON_NULL)
-}
+
 
 @Service
-class PrismaApiClient {
+class PrismaApiClient(private val cs: CoroutineScope) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
     private var connection: PrismaConnectionDetails? = null
     private val client = RestTemplate(listOf(
-        MappingJackson2HttpMessageConverter(mapper)
+        MappingJackson2HttpMessageConverter(GlobalMapper.i())
     ))
 
     init {
