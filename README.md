@@ -1,3 +1,10 @@
+# Archival Notice
+This development of the Prisma Cloud JetBrains IDE plugin moved to an internal repository of Palo Alto Networks.
+
+If you encounter any issues with the plugin, please open issues [here](https://github.com/bridgecrewio/prisma-cloud-ide-issues/issues/new/choose)
+
+<hr>
+
 ![Prisma Cloud Code Security](src/main/resources/images/prismaLogo1.2.png)
 
 [![Maintained by Bridgecrew.io](https://img.shields.io/badge/maintained%20by-bridgecrew.io-blueviolet)](https://bridgecrew.io/?utm_source=github&utm_medium=organic_oss&utm_campaign=checkov-vscode)
